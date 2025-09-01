@@ -99,6 +99,11 @@ Route::prefix('aureolink')->group(function () {
 /// SOCIAL
 /// include_once(__DIR__ . '/groups/auth/social.php');
 
+// LOGIN ROUTE FOR AUTHENTICATION
+Route::get('/login', function() {
+    return redirect('/admin/login');
+})->name('login');
+
 // APP
 include_once(__DIR__ . '/groups/layouts/app.php');
 

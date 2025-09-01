@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\Profile\VipController;
+use App\Http\Controllers\VipController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('vip')

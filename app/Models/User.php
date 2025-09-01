@@ -66,7 +66,6 @@ class User extends Authenticatable implements FilamentUser, JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 
     protected $appends = ['dateHumanReadable', 'createdAt', 'totalLikes'];
