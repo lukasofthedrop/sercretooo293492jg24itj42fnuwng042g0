@@ -1,0 +1,33 @@
+/* custom-filament-theme.css */
+
+/* Estilos globais */
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Estilos específicos para AffiliateWithdrawResource */
+.page-affiliate-withdraw body {
+    background-color: #f0f0ff;
+    color: #000;
+}
+
+/* Estilos específicos para BannerResource */
+.page-banner body {
+    background-color: #ffe6e6;
+    color: #000;
+}
+
+/* Estilos específicos para CategoryResource */
+.page-category body {
+    background-color: #e6ffe6;
+    color: #000;
+}
+
+/* Estilos específicos para DepositResource */
+.page-deposit body {
+    background-color: #e6e6ff;
+    color: #000;
+}
+
+/* Adicione mais estilos específicos conforme necessário para cada recurso */

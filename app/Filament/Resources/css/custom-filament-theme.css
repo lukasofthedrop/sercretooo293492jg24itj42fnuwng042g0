@@ -1,0 +1,96 @@
+/* custom-filament-theme.css */
+
+/* Estilos globais */
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Estilos específicos para AffiliateWithdrawResource */
+.page-affiliate-withdraw body {
+    background-color: #f0f0ff;
+    color: #000;
+}
+
+/* Estilos específicos para BannerResource */
+.page-banner body {
+    background-color: #ffe6e6;
+    color: #000;
+}
+
+/* Estilos específicos para CategoryResource */
+.page-category body {
+    background-color: #e6ffe6;
+    color: #000;
+}
+
+/* Estilos específicos para DepositResource */
+.page-deposit body {
+    background-color: #e6e6ff;
+    color: #000;
+}
+
+/* Adicione mais estilos específicos conforme necessário para cada recurso */
+
+/* FORÇAR CORES VERDES NO FILAMENT ADMIN - SOBRESCREVER CORES ROSA CHOQUE */
+
+/* Botões primários - verde corrida */
+.fi-btn-primary, 
+.fi-btn--color-primary,
+[data-color="primary"] {
+    background-color: #00ff00 !important;
+    border-color: #00ff00 !important;
+    color: #000000 !important;
+}
+
+.fi-btn-primary:hover,
+.fi-btn--color-primary:hover,
+[data-color="primary"]:hover {
+    background-color: #00cc00 !important;
+    border-color: #00cc00 !important;
+}
+
+/* Links e elementos info - verde corrida */
+.fi-link--color-info,
+[data-color="info"] {
+    color: #00ff00 !important;
+}
+
+/* Elementos success - verde corrida */
+.fi-badge--color-success,
+[data-color="success"] {
+    background-color: #00ff00 !important;
+    color: #000000 !important;
+}
+
+/* Checkbox e radio buttons */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background-color: #00ff00 !important;
+    border-color: #00ff00 !important;
+}
+
+/* Toggle switches */
+.fi-toggle input:checked + .fi-toggle-slider {
+    background-color: #00ff00 !important;
+}
+
+/* Progress bars */
+.fi-progress-bar-bar {
+    background-color: #00ff00 !important;
+}
+
+/* Accent colors - sobrescrever qualquer cor primária */
+.text-primary-600,
+.text-primary-500,
+.bg-primary-600,
+.bg-primary-500 {
+    color: #00ff00 !important;
+    background-color: #00ff00 !important;
+}
+
+/* Bordas primárias */
+.border-primary-600,
+.border-primary-500 {
+    border-color: #00ff00 !important;
+}
