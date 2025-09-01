@@ -25,7 +25,7 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
      */
     public function getSubheading(): string| null|\Illuminate\Contracts\Support\Htmlable
     {
-        return "Bem-vindo(a) de volta, Admin! Seu painel está pronto para você.";
+        return "Sistema operacional. Controle total da plataforma disponível.";
     }
     
 
@@ -37,10 +37,10 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
     {
         return $form
             ->schema([
-                Section::make('BEM VINDO GOAT')
+                Section::make('DASHBOARD EXECUTIVO')
                 ->description(new HtmlString('
                     <div style="font-weight: 600; display: flex; align-items: center;">
-                        Seu painel administrativo está pronto. Gerencie sua plataforma com total controle!
+                        Painel de controle profissional. Gerencie todos os aspectos da plataforma com precisão.
                     </div>
             ')),
             ]);
