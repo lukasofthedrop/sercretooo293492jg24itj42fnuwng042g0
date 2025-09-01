@@ -8,7 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
 use Illuminate\Support\HtmlString;
-use App\Models\VsalatielKey;
+use App\Models\LicenseKey;
 
 class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
 {
@@ -16,8 +16,8 @@ class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-cpu-chip';
     protected static ?string $navigationLabel = 'LICENSE API';
-    protected static ?string $slug = 'vsalatiel';
-    protected static string $view = 'filament.pages.vsalatiel-key-page';
+    protected static ?string $slug = 'license-api';
+    protected static string $view = 'filament.pages.license-api-page';
 
     public ?array $data = [];
     public ?VsalatielKey $editingKey = null;
