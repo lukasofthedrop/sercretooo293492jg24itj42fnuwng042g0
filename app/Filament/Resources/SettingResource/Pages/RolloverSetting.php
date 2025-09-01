@@ -102,44 +102,8 @@ class RolloverSetting extends Page implements HasForms
     {
         return $form
             ->schema([
-                Section::make('CONFIGURAÇÕES PROFISSIONAIS DA PLATAFORMA')
-                ->description(new HtmlString('
-                    <div style="font-weight: 600; display: flex; align-items: center;">
-                        SAIBA MAIS SOBRE NÓS. PARTICIPE DA NOSSA COMUNIDADE IGAMING. ACESSE AGORA! 
-                        <a class="dark:text-white" 
-                           style="
-                                font-size: 14px;
-                                font-weight: 600;
-                                width: 127px;
-                                display: flex;
-                                background-color: #f800ff;
-                                padding: 10px;
-                                border-radius: 11px;
-                                justify-content: center;
-                                margin-left: 10px;
-                           " 
-                           href="#" 
-                           target="_blank">
-                            SITE OFICIAL
-                        </a>
-                        <a class="dark:text-white" 
-                           style="
-                                font-size: 14px;
-                                font-weight: 600;
-                                width: 127px;
-                                display: flex;
-                                background-color: #f800ff;
-                                padding: 10px;
-                                border-radius: 11px;
-                                justify-content: center;
-                                margin-left: 10px;
-                           " 
-                           href="https://t.me/victormsalatiel" 
-                           target="_blank">
-                            GRUPO TELEGRAM
-                        </a>
-                    </div>
-                ')),
+                Section::make('CONFIGURAÇÕES DE ROLLOVER')
+                    ->description('Configure o sistema de rollover da plataforma'),
                 Section::make('SISTEMA DE PROTEÇÃO DE BÔNUS E DEPÓSITO')
                     ->description('Proteção para evitar saques sem apostas e lavagem de dinheiro.')
                     ->schema([

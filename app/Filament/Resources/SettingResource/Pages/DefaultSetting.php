@@ -127,6 +127,10 @@ class DefaultSetting extends Page implements HasForms
                 }
             }
 
+            // CORREÇÃO: Controla output buffer para evitar crash da página
+            if (ob_get_level()) ob_end_clean();
+            ob_start();
+            
             $envs = DotenvEditor::load(base_path('.env'));
 
             $envs->setKeys([
@@ -135,6 +139,9 @@ class DefaultSetting extends Page implements HasForms
             ]);
 
             $envs->save();
+            
+            // Limpa qualquer output gerado pela modificação do .env
+            if (ob_get_level()) ob_clean();
 
             if($setting->update($this->data)) {
                 Cache::put('setting', $setting);
@@ -162,44 +169,6 @@ class DefaultSetting extends Page implements HasForms
     { 
         return $form
             ->schema([
-                Section::make('CONFIGURAÇÕES PROFISSIONAIS DA PLATAFORMA')
-                ->description(new HtmlString('
-                    <div style="font-weight: 600; display: flex; align-items: center;">
-                        SAIBA MAIS SOBRE NÓS. PARTICIPE DA NOSSA COMUNIDADE IGAMING. ACESSE AGORA! 
-                        <a class="dark:text-white" 
-                           style="
-                                font-size: 14px;
-                                font-weight: 600;
-                                width: 127px;
-                                display: flex;
-                                background-color: #f800ff;
-                                padding: 10px;
-                                border-radius: 11px;
-                                justify-content: center;
-                                margin-left: 10px;
-                           " 
-                           href="#" 
-                           target="_blank">
-                            SITE OFICIAL
-                        </a>
-                        <a class="dark:text-white" 
-                           style="
-                                font-size: 14px;
-                                font-weight: 600;
-                                width: 127px;
-                                display: flex;
-                                background-color: #f800ff;
-                                padding: 10px;
-                                border-radius: 11px;
-                                justify-content: center;
-                                margin-left: 10px;
-                           " 
-                           href="https://t.me/victormsalatiel" 
-                           target="_blank">
-                            GRUPO TELEGRAM
-                        </a>
-                    </div>
-                ')),
                 Section::make('ALTERE LOGOTIPO E DADOS')
                     ->description('Altere o logotipo e os dados da plataforma')
                     ->schema([

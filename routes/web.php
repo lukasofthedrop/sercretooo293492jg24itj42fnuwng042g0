@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Games\GameController;
 use App\Http\Controllers\Api\Profile\WalletController;
 use App\Models\Game;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\DistributionController;
@@ -35,12 +36,25 @@ Route::get('/clear', function () {
 })->name('clear.cache');
 
 Route::get('/update-colors', function () {
-    // Executa os mesmos comandos de limpar cache, pois as cores geralmente estão no cache de configuração
-    Artisan::call('config:clear');
+    // Limpa qualquer output anterior para evitar problemas com JSON
+    if (ob_get_level()) ob_end_clean();
+    ob_start();
+    
+    // REVERSÃO SEGURA: Mantém comandos Artisan necessários 
     Artisan::call('cache:clear');
-    Artisan::call('route:clear');
     Artisan::call('view:clear');
-    return back()->with('status', 'Cores atualizadas com sucesso!');
+    // Remove comandos mais agressivos que causam restart
+    
+    // Se for uma requisição AJAX, retorna JSON
+    if (request()->ajax() || request()->wantsJson()) {
+        ob_clean(); // Limpa qualquer saída antes do JSON
+        return response()->json([
+            'success' => true,
+            'message' => '🎨 Cores atualizadas com sucesso!'
+        ]);
+    }
+    
+    return back()->with('status', '🎨 Cores atualizadas (restart mínimo)!');
 })->name('update.colors');
 
 Route::get('/clear-memory', function () {

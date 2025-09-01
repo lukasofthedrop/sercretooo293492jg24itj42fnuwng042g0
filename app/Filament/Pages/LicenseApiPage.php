@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
 use Illuminate\Support\HtmlString;
 use App\Models\LicenseKey;
+use Filament\Notifications\Notification;
 
 class LicenseApiPage extends Page implements Forms\Contracts\HasForms
 {
@@ -41,18 +42,27 @@ class LicenseApiPage extends Page implements Forms\Contracts\HasForms
     public function delete($id)
     {
         LicenseKey::findOrFail($id)->delete();
-        $this->notify('success', 'Chave removida com sucesso!');
+        Notification::make()
+            ->title('Chave removida com sucesso!')
+            ->success()
+            ->send();
     }
 
     public function submit()
     {
         if ($this->editingKey) {
             $this->editingKey->update($this->form->getState());
-            $this->notify('success', 'Chave atualizada com sucesso!');
+            Notification::make()
+                ->title('Chave atualizada com sucesso!')
+                ->success()
+                ->send();
             $this->editingKey = null;
         } else {
             LicenseKey::create($this->form->getState());
-            $this->notify('success', 'Chave cadastrada com sucesso!');
+            Notification::make()
+                ->title('Chave cadastrada com sucesso!')
+                ->success()
+                ->send();
         }
         $this->form->fill([]);
     }
@@ -100,7 +110,7 @@ class LicenseApiPage extends Page implements Forms\Contracts\HasForms
                                     ->required(),
                                 TextInput::make('endpoint_base')
                                     ->label('Endpoint Base')
-                                    ->placeholder('Ex: https://api.vsalatiel.com')
+                                    ->placeholder('Ex: https://api.exemplo.com')
                                     ->maxLength(191)
                                     ->required(),
                                 TextInput::make('timeout')
