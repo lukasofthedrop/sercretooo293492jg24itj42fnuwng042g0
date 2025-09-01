@@ -132,7 +132,7 @@ trait SuitpayTrait
 
     /**
      * @param $idTransaction
-     * @dev victormsalatiel - Corra de golpista, me chame no instagram
+     * @dev Sistema de Pagamentos
      * @return bool
      */
     public static function finalizePayment($idTransaction, $idUnico) : bool
@@ -234,7 +234,7 @@ trait SuitpayTrait
     /**
      * @param $idTransaction
      * @param $amount
-     * @dev victormsalatiel - Corra de golpista, me chame no instagram
+     * @dev Sistema de Pagamentos
      * @return void
      */
     private static function generateDeposit($idTransaction, $amount)
@@ -256,7 +256,7 @@ trait SuitpayTrait
     /**
      * @param $idTransaction
      * @param $amount
-     * @dev victormsalatiel - Corra de golpista, me chame no instagram
+     * @dev Sistema de Pagamentos
      * @return void
      */
     private static function generateTransaction($idTransaction, $amount, $id)
@@ -276,7 +276,7 @@ trait SuitpayTrait
 
     /**
      * @param $request
-     * @dev victormsalatiel - Corra de golpista, me chame no instagram
+     * @dev Sistema de Pagamentos
      * @return \Illuminate\Http\JsonResponse|void
      */
     public static function pixCashOut(array $array): bool

@@ -106,13 +106,13 @@ class SuitPayController extends Controller
                     $withdrawal->update(['status' => 1]);
     
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('Operação Realizada')
                         ->body('Saque solicitado com sucesso')
                         ->success()
                         ->send();
                 } else {
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('Operação Realizada')
                         ->body('Erro ao solicitar o saque')
                         ->danger()
                         ->send();
