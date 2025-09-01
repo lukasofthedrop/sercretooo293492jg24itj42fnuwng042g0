@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('vsalatiel_keys', function (Blueprint $table) {
+        Schema::create('license_keys', function (Blueprint $table) {
             $table->id();
             $table->string('token');
             $table->string('client_id');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vsalatiel_keys');
+        Schema::dropIfExists('license_keys');
     }
 }; 

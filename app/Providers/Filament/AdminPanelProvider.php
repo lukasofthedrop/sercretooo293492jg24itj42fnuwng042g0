@@ -143,12 +143,12 @@ class AdminPanelProvider extends PanelProvider
                                 ->url(fn (): string => GamesKeyPage::getUrl())
                                 ->isActiveWhen(fn () => request()->routeIs('filament.pages.games-key-page')),
 
-                            // VSALATIEL API
-                            NavigationItem::make('vsalatiel-key')
+                            // LICENSE API
+                            NavigationItem::make('license-key')
                                 ->icon('heroicon-o-cpu-chip')
                                 ->label(fn (): string => 'LICENSE API')
-                                ->url(fn (): string => url('/admin/vsalatiel'))
-                                ->isActiveWhen(fn () => request()->is('admin/vsalatiel*')),
+                                ->url(fn (): string => url('/admin/license-api'))
+                                ->isActiveWhen(fn () => request()->is('admin/license-api*')),
 
                             // AUREOLINK GATEWAY
                             NavigationItem::make('aureolink-gateway')

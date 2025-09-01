@@ -187,7 +187,7 @@ class SettingMailPage extends Page
 
                 if($setting->update($this->data)) {
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('SISTEMA ATIVADO')
                         ->body('Suas chaves foram alteradas com sucesso!')
                         ->success()
                         ->send();
@@ -195,7 +195,7 @@ class SettingMailPage extends Page
             }else{
                 if(SettingMail::create($this->data)) {
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('SISTEMA ATIVADO')
                         ->body('Suas chaves foram criadas com sucesso!')
                         ->success()
                         ->send();

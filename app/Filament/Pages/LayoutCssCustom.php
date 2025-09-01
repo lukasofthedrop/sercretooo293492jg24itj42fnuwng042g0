@@ -922,7 +922,7 @@ class LayoutCssCustom extends Page implements HasForms
 
 
             if ($this->custom->update($data)) {
-                Notification::make()->title('ACESSE VSALATIEL.COM')->body('Dados alterados com sucesso!')->success()->send();
+                Notification::make()->title('SISTEMA ATIVADO')->body('Dados alterados com sucesso!')->success()->send();
                 return ;
             }
 

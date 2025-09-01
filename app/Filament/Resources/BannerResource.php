@@ -30,7 +30,7 @@ class BannerResource extends Resource
     protected static ?string $navigationGroup = 'Marketing';  // Opcional: para agrupar em uma seção de navegação
 
     /**
-     * @dev 𝓗𝓐𝓡𝓚𝓩𝓘𝓜 / by Vsalatiel.com < - Esse sistema é Gratuito - Entre no nosso Grupo  https://t.me/+dFr8-1AmUz5hZDc5
+     * @dev Sistema WhiteLabel Casino - Profissional
      * @return bool
      */
     public static function canAccess(): bool
@@ -46,7 +46,7 @@ class BannerResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('VSALATIEL.COM CRIOU ESSA PLATAFORMA PARA VOCÊ')
+                Section::make('CONFIGURAÇÃO DE BANNERS PROMOCIONAIS')
                     ->description(new HtmlString('
                     <div style="font-weight: 600; display: flex; align-items: center;">
                         SAIBA MAIS SOBRE NÓS. PARTICIPE DA NOSSA COMUNIDADE IGAMING. ACESSE AGORA! 
@@ -62,7 +62,7 @@ class BannerResource extends Resource
                                 justify-content: center;
                                 margin-left: 10px;
                            " 
-                           href="https://vsalatiel.com" 
+                           href="#" 
                            target="_blank">
                             SITE OFICIAL
                         </a>

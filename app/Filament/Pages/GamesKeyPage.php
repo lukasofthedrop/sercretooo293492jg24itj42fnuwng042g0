@@ -314,7 +314,7 @@ public function saveInfo() {
             if (!empty($setting)) {
                 if ($setting->update($this->data)) {
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('SISTEMA ATIVADO')
                         ->body('Suas chaves foram alteradas com sucesso!')
                         ->success()
                         ->send();
@@ -322,7 +322,7 @@ public function saveInfo() {
             } else {
                 if (GamesKey::create($this->data)) {
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('SISTEMA ATIVADO')
                         ->body('Suas chaves foram criadas com sucesso!')
                         ->success()
                         ->send();

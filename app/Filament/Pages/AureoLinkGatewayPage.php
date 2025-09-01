@@ -33,7 +33,7 @@ class AureoLinkGatewayPage extends Page
     protected static ?string $navigationLabel = 'AureoLink Gateway';
     protected static ?string $title = 'AureoLink Gateway';
     protected static ?string $slug = 'aureolink-gateway';
-    protected static ?string $navigationGroup = 'VSALATIEL API';
+    protected static ?string $navigationGroup = 'GATEWAYS PAGAMENTO';
     protected static ?int $navigationSort = 2;
 
     protected static string $view = 'filament.pages.aureolink-gateway';
@@ -164,20 +164,20 @@ class AureoLinkGatewayPage extends Page
 
             if ($response->successful()) {
                 Notification::make()
-                    ->title('ACESSE VSALATIEL.COM')
+                    ->title('SISTEMA ATIVADO')
                     ->body('Conexão com AureoLink estabelecida com sucesso!')
                     ->success()
                     ->send();
             } else {
                 Notification::make()
-                    ->title('ACESSE VSALATIEL.COM')
+                    ->title('SISTEMA ATIVADO')
                     ->body('Erro na conexão: ' . $response->body())
                     ->danger()
                     ->send();
             }
         } catch (\Exception $e) {
             Notification::make()
-                ->title('ACESSE VSALATIEL.COM')
+                ->title('SISTEMA ATIVADO')
                 ->body('Erro na conexão: ' . $e->getMessage())
                 ->danger()
                 ->send();

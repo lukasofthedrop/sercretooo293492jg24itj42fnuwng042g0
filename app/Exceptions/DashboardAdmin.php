@@ -37,7 +37,7 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
     {
         return $form
             ->schema([
-                Section::make('VSALATIEL.COM CRIOU ESSA PLATAFORMA PARA VOCÊ')
+                Section::make('CONFIGURAÇÕES PROFISSIONAIS DA PLATAFORMA')
                 ->description(new HtmlString('
                     <div style="font-weight: 600; display: flex; align-items: center;">
                         SAIBA MAIS SOBRE NÓS. PARTICIPE DA NOSSA COMUNIDADE IGAMING. ACESSE AGORA! 
@@ -53,7 +53,7 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
                                 justify-content: center;
                                 margin-left: 10px;
                            " 
-                           href="https://vsalatiel.com" 
+                           href="#" 
                            target="_blank">
                             SITE OFICIAL
                         </a>

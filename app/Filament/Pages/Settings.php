@@ -302,7 +302,7 @@ class Settings extends Page implements HasForms
                     Cache::put('setting', $setting);
 
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('SISTEMA ATIVADO')
                         ->body('Dados alterados com sucesso!')
                         ->success()
                         ->send();

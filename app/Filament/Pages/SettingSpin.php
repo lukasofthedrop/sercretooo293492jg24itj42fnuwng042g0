@@ -109,7 +109,7 @@ class SettingSpin extends Page
 
                 if($setting->update(['prizes' => $updatedData])) {
                     Notification::make()
-                        ->title('ACESSE VSALATIEL.COM')
+                        ->title('SISTEMA ATIVADO')
                         ->body('Dados alterados com sucesso!')
                         ->success()
                         ->send();
