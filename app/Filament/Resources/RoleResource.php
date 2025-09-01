@@ -25,7 +25,6 @@ use Illuminate\Database\Eloquent\Model;
 class RoleResource extends Resource
 {
     /**
-     * @dev @victormsalatiel
      * @return bool
      */
     public static function canAccess(): bool

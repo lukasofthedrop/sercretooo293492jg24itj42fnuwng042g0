@@ -131,21 +131,23 @@ class LayoutCssCustom extends Page implements HasForms
                             </a>
                     
                             <!-- Botão Atualizar Cores -->
-                            <a href="' . route('update.colors') . '" class="dark:text-white" 
+                            <button onclick="updateColors()" class="dark:text-white" 
                                style="
                                     font-size: 14px;
                                     font-weight: 600;
-                                    width: 127px;
+                                    width: 150px;
                                     display: flex;
-                                    background-color: #f800ff;
+                                    background-color: #00ff00;
                                     padding: 10px;
                                     border-radius: 11px;
                                     justify-content: center;
                                     margin-left: 10px;
-                               " 
-                               onclick="return confirm(\'Deseja atualizar as cores?\');">
-                                ATUALIZAR CORES
-                            </a>
+                                    color: black;
+                                    border: none;
+                                    cursor: pointer;
+                               ">
+                                🎨 ATUALIZAR CORES
+                            </button>
                     
                             <!-- Botão Limpar Memória -->
                             <a href="' . route('clear.memory') . '" class="dark:text-white" 
@@ -164,7 +166,63 @@ class LayoutCssCustom extends Page implements HasForms
                                 LIMPAR MEMÓRIA
                             </a>
                     
-                        </div>'
+                        </div>
+                        
+                        <script>
+                        function updateColors() {
+                            if (confirm("🎨 Aplicar cores (restart mínimo)?")) {
+                                // Mostrar estado de carregamento
+                                const btn = event.target;
+                                const originalText = btn.innerHTML;
+                                btn.innerHTML = "⏳ Atualizando...";
+                                btn.disabled = true;
+                                
+                                // Fazer requisição AJAX
+                                fetch("' . route('update.colors') . '", {
+                                    method: "GET",
+                                    headers: {
+                                        "X-Requested-With": "XMLHttpRequest",
+                                        "Accept": "application/json"
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        // Notificação de sucesso
+                                        const notification = document.createElement("div");
+                                        notification.style.cssText = `
+                                            position: fixed;
+                                            top: 20px;
+                                            right: 20px;
+                                            background-color: #10b981;
+                                            color: white;
+                                            padding: 15px 20px;
+                                            border-radius: 8px;
+                                            z-index: 9999;
+                                            font-weight: 600;
+                                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                                        `;
+                                        notification.textContent = data.message;
+                                        document.body.appendChild(notification);
+                                        
+                                        // Remover notificação após 3 segundos
+                                        setTimeout(() => {
+                                            notification.remove();
+                                        }, 3000);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Erro:", error);
+                                    alert("Erro ao atualizar cores!");
+                                })
+                                .finally(() => {
+                                    // Restaurar botão
+                                    btn.innerHTML = originalText;
+                                    btn.disabled = false;
+                                });
+                            }
+                        }
+                        </script>'
                     )),
             ]);
     }
@@ -922,7 +980,12 @@ class LayoutCssCustom extends Page implements HasForms
 
 
             if ($this->custom->update($data)) {
-                Notification::make()->title('SISTEMA ATIVADO')->body('Dados alterados com sucesso!')->success()->send();
+                Notification::make()
+                    ->title('🎨 CORES ATUALIZADAS COM SUCESSO!')
+                    ->body('Servidor reiniciando automaticamente para aplicar as novas cores... A página será recarregada em instantes!')
+                    ->success()
+                    ->duration(8000) // Mostra por 8 segundos
+                    ->send();
                 return ;
             }
 
