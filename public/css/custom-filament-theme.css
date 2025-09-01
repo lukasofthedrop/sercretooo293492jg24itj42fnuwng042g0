@@ -150,30 +150,33 @@ body .fi-sidebar nav li a span {
     color: rgb(255, 255, 255) !important;
 }
 
-/* TODOS os ícones da sidebar ficam verdes COM DETALHAMENTO */
-.fi-sidebar-group-collapse-button svg,
-.fi-sidebar-item-button svg {
-    color: rgb(0, 255, 0) !important;
-    fill: currentColor !important;
-    stroke: rgb(0, 255, 0) !important;
+/* CORREÇÃO DEFINITIVA DOS ÍCONES DA SIDEBAR */
+/* Remover fill sólido e usar apenas stroke para contornos */
+.fi-sidebar svg {
+    color: #00ff00 !important;
+    fill: none !important;
+    stroke: #00ff00 !important;
     stroke-width: 1.5px !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
 }
 
-/* Preservar detalhes internos dos ícones SVG */
-.fi-sidebar-group-collapse-button svg *,
-.fi-sidebar-item-button svg * {
-    fill: inherit !important;
-    stroke: inherit !important;
-    opacity: 1 !important;
-}
-
-/* Garantir visibilidade de paths internos */
-.fi-sidebar svg path,
-.fi-sidebar svg circle,
-.fi-sidebar svg rect,
-.fi-sidebar svg polygon {
-    fill: currentColor !important;
+/* Para elementos internos que precisam de fill (como círculos pequenos) */
+.fi-sidebar svg path[fill*="currentColor"],
+.fi-sidebar svg circle[fill*="currentColor"],
+.fi-sidebar svg rect[fill*="currentColor"] {
+    fill: #00ff00 !important;
     stroke: none !important;
+}
+
+/* Elementos específicos que devem manter stroke */
+.fi-sidebar svg path:not([fill]),
+.fi-sidebar svg line,
+.fi-sidebar svg polyline,
+.fi-sidebar svg polygon:not([fill]) {
+    fill: none !important;
+    stroke: #00ff00 !important;
+    stroke-width: 1.5px !important;
 }
 
 /* Garantir que imagens não sejam afetadas */
