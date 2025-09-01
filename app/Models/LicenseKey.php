@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VsalatielKey extends Model
+class LicenseKey extends Model
 {
     use HasFactory;
 
-    protected $table = 'vsalatiel_keys';
+    protected $table = 'license_keys';
 
     protected $fillable = [
         'token',

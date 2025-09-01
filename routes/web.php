@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\DistributionController;
-use App\Http\Controllers\VsalatielKeyController;
+use App\Http\Controllers\LicenseKeyController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -102,12 +102,12 @@ Route::prefix('aureolink')->group(function () {
 // APP
 include_once(__DIR__ . '/groups/layouts/app.php');
 
-// Rotas VSALATIEL API
-// Route::prefix('admin/vsalatiel')->middleware(['web'])->group(function () {
-//     Route::get('/', [VsalatielKeyController::class, 'index'])->name('vsalatiel.index');
-//     Route::post('/', [VsalatielKeyController::class, 'store'])->name('vsalatiel.store');
-//     Route::put('/{id}', [VsalatielKeyController::class, 'update'])->name('vsalatiel.update');
-//     Route::delete('/{id}', [VsalatielKeyController::class, 'destroy'])->name('vsalatiel.destroy');
+// Rotas LICENSE API
+// Route::prefix('admin/license')->middleware(['web'])->group(function () {
+//     Route::get('/', [LicenseKeyController::class, 'index'])->name('license.index');
+//     Route::post('/', [LicenseKeyController::class, 'store'])->name('license.store');
+//     Route::put('/{id}', [LicenseKeyController::class, 'update'])->name('license.update');
+//     Route::delete('/{id}', [LicenseKeyController::class, 'destroy'])->name('license.destroy');
 // });
 
 // AureoLink Gateway Routes

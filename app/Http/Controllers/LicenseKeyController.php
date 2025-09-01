@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VsalatielKey;
+use App\Models\LicenseKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class VsalatielKeyController extends Controller
+class LicenseKeyController extends Controller
 {
     public function __construct()
     {
@@ -21,8 +21,8 @@ class VsalatielKeyController extends Controller
 
     public function index()
     {
-        $keys = VsalatielKey::all();
-        return view('filament.pages.vsalatiel-key-page', compact('keys'));
+        $keys = LicenseKey::all();
+        return view('filament.pages.license-key-page', compact('keys'));
     }
 
     public function store(Request $request)
@@ -36,8 +36,8 @@ class VsalatielKeyController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        VsalatielKey::create($request->all());
-        return redirect()->route('vsalatiel.index')->with('success', 'Chave adicionada com sucesso!');
+        LicenseKey::create($request->all());
+        return redirect()->route('license.index')->with('success', 'Chave adicionada com sucesso!');
     }
 
     public function update(Request $request, $id)
@@ -51,15 +51,15 @@ class VsalatielKeyController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        $key = VsalatielKey::findOrFail($id);
+        $key = LicenseKey::findOrFail($id);
         $key->update($request->all());
-        return redirect()->route('vsalatiel.index')->with('success', 'Chave atualizada com sucesso!');
+        return redirect()->route('license.index')->with('success', 'Chave atualizada com sucesso!');
     }
 
     public function destroy($id)
     {
-        $key = VsalatielKey::findOrFail($id);
+        $key = LicenseKey::findOrFail($id);
         $key->delete();
-        return redirect()->route('vsalatiel.index')->with('success', 'Chave removida com sucesso!');
+        return redirect()->route('license.index')->with('success', 'Chave removida com sucesso!');
     }
 } 

@@ -10,7 +10,7 @@ use Filament\Forms\Components\Section;
 use Illuminate\Support\HtmlString;
 use App\Models\LicenseKey;
 
-class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
+class LicenseApiPage extends Page implements Forms\Contracts\HasForms
 {
     use Forms\Concerns\InteractsWithForms;
 
@@ -20,7 +20,7 @@ class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
     protected static string $view = 'filament.pages.license-api-page';
 
     public ?array $data = [];
-    public ?VsalatielKey $editingKey = null;
+    public ?LicenseKey $editingKey = null;
 
     public function mount(): void
     {
@@ -29,18 +29,18 @@ class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
 
     public function getKeysProperty()
     {
-        return VsalatielKey::all();
+        return LicenseKey::all();
     }
 
     public function edit($id)
     {
-        $this->editingKey = VsalatielKey::findOrFail($id);
+        $this->editingKey = LicenseKey::findOrFail($id);
         $this->form->fill($this->editingKey->toArray());
     }
 
     public function delete($id)
     {
-        VsalatielKey::findOrFail($id)->delete();
+        LicenseKey::findOrFail($id)->delete();
         $this->notify('success', 'Chave removida com sucesso!');
     }
 
@@ -51,7 +51,7 @@ class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
             $this->notify('success', 'Chave atualizada com sucesso!');
             $this->editingKey = null;
         } else {
-            VsalatielKey::create($this->form->getState());
+            LicenseKey::create($this->form->getState());
             $this->notify('success', 'Chave cadastrada com sucesso!');
         }
         $this->form->fill([]);
@@ -61,10 +61,10 @@ class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
     {
         return $form
             ->schema([
-                Section::make('VSALATIEL API')
+                Section::make('LICENSE API')
                     ->description(new HtmlString('
                         <div style="display: flex; align-items: center;">
-                            Integração com a API VSALATIEL.COM.
+                            Integração com a API de licenciamento.
                             <a class="dark:text-white"
                                style="
                                     font-size: 14px;
@@ -77,16 +77,16 @@ class VsalatielKeyPage extends Page implements Forms\Contracts\HasForms
                                     justify-content: center;
                                     margin-left: 10px;
                                "
-                               href="https://api.vsalatiel.com"
+                               href="#"
                                target="_blank">
-                                API VSALATIEL.COM
+                                DOCUMENTAÇÃO API
                             </a>
                         </div>
-                        <b>Configure abaixo as credenciais da sua integração com a VSALATIEL.</b>
+                        <b>Configure abaixo as credenciais da sua integração de licenciamento.</b>
                     '))
                     ->schema([
-                        Section::make('CHAVES DE ACESSO VSALATIEL')
-                            ->description('Preencha os dados fornecidos pela VSALATIEL para ativar a integração.')
+                        Section::make('CHAVES DE ACESSO DA LICENÇA')
+                            ->description('Preencha os dados de licenciamento para ativar a integração.')
                             ->schema([
                                 TextInput::make('token')
                                     ->label('Token')
