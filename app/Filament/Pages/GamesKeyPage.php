@@ -134,7 +134,9 @@ public function form(Form $form): Form
                             GRUPO TELEGRAM
                         </a>
                     </div>
-                    <b>Sua URL de Callback :  ' . url("/playfiver/webhook", [], true) . "</b>"))
+                    <b>AGENTE ATUAL: sorte365bet</b><br>
+                    <b>AGENTE PREPARADO: lucrativabt (para lucrativa.bet)</b><br>
+                    <b>Callback URL Atual: ' . url("/playfiver/webhook", [], true) . "</b>"))
                 
                 ->schema([
                     Section::make('CHAVES DE ACESSO PLAYFIVER')
