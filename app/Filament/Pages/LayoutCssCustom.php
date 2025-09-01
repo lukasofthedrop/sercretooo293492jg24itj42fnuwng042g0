@@ -120,7 +120,7 @@ class LayoutCssCustom extends Page implements HasForms
                                     font-weight: 600;
                                     width: 127px;
                                     display: flex;
-                                    background-color: #f800ff;
+                                    background-color: #00ff00;
                                     padding: 10px;
                                     border-radius: 11px;
                                     justify-content: center;
@@ -156,7 +156,7 @@ class LayoutCssCustom extends Page implements HasForms
                                     font-weight: 600;
                                     width: 127px;
                                     display: flex;
-                                    background-color: #f800ff;
+                                    background-color: #00ff00;
                                     padding: 10px;
                                     border-radius: 11px;
                                     justify-content: center;
@@ -243,7 +243,7 @@ class LayoutCssCustom extends Page implements HasForms
                                     font-weight: 600;
                                     width: 127px;
                                     display: flex;
-                                    background-color: #f800ff;
+                                    background-color: #00ff00;
                                     padding: 10px;
                                     border-radius: 11px;
                                     justify-content: center;
