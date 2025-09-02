@@ -9,6 +9,7 @@ use Creagia\FilamentCodeField\CodeField;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -60,44 +61,77 @@ class LayoutCssCustom extends Page implements HasForms
     {
         return $form
             ->schema([
-                $this->getClearCacheSection(),
-                $this->getSecTokenJivochat(),
-                $this->css_do_bonus_diario(),
-                $this->css_do_termos_sport(),
-                $this->central_suporte(),
-                $this->css_do_geral(),
-                $this->css_do_menu_cell(),
-                $this->css_do_missoes(),
-                $this->css_do_vips(),
-                $this->css_do_promocoes(),
+                Tabs::make('Configurações')
+                    ->tabs([
+                        // ABA 1: SISTEMA & OTIMIZAÇÃO
+                        Tabs\Tab::make('🚀 SISTEMA')
+                            ->schema([
+                                $this->getClearCacheSection(),
+                                $this->css_do_geral(),
+                                $this->getSectionCustomCode(),
+                            ]),
 
+                        // ABA 2: LAYOUT PRINCIPAL
+                        Tabs\Tab::make('🏠 LAYOUT PRINCIPAL')
+                            ->schema([
+                                $this->css_do_navbar(),
+                                $this->css_do_sidebar(),
+                                $this->css_do_homepage(),
+                                $this->css_do_footer(),
+                            ]),
 
-                $this->css_do_BetHistory(),
-                $this->css_do_WalletWithdrawal(),
-                $this->css_do_PixWallet(),
-                $this->css_do_WalletDeposit(),
-                $this->css_do_WalletBalance(),
-                $this->css_do_WalletDashboard(),
-                
-                $this->css_do_affiliates(),
-                $this->css_do_login_registro_esquci(),
-                $this->css_do_listgames(),
-                $this->css_do_homepage(),
-                $this->css_do_navbar(),
-                $this->css_do_footer(),
-                $this->css_do_sidebar(),
-                $this->css_do_popup_cookies(),
-                $this->css_do_myconta(),
+                        // ABA 3: PÁGINAS DE USUÁRIO
+                        Tabs\Tab::make('👤 PÁGINAS DE USUÁRIO')
+                            ->schema([
+                                $this->css_do_login_registro_esquci(),
+                                $this->css_do_myconta(),
+                                $this->central_suporte(),
+                            ]),
 
+                        // ABA 4: CARTEIRA & TRANSAÇÕES
+                        Tabs\Tab::make('💰 CARTEIRA & TRANSAÇÕES')
+                            ->schema([
+                                $this->css_do_WalletDashboard(),
+                                $this->css_do_WalletBalance(),
+                                $this->css_do_WalletDeposit(),
+                                $this->css_do_PixWallet(),
+                                $this->css_do_WalletWithdrawal(),
+                                $this->css_do_BetHistory(),
+                            ]),
 
+                        // ABA 5: GAMIFICAÇÃO & PROMOÇÕES
+                        Tabs\Tab::make('🎁 GAMIFICAÇÃO & PROMOÇÕES')
+                            ->schema([
+                                $this->css_do_bonus_diario(),
+                                $this->css_do_missoes(),
+                                $this->css_do_vips(),
+                                $this->css_do_promocoes(),
+                                $this->css_do_affiliates(),
+                            ]),
 
-                
-                $this->getSectionPlatformTexts(),
-                $this->getSectiimagensmanegem(),
-                $this->getSectilinkmagem(),
-                $this->getSectionCustomCode(),
-                
-                
+                        // ABA 6: JOGOS & CONTEÚDO
+                        Tabs\Tab::make('🎮 JOGOS & CONTEÚDO')
+                            ->schema([
+                                $this->css_do_listgames(),
+                                $this->css_do_termos_sport(),
+                            ]),
+
+                        // ABA 7: MOBILE & DISPOSITIVOS
+                        Tabs\Tab::make('📱 MOBILE & DISPOSITIVOS')
+                            ->schema([
+                                $this->css_do_menu_cell(),
+                                $this->css_do_popup_cookies(),
+                            ]),
+
+                        // ABA 8: CONTEÚDO & CONFIGURAÇÕES
+                        Tabs\Tab::make('📝 CONTEÚDO & CONFIGURAÇÕES')
+                            ->schema([
+                                $this->getSecTokenJivochat(),
+                                $this->getSectionPlatformTexts(),
+                                $this->getSectiimagensmanegem(),
+                                $this->getSectilinkmagem(),
+                            ]),
+                    ])
             ])
             ->statePath('data');
     }
@@ -106,8 +140,8 @@ class LayoutCssCustom extends Page implements HasForms
 
     protected function getClearCacheSection(): Section
     {
-        return Section::make('Otimização')
-            ->description('Clique no botão abaixo para limpar todo o cache do sistema')
+        return Section::make('🚀 Otimização & Cache')
+            ->description('Controles principais do sistema - limpar cache, atualizar cores e gerenciar memória')
             ->schema([
                 \Filament\Forms\Components\Placeholder::make('limpar_cache')
                     ->label('')
@@ -229,8 +263,8 @@ class LayoutCssCustom extends Page implements HasForms
     
     protected function getSecTokenJivochat(): Section
     {
-        return Section::make('TOKEN JIVOCHAT')
-            ->label('Altere o token do Jivochat')
+        return Section::make('💬 TOKEN JIVOCHAT')
+            ->label('Configuração do chat ao vivo - altere o token do Jivochat')
             ->schema([
                 \Filament\Forms\Components\Placeholder::make('limpar_cache')
                     ->label('')
@@ -308,7 +342,8 @@ class LayoutCssCustom extends Page implements HasForms
 
     protected function getSectionCustomCode(): Section
     {
-        return Section::make()
+        return Section::make('⚙️ Código Customizado & Pixels')
+            ->description('CSS, JavaScript personalizado e configuração de pixels de rastreamento')
             ->schema([
                 TextInput::make('idPixelFC')->label("Id do Pixel Facebook"),
                 TextInput::make('idPixelGoogle')->label("Id do Pixel Google"),
@@ -354,8 +389,8 @@ class LayoutCssCustom extends Page implements HasForms
     // PAGINA NAVBAR   | FICA EM CIMA DO SITE
     protected function css_do_navbar(): Section
     {
-        return Section::make("Página de Navbar")
-            ->description('Você pode alterar as cores do Navbar')
+        return Section::make("🔝 Navbar (Barra Superior)")
+            ->description('Cores da barra de navegação superior - botões, texto, ícones, login/registro')
             ->label('Navbar')
             ->schema([
                 ColorPicker::make('navbar_background')->label('Cor de fundo do Navbar')->required(),
@@ -400,8 +435,8 @@ class LayoutCssCustom extends Page implements HasForms
     protected function css_do_sidebar(): Section
     {
 
-        return Section::make("Página de Sidebar")
-            ->description('Você pode alterar as cores do Sidebar')
+        return Section::make("📋 Sidebar (Barra Lateral)")
+            ->description('Cores da barra lateral esquerda - missões, VIP, promoções, ícones de jogos')
             ->label('Sidebar')
             ->schema([
             ColorPicker::make('sidebar_background')->label('Cor de fundo do Sidebar')->required(),
@@ -909,9 +944,9 @@ class LayoutCssCustom extends Page implements HasForms
     // GERAL
     protected function css_do_geral(): Section
     {
-        return Section::make("Geral")
-            ->description('Você pode alterar as cores gerais')
-            ->label('Geral')
+        return Section::make("🎨 Cores Gerais do Sistema")
+            ->description('Cores de fundo e texto que afetam todo o sistema')
+            ->label('Cores Gerais')
             ->schema([
                 ColorPicker::make('background_geral')->label('Cor de fundo geral')->required(),
                 ColorPicker::make('background_geral_text_color')->label('Cor do texto geral')->required(),
