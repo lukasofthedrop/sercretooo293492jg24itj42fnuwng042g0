@@ -578,6 +578,8 @@
             </style>
         @endif
 
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="base-url" content="{{ config('app.url') }}">
         <link rel="stylesheet" href="{{ asset('build/assets/app-BiLvXd5_.css') }}">
         <script type="module" src="{{ asset('build/assets/app-CRDk2_8R.js') }}"></script>
     </head>
