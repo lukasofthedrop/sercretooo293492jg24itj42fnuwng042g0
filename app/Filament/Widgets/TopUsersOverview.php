@@ -76,35 +76,35 @@ class TopUsersOverview extends BaseWidget
                 ->description($topDepositor ? 'R$ ' . number_format($topDepositor->total_deposited, 2, ',', '.') : 'Sem dados')
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success')
-                ->chart([20, 40, 30, 50, 70, 60, 80])
+                ->chart([5, 25, 50, 80, 90, 95, 100])
                 ->chartColor('rgba(0, 255, 0, 1.0)'), // Verde neon
 
             Stat::make('MAIOR PERDEDOR', $topLoser ? substr($topLoser->name, 0, 15) . '...' : 'Nenhum')
                 ->description($topLoser ? 'R$ ' . number_format($topLoser->net_loss, 2, ',', '.') . ' perdidos' : 'Sem dados')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger')
-                ->chart([80, 60, 70, 50, 30, 40, 20])
+                ->chart([100, 85, 75, 60, 40, 25, 10])
                 ->chartColor('rgba(255, 50, 50, 1.0)'), // Vermelho vibrante
 
             Stat::make('TOP AFILIADO', $topAffiliateCommission ? substr($topAffiliateCommission->name, 0, 15) . '...' : 'Nenhum')
                 ->description($topAffiliateCommission ? 'R$ ' . number_format($topAffiliateCommission->total_commission, 2, ',', '.') . ' comissões' : 'Sem dados')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning')
-                ->chart([10, 20, 35, 25, 40, 55, 50])
+                ->chart([3, 12, 35, 60, 75, 85, 90])
                 ->chartColor('rgba(255, 215, 0, 1.0)'), // Dourado
 
             Stat::make('MAIOR APOSTADOR', $topBetter ? substr($topBetter->name, 0, 15) . '...' : 'Nenhum')
                 ->description($topBetter ? 'R$ ' . number_format($topBetter->total_bet, 2, ',', '.') . ' apostado' : 'Sem dados')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('info')
-                ->chart([40, 60, 80, 70, 90, 100, 85])
+                ->chart([15, 45, 70, 85, 95, 100, 98])
                 ->chartColor('rgba(0, 255, 255, 1.0)'), // Cyan neon
 
             Stat::make('MAIOR GANHADOR', $topWinner ? substr($topWinner->name, 0, 15) . '...' : 'Nenhum')
                 ->description($topWinner ? 'R$ ' . number_format($topWinner->total_wins, 2, ',', '.') . ' ganho' : 'Sem dados')
                 ->descriptionIcon('heroicon-m-trophy')
                 ->color('success')
-                ->chart([30, 50, 70, 90, 80, 100, 95])
+                ->chart([10, 35, 65, 80, 90, 95, 100])
                 ->chartColor('rgba(50, 255, 50, 1.0)'), // Verde claro
         ];
     }

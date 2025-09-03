@@ -59,7 +59,7 @@ class StatsOverview extends BaseWidget
                 ->description('Total de usuários cadastrados')
                 ->descriptionIcon('heroicon-o-user')
                 ->color('blue')
-                ->chart([10, 20, 15, 30, 25, 40, 35])
+                ->chart([2, 8, 20, 45, 65, 80, 95])
                 ->chartColor('rgba(0, 255, 127, 1.0)'), // Verde matrix para cadastros
             
             Stat::make('TOTAL DEPOSITADO HOJE', \Helper::amountFormatDecimal($totalDepositedToday)) 
@@ -94,7 +94,7 @@ class StatsOverview extends BaseWidget
                 ->description('Depósitos únicos')
                 ->descriptionIcon('heroicon-o-user-group')
                 ->color('orange')
-                ->chart([10, 20, 15, 30, 25, 35, 45])
+                ->chart([30, 45, 55, 60, 65, 70, 75])
                 ->chartColor('rgba(0, 255, 0, 0.8)'), // Verde neon para 1 depósito
             
             Stat::make('PESSOAS QUE DEPOSITARAM 2 VEZES', $numberOfUsersWithTwoDeposits)
@@ -108,7 +108,7 @@ class StatsOverview extends BaseWidget
                 ->description('Depósitos triplos')
                 ->descriptionIcon('heroicon-o-user-group')
                 ->color('indigo')
-                ->chart([15, 25, 20, 30, 35, 40, 50])
+                ->chart([45, 50, 55, 60, 65, 70, 80])
                 ->chartColor('rgba(0, 255, 127, 0.8)'), // Verde matrix para 3 depósitos
 
             Stat::make('PESSOAS QUE DEPOSITARAM 4 VEZES', $numberOfUsersWithFourOrMoreDeposits)
