@@ -158,7 +158,7 @@ class SyncGames extends Page
             $coverPath = str_replace('https://imagensfivers.com/', '', $game['img_url']);
     
             Game::updateOrCreate(
-                ['game_code' => $game['game_code']],
+                ['provider_id' => $providerId, 'game_code' => $game['game_code']],
                 [
                     'provider_id' => $providerId,
                     'game_id'     => $game['game_code'],
