@@ -266,13 +266,13 @@ class TopUsersInfographic extends ChartWidget
         ];
     }
 
-    /**
-     * Custom view for professional styling
-     */
-    protected function getView(): string
-    {
-        return 'filament.widgets.top-users-infographic';
-    }
+    // /**
+    //  * Custom view for professional styling
+    //  */
+    // protected function getView(): string
+    // {
+    //     return 'filament.widgets.top-users-infographic';
+    // }
 
     /**
      * Check if user can view this widget
