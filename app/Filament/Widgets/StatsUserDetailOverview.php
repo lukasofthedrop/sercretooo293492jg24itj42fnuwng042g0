@@ -46,21 +46,21 @@ class StatsUserDetailOverview extends BaseWidget
                 ->description('Total de ganhos das apostas')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart([10, 20, 15, 30, 25, 40, 35])
+                ->chart([5, 15, 35, 60, 85, 95, 100])
                 ->chartColor('rgba(0, 255, 0, 1.0)'), // Verde neon para ganhos
 
             Stat::make('TOTAL DE PERCAS', Helper::amountFormatDecimal(Helper::formatNumber($totalPerdas)))
                 ->description('Total de perdas das apostas')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger')
-                ->chart([10, 20, 15, 30, 25, 40, 35])
+                ->chart([100, 90, 70, 50, 30, 15, 5])
                 ->chartColor('rgba(255, 50, 50, 1.0)'), // Vermelho vibrante para perdas
 
             Stat::make('GANHO COMO AFILIADO', Helper::amountFormatDecimal(Helper::formatNumber($totalAfiliados)))
                 ->description('Total de ganhos como afiliado') 
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart([10, 20, 15, 30, 25, 40, 35])
+                ->chart([2, 8, 25, 45, 70, 80, 90])
                 ->chartColor('rgba(0, 255, 127, 1.0)'), // Verde matrix para afiliado
 
             // Novo widget: Trouxe de Depositantes
@@ -68,7 +68,7 @@ class StatsUserDetailOverview extends BaseWidget
                 ->description('Quantidade de depositantes trazidos')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart([10, 20, 15, 30, 25, 40, 35])
+                ->chart([1, 3, 12, 28, 45, 65, 80])
                 ->chartColor('rgba(50, 205, 50, 0.9)'), // Verde lime para depositantes
 
             // Novo widget: Trouxe de Lucro
@@ -76,7 +76,7 @@ class StatsUserDetailOverview extends BaseWidget
                 ->description('Quantidade de lucro trazido')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('success')
-                ->chart([10, 20, 15, 30, 25, 40, 35])
+                ->chart([20, 40, 55, 75, 85, 95, 100])
                 ->chartColor('rgba(0, 180, 0, 0.9)'), // Verde escuro para lucro
 
             // Novo widget: Trouxe de Clientes
@@ -84,7 +84,7 @@ class StatsUserDetailOverview extends BaseWidget
                 ->description('Total de clientes trazidos')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart([10, 20, 15, 30, 25, 40, 35])
+                ->chart([0, 5, 18, 35, 55, 75, 90])
                 ->chartColor('rgba(0, 255, 0, 0.8)'), // Verde neon transparente para clientes
         ];
     }

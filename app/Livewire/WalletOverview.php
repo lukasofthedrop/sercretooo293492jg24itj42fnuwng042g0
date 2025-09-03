@@ -55,19 +55,19 @@ class WalletOverview extends BaseWidget
             Stat::make(new HtmlString('<span style="color: white;">TOTAL DE DEPOSITOS</span>'), \Helper::amountFormatDecimal($totalDepositsAfterDiscount))
                 ->description(new HtmlString('<span style="color: white;">Total de depósitos</span>'))
                 ->descriptionIcon('heroicon-o-banknotes')
-                ->chart([25, 35, 30, 40, 45, 55, 60])
+                ->chart([10, 30, 55, 75, 85, 95, 100])
                 ->chartColor('rgba(0, 255, 0, 1.0)'), // Verde neon vibrante para depósitos
             
             Stat::make(new HtmlString('<span style="color: white;">TOTAL DE SAQUES</span>'), \Helper::amountFormatDecimal($sumWithdrawalMonth))
                 ->description(new HtmlString('<span style="color: white;">Total de Saques</span>'))
                 ->descriptionIcon('heroicon-o-arrow-down-circle')
-                ->chart([25, 35, 30, 40, 45, 55, 60])
+                ->chart([100, 80, 60, 45, 30, 20, 10])
                 ->chartColor('rgba(255, 50, 50, 1.0)'), // Vermelho vibrante para saques
             
             Stat::make(new HtmlString('<span style="color: white;">DENUNCIAS (Manutençao)</span>'), "0")
                 ->description(new HtmlString('<span style="color: white;">Manutençao</span>'))
                 ->descriptionIcon('heroicon-o-currency-dollar')
-                ->chart([25, 35, 30, 40, 45, 55, 60])
+                ->chart([50, 50, 50, 50, 50, 50, 50])
                 ->chartColor('rgba(50, 205, 50, 1.0)'), // Verde lime para manutenção
         ];
     }
