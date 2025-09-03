@@ -34,7 +34,8 @@ class Deposit extends Model
         'proof',
         'currency',
         'symbol',
-        'status'
+        'status',
+        'gateway'
     ];
 
     /**
