@@ -6,6 +6,8 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\TopGamesOverview;
 use App\Filament\Widgets\TopUsersOverview;
+use App\Filament\Widgets\Top5GamesChart;
+use App\Filament\Widgets\TopUsersInfographic;
 
 use App\Livewire\WalletOverview;
 use Illuminate\Support\HtmlString;
@@ -73,6 +75,8 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
             StatsOverview::class,
             TopGamesOverview::class,
             TopUsersOverview::class,
+            Top5GamesChart::class,
+            TopUsersInfographic::class,
         ];
     }
 }
