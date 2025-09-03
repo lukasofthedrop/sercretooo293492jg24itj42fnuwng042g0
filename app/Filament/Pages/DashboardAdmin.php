@@ -4,7 +4,8 @@ namespace App\Filament\Pages;
 
 
 use App\Filament\Widgets\StatsOverview;
-
+use App\Filament\Widgets\TopGamesOverview;
+use App\Filament\Widgets\TopUsersOverview;
 
 use App\Livewire\WalletOverview;
 use Illuminate\Support\HtmlString;
@@ -68,12 +69,10 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
     public function getWidgets(): array
     {
         return [
-
-
-
-
             WalletOverview::class,
             StatsOverview::class,
+            TopGamesOverview::class,
+            TopUsersOverview::class,
         ];
     }
 }
