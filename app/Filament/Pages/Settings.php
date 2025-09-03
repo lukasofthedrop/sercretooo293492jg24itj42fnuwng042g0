@@ -180,17 +180,20 @@ class Settings extends Page implements HasForms
                         Toggle::make('disable_spin')
                             ->label('Disable Spin')
                         ,
-                        Toggle::make('suitpay_is_enable')
-                            ->label('SuitPay Ativo')
+                        Toggle::make('aureolink_is_enable')
+                            ->label('AureoLink Ativo')
                         ,
-                        Toggle::make('ezzepay_is_enable')
-                        ->label('EzzePay Ativo')
+                        Toggle::make('slot1_is_enable')
+                            ->label('Slot 1 (Vazio)')
+                            ->disabled()
                         ,
-                        Toggle::make('digito_is_enable')
-                        ->label('DigitoPay Ativo')
+                        Toggle::make('slot2_is_enable')
+                            ->label('Slot 2 (Vazio)')
+                            ->disabled()
                         ,
-                        Toggle::make('bspay_is_enable')
-                            ->label('BsPay Ativo')
+                        Toggle::make('slot3_is_enable')
+                            ->label('Slot 3 (Vazio)')
+                            ->disabled()
                         ,
                     ])->columns(4),
             ])

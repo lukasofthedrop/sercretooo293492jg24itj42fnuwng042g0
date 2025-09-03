@@ -65,236 +65,111 @@ public function form(Form $form): Form
             Section::make('REGISTRE SUAS CHAVES DE API GATEWAY')
             ->description('Configure suas chaves de API para os gateways de pagamento')
                 ->schema([
-                    Section::make('DIGITO PAY')
-                    ->description(new HtmlString('
-                                    <div style="display: flex; align-items: center;">
-                                        Precisa de uma conta na Digito Pay? Responda o formulário de contato e solicite sua conta.:
-                                        <a class="dark:text-white" 
-                                        style="
-                                                font-size: 14px;
-                                                font-weight: 600;
-                                                width: 127px;
-                                                display: flex;
-                                                background-color: #f800ff;
-                                                padding: 10px;
-                                                border-radius: 11px;
-                                                justify-content: center;
-                                                margin-left: 10px;
-                                        " 
-                                        href="https://app.digitopayoficial.com.br/auth/login" 
-                                        target="_blank">
-                                            Dashboard
-                                        </a>
-                                        <a class="dark:text-white" 
-                                        style="
-                                                font-size: 14px;
-                                                font-weight: 600;
-                                                width: 127px;
-                                                display: flex;
-                                                background-color: #f800ff;
-                                                padding: 10px;
-                                                border-radius: 11px;
-                                                justify-content: center;
-                                                margin-left: 10px;
-                                        " 
-                                        href="https://wa.me/554888142566" 
-                                        target="_blank">
-                                            Gerente
-                                        </a>
-                                    </div>
-                        '),)
-                        ->schema([
-                            TextInput::make('digito_uri')
-                                ->label('CLIENTE URL')
-                                ->placeholder('Digite a url da api')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('digito_client')
-                                ->label('CLIENTE ID')
-                                ->placeholder('Digite o client ID')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('digito_secret')
-                                ->label('CLIENTE SECRETO')
-                                ->placeholder('Digite o client secret')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                        ]),
-                    Section::make('BSPAY E PIXUP')
-                    ->description(new HtmlString('
-                                    <div style="display: flex; align-items: center;">
-                                        Precisa de uma conta na Digito Pay? Responda o formulário de contato e solicite sua conta.:
-                                        <a class="dark:text-white" 
-                                        style="
-                                                font-size: 14px;
-                                                font-weight: 600;
-                                                width: 127px;
-                                                display: flex;
-                                                background-color: #f800ff;
-                                                padding: 10px;
-                                                border-radius: 11px;
-                                                justify-content: center;
-                                                margin-left: 10px;
-                                        " 
-                                        href="https://dashboard.pixupbr.com/" 
-                                        target="_blank">
-                                            Dashboard
-                                        </a>
-                                        <a class="dark:text-white" 
-                                        style="
-                                                font-size: 14px;
-                                                font-weight: 600;
-                                                width: 127px;
-                                                display: flex;
-                                                background-color: #f800ff;
-                                                padding: 10px;
-                                                border-radius: 11px;
-                                                justify-content: center;
-                                                margin-left: 10px;
-                                        " 
-                                        href="https://wa.me/557189320292" 
-                                        target="_blank">
-                                            Gerente
-                                        </a>
-                                    </div>
-                        <b>Seu Webhook:  ' . url("/bspay/callback", [], true) . "</b>"))
-                        ->schema([
-                            TextInput::make('bspay_uri')
-                                ->label('CLIENTE URL')
-                                ->placeholder('Digite a url da api')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('bspay_cliente_id')
-                                ->label('CLIENTE ID')
-                                ->placeholder('Digite o client ID')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('bspay_cliente_secret')
-                                ->label('CLIENTE SECRETO')
-                                ->placeholder('Digite o client secret')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                        ]),
-                    Section::make('EZZEPAY')
-                                            ->description(new HtmlString('
-                                    <div style="display: flex; align-items: center;">
-                                        Precisa de uma conta na Digito Pay? Responda o formulário de contato e solicite sua conta.:
-                                        <a class="dark:text-white" 
-                                        style="
-                                                font-size: 14px;
-                                                font-weight: 600;
-                                                width: 127px;
-                                                display: flex;
-                                                background-color: #f800ff;
-                                                padding: 10px;
-                                                border-radius: 11px;
-                                                justify-content: center;
-                                                margin-left: 10px;
-                                        " 
-                                        href="https://app.ezzebank.com/login" 
-                                        target="_blank">
-                                            Dashboard
-                                        </a>
-                                        <a class="dark:text-white" 
-                                        style="
-                                                font-size: 14px;
-                                                font-weight: 600;
-                                                width: 127px;
-                                                display: flex;
-                                                background-color: #f800ff;
-                                                padding: 10px;
-                                                border-radius: 11px;
-                                                justify-content: center;
-                                                margin-left: 10px;
-                                        " 
-                                        href="https://wa.me/556192262660" 
-                                        target="_blank">
-                                            Gerente
-                                        </a>
-                                    </div>
-                        <b>Seu Webhook:  ' . url("/ezzepay/webhook", [], true) . "</b>"))
-                        ->schema([
-                            TextInput::make('ezze_uri')
-                                ->label('CLIENTE URL')
-                                ->placeholder('Digite a url da api')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('ezze_client')
-                                ->label('CLIENTE ID')
-                                ->placeholder('Digite o client ID')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('ezze_secret')
-                                ->label('CLIENTE SECRETO')
-                                ->placeholder('Digite o client secret')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('ezze_user')
-                                ->label('USUARIO DO WEBHOOK')
-                                ->placeholder('Digite o usuário de autenticação do webhook')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                            TextInput::make('ezze_senha')
-                                ->label('SENHA DO WEBHOOK')
-                                ->placeholder('Digite a senha de autenticação do webhook')
-                                ->maxLength(191)
-                                ->columnSpanFull(),
-                        ]),
-
-                    
-                    Section::make('SUITEPAY')
+                    Section::make('AUREOLINK')
                         ->description(new HtmlString('
                                     <div style="display: flex; align-items: center;">
-                                        Precisa de uma conta na Digito Pay? Responda o formulário de contato e solicite sua conta.:
+                                        Gateway de pagamento AureoLink - Único gateway ativo no sistema:
                                         <a class="dark:text-white" 
                                         style="
                                                 font-size: 14px;
                                                 font-weight: 600;
                                                 width: 127px;
                                                 display: flex;
-                                                background-color: #f800ff;
+                                                background-color: #00ff00;
                                                 padding: 10px;
                                                 border-radius: 11px;
                                                 justify-content: center;
                                                 margin-left: 10px;
                                         " 
-                                        href="https://www.suitpay.app/" 
+                                        href="#" 
                                         target="_blank">
                                             Dashboard
                                         </a>
-                                        <a class="dark:text-white" 
-                                        style="
-                                                font-size: 14px;
-                                                font-weight: 600;
-                                                width: 127px;
-                                                display: flex;
-                                                background-color: #f800ff;
-                                                padding: 10px;
-                                                border-radius: 11px;
-                                                justify-content: center;
-                                                margin-left: 10px;
-                                        " 
-                                        href="https://wa.me/556299055428" 
-                                        target="_blank">
-                                            Gerente
-                                        </a>
-                                    </div>
-                        <b>Para fazer saques libere o IP</b>'))
+                                    </div>'))
                         ->schema([
-                            TextInput::make('suitpay_uri')
+                            TextInput::make('aureolink_uri')
                                 ->label('CLIENTE URL')
-                                ->placeholder('Digite a url da api')
+                                ->placeholder('Digite a url da api AureoLink')
                                 ->maxLength(191)
                                 ->columnSpanFull(),
-                            TextInput::make('suitpay_cliente_id')
+                            TextInput::make('aureolink_client')
                                 ->label('CLIENTE ID')
-                                ->placeholder('Digite o client ID')
+                                ->placeholder('Digite o client ID AureoLink')
                                 ->maxLength(191)
                                 ->columnSpanFull(),
-                            TextInput::make('suitpay_cliente_secret')
+                            TextInput::make('aureolink_secret')
                                 ->label('CLIENTE SECRETO')
-                                ->placeholder('Digite o client secret')
+                                ->placeholder('Digite o client secret AureoLink')
                                 ->maxLength(191)
+                                ->columnSpanFull(),
+                        ]),
+                    
+                    Section::make('SLOT VAZIO 1')
+                        ->description('Slot disponível para futuro gateway de pagamento')
+                        ->schema([
+                            TextInput::make('slot1_uri')
+                                ->label('CLIENTE URL')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                            TextInput::make('slot1_client')
+                                ->label('CLIENTE ID')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                            TextInput::make('slot1_secret')
+                                ->label('CLIENTE SECRETO')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                        ]),
+                    
+                    Section::make('SLOT VAZIO 2')
+                        ->description('Slot disponível para futuro gateway de pagamento')
+                        ->schema([
+                            TextInput::make('slot2_uri')
+                                ->label('CLIENTE URL')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                            TextInput::make('slot2_client')
+                                ->label('CLIENTE ID')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                            TextInput::make('slot2_secret')
+                                ->label('CLIENTE SECRETO')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                        ]),
+                    
+                    Section::make('SLOT VAZIO 3')
+                        ->description('Slot disponível para futuro gateway de pagamento')
+                        ->schema([
+                            TextInput::make('slot3_uri')
+                                ->label('CLIENTE URL')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                            TextInput::make('slot3_client')
+                                ->label('CLIENTE ID')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
+                                ->columnSpanFull(),
+                            TextInput::make('slot3_secret')
+                                ->label('CLIENTE SECRETO')
+                                ->placeholder('Slot vazio - aguardando configuração')
+                                ->maxLength(191)
+                                ->disabled()
                                 ->columnSpanFull(),
                         ]),
                     // Adicione esta seção dentro do array passado para ->schema([ ... ])

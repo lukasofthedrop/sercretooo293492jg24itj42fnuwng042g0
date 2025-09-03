@@ -138,7 +138,7 @@ Route::prefix('categories')
     });
 
 include_once(__DIR__ . '/groups/api/games/index.php');
-include_once(__DIR__ . '/groups/api/gateways/suitpay.php');
+// include_once(__DIR__ . '/groups/api/gateways/suitpay.php'); // REMOVIDO - APENAS AUREOLINK ATIVO
 
 Route::prefix('pesquisar_games')
     ->group(function ()

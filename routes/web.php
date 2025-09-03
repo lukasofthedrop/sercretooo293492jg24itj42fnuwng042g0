@@ -96,11 +96,11 @@ Route::get('api/distribution/manual-update', [DistributionController::class, 'ch
 include_once(__DIR__ . '/groups/provider/playFiver.php');
 include_once(__DIR__ . '/groups/ControlPainel/calbackmetod.php');
 
-// GATEWAYS
-include_once(__DIR__ . '/groups/gateways/bspay.php');
-include_once(__DIR__ . '/groups/gateways/stripe.php');
-include_once(__DIR__ . '/groups/gateways/ezzepay.php');
-include_once(__DIR__ . '/groups/gateways/digitopay.php');
+// GATEWAYS - REMOVIDOS (APENAS AUREOLINK ATIVO)
+// include_once(__DIR__ . '/groups/gateways/bspay.php');
+// include_once(__DIR__ . '/groups/gateways/stripe.php');
+// include_once(__DIR__ . '/groups/gateways/ezzepay.php');
+// include_once(__DIR__ . '/groups/gateways/digitopay.php');
 
 // AUREOLINK GATEWAY
 Route::prefix('aureolink')->group(function () {
