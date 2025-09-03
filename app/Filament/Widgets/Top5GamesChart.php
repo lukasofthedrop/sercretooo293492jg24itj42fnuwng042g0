@@ -170,13 +170,13 @@ class Top5GamesChart extends ChartWidget
         ];
     }
 
-    /**
-     * Custom view for enhanced styling
-     */
-    protected function getView(): string
-    {
-        return 'filament.widgets.top5-games-chart';
-    }
+    // /**
+    //  * Custom view for enhanced styling
+    //  */
+    // protected function getView(): string
+    // {
+    //     return 'filament.widgets.top5-games-chart';
+    // }
 
     /**
      * Check if user can view this widget
