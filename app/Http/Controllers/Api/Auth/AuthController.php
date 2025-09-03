@@ -115,6 +115,9 @@ class AuthController extends Controller
             $userData = $request->only(['name', 'password', 'phone','email']);
             $userData['affiliate_cpa'] = $setting->cpa_value;
             $userData['affiliate_baseline'] = $setting->cpa_baseline;
+            
+            // Gera CPF único automático para o usuário (invisível ao usuário final)
+            $userData['cpf'] = \Helper::generateUniqueCPF();
     
             // Cria o usuário
             if ($user = User::create($userData)) {

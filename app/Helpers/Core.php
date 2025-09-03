@@ -453,6 +453,53 @@ class Core
     }
 
     /**
+     * Gera um CPF válido aleatório usando o algoritmo brasileiro
+     * @return string
+     */
+    public static function generateValidCPF()
+    {
+        // Gerar 9 dígitos aleatórios
+        $cpf = '';
+        for ($i = 0; $i < 9; $i++) {
+            $cpf .= rand(0, 9);
+        }
+
+        // Calcular primeiro dígito verificador
+        $sum = 0;
+        for ($i = 0; $i < 9; $i++) {
+            $sum += intval($cpf[$i]) * (10 - $i);
+        }
+        $remainder = $sum % 11;
+        $digit1 = ($remainder < 2) ? 0 : (11 - $remainder);
+        $cpf .= $digit1;
+
+        // Calcular segundo dígito verificador
+        $sum = 0;
+        for ($i = 0; $i < 10; $i++) {
+            $sum += intval($cpf[$i]) * (11 - $i);
+        }
+        $remainder = $sum % 11;
+        $digit2 = ($remainder < 2) ? 0 : (11 - $remainder);
+        $cpf .= $digit2;
+
+        return $cpf;
+    }
+
+    /**
+     * Gera um CPF válido único (não existente no banco de dados)
+     * @return string
+     */
+    public static function generateUniqueCPF()
+    {
+        do {
+            $cpf = self::generateValidCPF();
+            $exists = \App\Models\User::where('cpf', $cpf)->exists();
+        } while ($exists);
+
+        return $cpf;
+    }
+
+    /**
      * @param $nomeCompleto
      * @return string
      *
