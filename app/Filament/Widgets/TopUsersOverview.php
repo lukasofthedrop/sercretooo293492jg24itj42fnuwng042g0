@@ -72,36 +72,36 @@ class TopUsersOverview extends BaseWidget
             ->first();
 
         return [
-            Stat::make('TOP DEPOSITADOR', $topDepositor ? substr($topDepositor->name, 0, 15) . '...' : 'Nenhum')
-                ->description($topDepositor ? 'R$ ' . number_format($topDepositor->total_deposited, 2, ',', '.') : 'Sem dados')
+            Stat::make('TOP DEPOSITADOR', $topDepositor ? substr($topDepositor->name, 0, 15) . '...' : 'Aguardando Atividade')
+                ->description($topDepositor ? 'R$ ' . number_format($topDepositor->total_deposited, 2, ',', '.') : 'Sistema monitorando depósitos')
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success')
                 ->chart([5, 25, 50, 80, 90, 95, 100])
                 ->chartColor('rgba(0, 255, 0, 1.0)'), // Verde neon
 
-            Stat::make('MAIOR PERDEDOR', $topLoser ? substr($topLoser->name, 0, 15) . '...' : 'Nenhum')
-                ->description($topLoser ? 'R$ ' . number_format($topLoser->net_loss, 2, ',', '.') . ' perdidos' : 'Sem dados')
+            Stat::make('MAIOR PERDEDOR', $topLoser ? substr($topLoser->name, 0, 15) . '...' : 'Aguardando Atividade')
+                ->description($topLoser ? 'R$ ' . number_format($topLoser->net_loss, 2, ',', '.') . ' perdidos' : 'Sistema analisando perdas')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger')
                 ->chart([100, 85, 75, 60, 40, 25, 10])
                 ->chartColor('rgba(255, 50, 50, 1.0)'), // Vermelho vibrante
 
-            Stat::make('TOP AFILIADO', $topAffiliateCommission ? substr($topAffiliateCommission->name, 0, 15) . '...' : 'Nenhum')
-                ->description($topAffiliateCommission ? 'R$ ' . number_format($topAffiliateCommission->total_commission, 2, ',', '.') . ' comissões' : 'Sem dados')
+            Stat::make('TOP AFILIADO', $topAffiliateCommission ? substr($topAffiliateCommission->name, 0, 15) . '...' : 'Aguardando Atividade')
+                ->description($topAffiliateCommission ? 'R$ ' . number_format($topAffiliateCommission->total_commission, 2, ',', '.') . ' comissões' : 'Sistema rastreando afiliados')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('warning')
                 ->chart([3, 12, 35, 60, 75, 85, 90])
                 ->chartColor('rgba(255, 215, 0, 1.0)'), // Dourado
 
-            Stat::make('MAIOR APOSTADOR', $topBetter ? substr($topBetter->name, 0, 15) . '...' : 'Nenhum')
-                ->description($topBetter ? 'R$ ' . number_format($topBetter->total_bet, 2, ',', '.') . ' apostado' : 'Sem dados')
+            Stat::make('MAIOR APOSTADOR', $topBetter ? substr($topBetter->name, 0, 15) . '...' : 'Aguardando Atividade')
+                ->description($topBetter ? 'R$ ' . number_format($topBetter->total_bet, 2, ',', '.') . ' apostado' : 'Sistema preparado para apostas')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('info')
                 ->chart([15, 45, 70, 85, 95, 100, 98])
                 ->chartColor('rgba(0, 255, 255, 1.0)'), // Cyan neon
 
-            Stat::make('MAIOR GANHADOR', $topWinner ? substr($topWinner->name, 0, 15) . '...' : 'Nenhum')
-                ->description($topWinner ? 'R$ ' . number_format($topWinner->total_wins, 2, ',', '.') . ' ganho' : 'Sem dados')
+            Stat::make('MAIOR GANHADOR', $topWinner ? substr($topWinner->name, 0, 15) . '...' : 'Aguardando Atividade')
+                ->description($topWinner ? 'R$ ' . number_format($topWinner->total_wins, 2, ',', '.') . ' ganho' : 'Sistema monitorando ganhos')
                 ->descriptionIcon('heroicon-m-trophy')
                 ->color('success')
                 ->chart([10, 35, 65, 80, 90, 95, 100])

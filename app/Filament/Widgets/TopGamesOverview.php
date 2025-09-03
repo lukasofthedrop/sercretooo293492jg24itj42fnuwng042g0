@@ -66,28 +66,28 @@ class TopGamesOverview extends BaseWidget
             ->count();
 
         return [
-            Stat::make('JOGO MAIS JOGADO HOJE', $topGameToday ? substr($topGameToday->game, 0, 20) . '...' : 'Nenhum')
-                ->description($topGameToday ? $topGameToday->plays . ' apostas hoje' : 'Sem dados hoje')
+            Stat::make('JOGO MAIS JOGADO HOJE', $topGameToday ? substr($topGameToday->game, 0, 20) . '...' : 'Aguardando Dados')
+                ->description($topGameToday ? $topGameToday->plays . ' apostas hoje' : 'Sistema aguardando primeira aposta')
                 ->descriptionIcon('heroicon-m-play-circle')
                 ->color('success')
                 ->chart([10, 30, 60, 85, 95, 100, 90])
                 ->chartColor('rgba(0, 255, 0, 1.0)'), // Verde neon
 
-            Stat::make('JOGO MAIS JOGADO SEMANA', $topGameWeek ? substr($topGameWeek->game, 0, 20) . '...' : 'Nenhum')
-                ->description($topGameWeek ? $topGameWeek->plays . ' apostas esta semana' : 'Sem dados')
+            Stat::make('JOGO MAIS JOGADO SEMANA', $topGameWeek ? substr($topGameWeek->game, 0, 20) . '...' : 'Aguardando Dados')
+                ->description($topGameWeek ? $topGameWeek->plays . ' apostas esta semana' : 'Sistema preparado para análise')
                 ->descriptionIcon('heroicon-m-calendar-days')
                 ->color('success')
                 ->chart([5, 20, 45, 70, 80, 90, 95])
                 ->chartColor('rgba(0, 255, 127, 1.0)'), // Verde matrix
 
-            Stat::make('JOGO MAIS JOGADO MÊS', $topGameMonth ? substr($topGameMonth->game, 0, 20) . '...' : 'Nenhum')
-                ->description($topGameMonth ? $topGameMonth->plays . ' apostas este mês' : 'Sem dados')
+            Stat::make('JOGO MAIS JOGADO MÊS', $topGameMonth ? substr($topGameMonth->game, 0, 20) . '...' : 'Aguardando Dados')
+                ->description($topGameMonth ? $topGameMonth->plays . ' apostas este mês' : 'Sistema monitorando tendências')
                 ->descriptionIcon('heroicon-m-calendar')
                 ->color('success')
                 ->chart([8, 25, 50, 75, 85, 92, 100])
                 ->chartColor('rgba(50, 205, 50, 1.0)'), // Verde lime
 
-            Stat::make('TOTAL APOSTAS HOJE', $totalBetsToday)
+            Stat::make('TOTAL APOSTAS HOJE', $totalBetsToday ?: '0')
                 ->description('Apostas realizadas hoje')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('blue')
@@ -95,8 +95,8 @@ class TopGamesOverview extends BaseWidget
                 ->chartColor('rgba(0, 180, 255, 1.0)'), // Azul neon
 
             // TOP GAME OVERALL com detalhes
-            Stat::make('JOGO MAIS POPULAR', $topGames->first() ? substr($topGames->first()->game, 0, 18) . '...' : 'Nenhum')
-                ->description($topGames->first() ? number_format($topGames->first()->plays) . ' apostas totais' : 'Sem dados')
+            Stat::make('JOGO MAIS POPULAR', $topGames->first() ? substr($topGames->first()->game, 0, 18) . '...' : 'Sistema Pronto')
+                ->description($topGames->first() ? number_format($topGames->first()->plays) . ' apostas totais' : 'Dashboard inteligente ativado')
                 ->descriptionIcon('heroicon-m-star')
                 ->color('warning')
                 ->chart([15, 40, 70, 90, 95, 98, 100])
