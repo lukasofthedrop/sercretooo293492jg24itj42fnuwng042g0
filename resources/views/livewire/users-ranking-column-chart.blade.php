@@ -434,6 +434,13 @@ function initUsersChart() {
         return;
     @endif
     
+    // Verificar se Chart.js está disponível
+    if (typeof Chart === 'undefined') {
+        console.log('Chart.js não disponível, aguardando...');
+        setTimeout(initUsersChart, 100);
+        return;
+    }
+    
     const ctx = document.getElementById('usersRankingChart');
     if (ctx && !usersChartInstance) {
         usersChartInstance = new Chart(ctx, {
@@ -520,66 +527,83 @@ window.showUsersRankingModal = function() {
     setTimeout(() => {
         const modalCtx = document.getElementById('modalColumnChart');
         if (modalCtx && !modalUsersChartInstance) {
-            modalUsersChartInstance = new Chart(modalCtx, {
-                type: 'bar',
-                data: {
-                    labels: {!! json_encode($chartData['fullNames']) !!},
-                    datasets: [{
-                        label: 'Total Depositado (R$)',
-                        data: {!! json_encode($chartData['amounts']) !!},
-                        backgroundColor: {!! json_encode($chartData['colors']) !!},
-                        borderColor: '#000000',
-                        borderWidth: 2,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#ffffff',
-                                padding: 20
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#000000',
-                            titleColor: '#ffffff',
-                            bodyColor: '#00ff41',
-                            borderColor: '#00ff41',
-                            borderWidth: 2
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#9ca3af',
-                                callback: function(value) {
-                                    return 'R$ ' + value.toLocaleString('pt-BR');
-                                }
-                            },
-                            grid: {
-                                color: '#374151'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#9ca3af',
-                                maxRotation: 45
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
+            // Verificar se Chart.js está disponível
+            if (typeof Chart === 'undefined') {
+                console.log('Chart.js não disponível para modal, carregando via CDN...');
+                // Carregar Chart.js dinamicamente se não estiver disponível
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                script.onload = function() {
+                    console.log('Chart.js carregado com sucesso');
+                    createModalUsersChart(modalCtx);
+                };
+                document.head.appendChild(script);
+                return;
+            }
+            createModalUsersChart(modalCtx);
         }
     }, 100);
+}
+
+function createModalUsersChart(modalCtx) {
+    modalUsersChartInstance = new Chart(modalCtx, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($chartData['fullNames']) !!},
+            datasets: [{
+                label: 'Total Depositado (R$)',
+                data: {!! json_encode($chartData['amounts']) !!},
+                backgroundColor: {!! json_encode($chartData['colors']) !!},
+                borderColor: '#000000',
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#ffffff',
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#000000',
+                    titleColor: '#ffffff',
+                    bodyColor: '#00ff41',
+                    borderColor: '#00ff41',
+                    borderWidth: 2
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#9ca3af',
+                        callback: function(value) {
+                            return 'R$ ' + value.toLocaleString('pt-BR');
+                        }
+                    },
+                    grid: {
+                        color: '#374151'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#9ca3af',
+                        maxRotation: 45
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
 }
 
 // Helper function for modal close handlers (shared)

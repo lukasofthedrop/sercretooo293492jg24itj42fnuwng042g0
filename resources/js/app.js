@@ -3,6 +3,35 @@ import './bootstrap.js';
 // Importa o CSS
 import '../css/app.css';
 
+// Importa Chart.js e disponibiliza globalmente
+import {
+    Chart,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement,
+    DoughnutController,
+    BarController
+} from 'chart.js';
+
+Chart.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement,
+    DoughnutController,
+    BarController
+);
+
+// Disponibilizar Chart.js globalmente
+window.Chart = Chart;
+
 console.log('==== INICIANDO SISTEMA ORIGINAL SEM VUE ====');
 
 // Sistema original sem Vue.js - carrega jogos via API

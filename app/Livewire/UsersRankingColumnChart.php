@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class UsersRankingColumnChart extends Component
 {
@@ -16,20 +17,22 @@ class UsersRankingColumnChart extends Component
     
     public function loadChartData()
     {
-        // Consulta real para ranking de usuários por depósitos
-        $topUsers = DB::table('deposits')
-            ->join('users', 'users.id', '=', 'deposits.user_id')
-            ->select(
-                'users.name', 
-                'users.email',
-                DB::raw('SUM(deposits.amount) as total_deposited'),
-                DB::raw('COUNT(deposits.id) as total_deposits')
-            )
-            ->where('deposits.status', 1)
-            ->groupBy('users.id', 'users.name', 'users.email')
-            ->orderByDesc('total_deposited')
-            ->limit(10)
-            ->get();
+        // Cache do ranking de usuários (30 minutos)
+        $topUsers = Cache::remember('users_ranking_chart_data', 1800, function () {
+            return DB::table('deposits')
+                ->join('users', 'users.id', '=', 'deposits.user_id')
+                ->select(
+                    'users.name', 
+                    'users.email',
+                    DB::raw('SUM(deposits.amount) as total_deposited'),
+                    DB::raw('COUNT(deposits.id) as total_deposits')
+                )
+                ->where('deposits.status', 1)
+                ->groupBy('users.id', 'users.name', 'users.email')
+                ->orderByDesc('total_deposited')
+                ->limit(10)
+                ->get();
+        });
 
         if ($topUsers->isNotEmpty()) {
             $names = [];

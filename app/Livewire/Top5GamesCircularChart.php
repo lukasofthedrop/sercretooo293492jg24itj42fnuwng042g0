@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class Top5GamesCircularChart extends Component
 {
@@ -16,15 +17,17 @@ class Top5GamesCircularChart extends Component
     
     public function loadChartData()
     {
-        // Consulta real do banco para top 5 jogos mais jogados
-        $topGames = DB::table('orders')
-            ->select('game', DB::raw('COUNT(*) as plays'), DB::raw('SUM(amount) as total_amount'))
-            ->where('type', 'bet')
-            ->whereNotNull('game')
-            ->groupBy('game')
-            ->orderByDesc('plays')
-            ->limit(5)
-            ->get();
+        // Cache do top 5 jogos (15 minutos)
+        $topGames = Cache::remember('top5_games_chart_data', 900, function () {
+            return DB::table('orders')
+                ->select('game', DB::raw('COUNT(*) as plays'), DB::raw('SUM(amount) as total_amount'))
+                ->where('type', 'bet')
+                ->whereNotNull('game')
+                ->groupBy('game')
+                ->orderByDesc('plays')
+                ->limit(5)
+                ->get();
+        });
 
         if ($topGames->isNotEmpty()) {
             $this->chartData = [

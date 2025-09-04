@@ -79,179 +79,96 @@
     @endif
 </div>
 
-<!-- Modal MATRIX PROFISSIONAL para Top 5 Games -->
-<div id="top5Modal" class="fixed inset-0 bg-black bg-opacity-95 hidden z-50 matrix-games-backdrop">
+<!-- Modal LUCRATIVA BET - PRETO E VERDE CORRIDA -->
+<div id="top5Modal" class="fixed inset-0 bg-black bg-opacity-95 hidden z-50">
     <style>
-        .matrix-games-backdrop::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(0, 200, 255, 0.08) 0%, transparent 50%),
-                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 20, 0, 0.95) 100%);
-            animation: matrix-gaming-pulse 4s ease-in-out infinite alternate;
-        }
-        
-        .matrix-games-container {
-            background: linear-gradient(135deg, #000000 0%, #001a00 30%, #000a00 70%, #000000 100%);
-            border: 2px solid #00ff41;
-            box-shadow: 
-                0 0 30px rgba(0, 255, 65, 0.4),
-                inset 0 0 30px rgba(0, 255, 65, 0.1),
-                0 0 60px rgba(0, 255, 65, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .matrix-games-container::before {
-            content: '🎮 🔥 ⚡ 🏆 📊 🎮 🔥 ⚡ 🏆 📊';
-            position: absolute;
-            top: -30px;
-            left: 0;
-            right: 0;
-            color: rgba(0, 255, 65, 0.15);
-            font-size: 16px;
-            animation: matrix-gaming-icons 20s linear infinite;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-        
-        .matrix-games-header {
-            background: linear-gradient(90deg, rgba(0, 255, 65, 0.15) 0%, rgba(0, 200, 255, 0.1) 100%);
-            border-bottom: 2px solid #00ff41;
+        .lucrativa-modal-container {
+            background: #000000;
+            border: 2px solid #22c55e;
+            box-shadow: 0 4px 25px rgba(34, 197, 94, 0.3);
             position: relative;
         }
         
-        .matrix-games-title {
-            background: linear-gradient(45deg, #00ff41, #00ccff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
+        .lucrativa-modal-header {
+            background: #000000;
+            border-bottom: 2px solid #22c55e;
+            position: relative;
         }
         
-        .matrix-games-close {
-            background: linear-gradient(135deg, rgba(255, 0, 100, 0.2), rgba(0, 255, 65, 0.1));
-            border: 2px solid #ff0066;
-            color: #ff0066;
-            text-shadow: 0 0 10px rgba(255, 0, 100, 0.8);
+        .lucrativa-modal-title {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .lucrativa-modal-close {
+            background: #000000;
+            border: 2px solid #22c55e;
+            color: #22c55e;
             transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 4px;
         }
         
-        .matrix-games-close:hover {
-            background: linear-gradient(135deg, rgba(255, 0, 100, 0.3), rgba(0, 255, 65, 0.2));
-            box-shadow: 0 0 20px rgba(255, 0, 100, 0.6);
-            transform: scale(1.1) rotate(5deg);
+        .lucrativa-modal-close:hover {
+            background: #22c55e;
+            color: #000000;
         }
         
-        .matrix-chart-section {
-            background: linear-gradient(145deg, rgba(0, 30, 0, 0.8) 0%, rgba(0, 10, 20, 0.9) 100%);
-            border: 2px solid rgba(0, 255, 65, 0.3);
-            box-shadow: 
-                inset 0 0 20px rgba(0, 255, 65, 0.1),
-                0 0 15px rgba(0, 255, 65, 0.2);
+        .lucrativa-chart-section {
+            background: #000000;
+            border: 1px solid #22c55e;
             position: relative;
-            overflow: hidden;
+            padding: 20px;
+            border-radius: 8px;
         }
         
-        .matrix-chart-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent 0%, #00ff41 50%, transparent 100%);
-            animation: matrix-gaming-scan 3s linear infinite;
-        }
-        
-        .matrix-table-section {
-            background: linear-gradient(145deg, rgba(0, 20, 30, 0.8) 0%, rgba(0, 0, 20, 0.9) 100%);
-            border: 2px solid rgba(0, 200, 255, 0.3);
-            box-shadow: 
-                inset 0 0 20px rgba(0, 200, 255, 0.1),
-                0 0 15px rgba(0, 200, 255, 0.2);
+        .lucrativa-table-section {
+            background: #000000;
+            border: 1px solid #22c55e;
             position: relative;
+            padding: 20px;
+            border-radius: 8px;
         }
         
-        .matrix-section-title {
-            background: linear-gradient(45deg, #00ff41, #00ccff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-family: 'Courier New', monospace;
-            border-bottom: 1px solid rgba(0, 255, 65, 0.4);
-            text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        .lucrativa-section-title {
+            color: #22c55e;
+            font-weight: bold;
+            border-bottom: 1px solid #22c55e;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
         }
         
-        .matrix-game-row {
-            background: linear-gradient(90deg, 
-                rgba(0, 255, 65, 0.05) 0%, 
-                transparent 30%, 
-                rgba(0, 200, 255, 0.05) 70%,
-                transparent 100%
-            );
-            border: 1px solid rgba(0, 255, 65, 0.2);
-            transition: all 0.4s ease;
+        .lucrativa-game-row {
+            background: #000000;
+            border: 1px solid #22c55e;
+            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
         
-        .matrix-game-row::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(0, 255, 65, 0.1) 20%,
-                rgba(0, 200, 255, 0.1) 80%,
-                transparent 100%
-            );
-            transition: left 0.6s ease;
+        .lucrativa-game-row:hover {
+            background: rgba(34, 197, 94, 0.05);
+            border-color: #22c55e;
+            transform: translateY(-2px);
         }
         
-        .matrix-game-row:hover {
-            background: linear-gradient(90deg, 
-                rgba(0, 255, 65, 0.15) 0%, 
-                rgba(0, 200, 255, 0.1) 50%,
-                rgba(0, 255, 65, 0.15) 100%
-            );
-            border-color: #00ff41;
-            box-shadow: 
-                0 0 20px rgba(0, 255, 65, 0.3),
-                inset 0 0 10px rgba(0, 255, 65, 0.1);
-            transform: translateY(-3px) scale(1.02);
+        .lucrativa-game-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
         
-        .matrix-game-row:hover::before {
-            left: 100%;
-        }
-        
-        .matrix-game-indicator {
-            box-shadow: 0 0 15px currentColor;
-            animation: matrix-pulse-indicator 2s ease-in-out infinite;
-        }
-        
-        .matrix-game-name {
+        .lucrativa-game-name {
             color: #ffffff;
-            font-family: 'Courier New', monospace;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
         }
         
-        .matrix-game-stats {
-            font-family: 'Courier New', monospace;
+        .lucrativa-game-stats {
+            color: #22c55e;
             font-weight: bold;
-            text-shadow: 0 0 10px currentColor;
         }
         
         @keyframes matrix-gaming-pulse {
@@ -456,6 +373,13 @@ function initTop5Charts() {
         return;
     @endif
     
+    // Verificar se Chart.js está disponível
+    if (typeof Chart === 'undefined') {
+        console.log('Chart.js não disponível, aguardando...');
+        setTimeout(initTop5Charts, 100);
+        return;
+    }
+    
     const ctx = document.getElementById('top5GamesChart');
     if (ctx && !chartInstance) {
         chartInstance = new Chart(ctx, {
@@ -512,42 +436,59 @@ window.showTop5Modal = function() {
     setTimeout(() => {
         const modalCtx = document.getElementById('modalCircularChart');
         if (modalCtx && !modalChartInstance) {
-            modalChartInstance = new Chart(modalCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: {!! json_encode($chartData['labels']) !!},
-                    datasets: [{
-                        data: {!! json_encode($chartData['data']) !!},
-                        backgroundColor: {!! json_encode($chartData['colors']) !!},
-                        borderColor: '#000000',
-                        borderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#ffffff',
-                                padding: 20,
-                                usePointStyle: true
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#000000',
-                            titleColor: '#ffffff',
-                            bodyColor: '#00ff41',
-                            borderColor: '#00ff41',
-                            borderWidth: 2
-                        }
-                    },
-                    cutout: '40%'
-                }
-            });
+            // Verificar se Chart.js está disponível
+            if (typeof Chart === 'undefined') {
+                console.log('Chart.js não disponível para modal, carregando via CDN...');
+                // Carregar Chart.js dinamicamente se não estiver disponível
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                script.onload = function() {
+                    console.log('Chart.js carregado com sucesso');
+                    createModalChart(modalCtx);
+                };
+                document.head.appendChild(script);
+                return;
+            }
+            createModalChart(modalCtx);
         }
     }, 100);
+}
+
+function createModalChart(modalCtx) {
+    modalChartInstance = new Chart(modalCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {!! json_encode($chartData['labels']) !!},
+            datasets: [{
+                data: {!! json_encode($chartData['data']) !!},
+                backgroundColor: {!! json_encode($chartData['colors']) !!},
+                borderColor: '#000000',
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#ffffff',
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#000000',
+                    titleColor: '#ffffff',
+                    bodyColor: '#00ff41',
+                    borderColor: '#00ff41',
+                    borderWidth: 2
+                }
+            },
+            cutout: '40%'
+        }
+    });
 }
 
 // Helper function for modal close handlers
