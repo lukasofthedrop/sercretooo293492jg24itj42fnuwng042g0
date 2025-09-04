@@ -28,9 +28,48 @@
             @endforeach
         </div>
     @else
-        <div class="text-center py-12">
-            <div class="text-gray-400 mb-2">📊</div>
-            <p class="text-gray-400">Nenhuma aposta registrada ainda</p>
+        <div class="text-center py-12 space-y-6">
+            <!-- Ícone animado -->
+            <div class="relative">
+                <div class="text-6xl mb-4 opacity-60 animate-pulse">🎮</div>
+                <div class="absolute -top-2 -right-2">
+                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce"></div>
+                </div>
+            </div>
+            
+            <!-- Título e mensagem -->
+            <div class="space-y-2">
+                <h4 class="text-xl font-bold text-white">Dashboard Aguardando Atividade</h4>
+                <p class="text-gray-300 text-sm">Sistema inteligente pronto para análise</p>
+            </div>
+            
+            <!-- Indicadores de status -->
+            <div class="grid grid-cols-1 gap-3 max-w-xs mx-auto">
+                <div class="bg-gray-800 rounded-lg p-3 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-400">Monitoramento</span>
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                        </div>
+                    </div>
+                    <p class="text-green-400 font-medium text-sm mt-1">🟢 Sistema Ativo</p>
+                </div>
+                
+                <div class="bg-gray-800 rounded-lg p-3 border border-gray-700">
+                    <div class="flex items-center justify-center space-x-2">
+                        <span class="text-xs text-gray-300">Primeira aposta gerará análise automática</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Call to action sutil -->
+            <div class="pt-4">
+                <div class="text-xs text-green-400 opacity-75 animate-pulse">
+                    ✨ Analytics prontos para ativação
+                </div>
+            </div>
         </div>
     @endif
 </div>

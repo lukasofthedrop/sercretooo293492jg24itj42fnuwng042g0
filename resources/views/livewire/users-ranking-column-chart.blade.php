@@ -40,9 +40,64 @@
             @endforeach
         </div>
     @else
-        <div class="text-center py-12">
-            <div class="text-gray-400 mb-2 text-4xl">👑</div>
-            <p class="text-gray-400">Nenhum depósito registrado ainda</p>
+        <div class="text-center py-12 space-y-6">
+            <!-- Ícone animado com efeitos -->
+            <div class="relative">
+                <div class="text-6xl mb-4 opacity-70 animate-pulse">👑</div>
+                <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
+                    <div class="flex space-x-1">
+                        <div class="w-2 h-6 bg-green-400 rounded-sm animate-pulse" style="animation-delay: 0s;"></div>
+                        <div class="w-2 h-4 bg-blue-400 rounded-sm animate-pulse" style="animation-delay: 0.2s;"></div>
+                        <div class="w-2 h-8 bg-orange-400 rounded-sm animate-pulse" style="animation-delay: 0.4s;"></div>
+                        <div class="w-2 h-3 bg-yellow-400 rounded-sm animate-pulse" style="animation-delay: 0.6s;"></div>
+                        <div class="w-2 h-5 bg-pink-400 rounded-sm animate-pulse" style="animation-delay: 0.8s;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Título e descrição -->
+            <div class="space-y-3">
+                <h4 class="text-xl font-bold text-white">Ranking Profissional Preparado</h4>
+                <p class="text-gray-300 text-sm max-w-sm mx-auto">Sistema de ranqueamento inteligente aguardando primeiros depósitos para análise competitiva</p>
+            </div>
+            
+            <!-- Medalhas placeholder -->
+            <div class="flex justify-center space-x-4 py-4">
+                <div class="text-center space-y-1">
+                    <div class="text-2xl opacity-50 grayscale">🥇</div>
+                    <div class="text-xs text-gray-500">1º Lugar</div>
+                </div>
+                <div class="text-center space-y-1">
+                    <div class="text-2xl opacity-50 grayscale">🥈</div>
+                    <div class="text-xs text-gray-500">2º Lugar</div>
+                </div>
+                <div class="text-center space-y-1">
+                    <div class="text-2xl opacity-50 grayscale">🥉</div>
+                    <div class="text-xs text-gray-500">3º Lugar</div>
+                </div>
+            </div>
+            
+            <!-- Status info -->
+            <div class="bg-gray-800 rounded-lg p-4 mx-auto max-w-sm border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-gray-400">Status do Ranking</span>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-green-400 text-xs">Standby</span>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-white font-medium text-sm">🚀 Primeiro depósito ativará competição</p>
+                    <p class="text-xs text-gray-400 mt-1">Ranking automático por valor depositado</p>
+                </div>
+            </div>
+            
+            <!-- Call to action -->
+            <div class="pt-2">
+                <div class="text-xs text-green-400 opacity-75 animate-pulse">
+                    💎 Sistema VIP aguardando ativação
+                </div>
+            </div>
         </div>
     @endif
 </div>
