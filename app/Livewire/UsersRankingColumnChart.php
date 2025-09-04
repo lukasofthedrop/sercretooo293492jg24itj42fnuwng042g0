@@ -53,8 +53,16 @@ class UsersRankingColumnChart extends Component
                 'deposits' => $deposits,
                 'amounts' => $amounts,
                 'colors' => [
-                    '#00ff7f', '#32cd32', '#00ff00', '#90ee90', '#98fb98',
-                    '#00fa9a', '#00e676', '#4caf50', '#2e7d32', '#1b5e20'
+                    '#00ff41', // Verde Matrix principal 
+                    '#ff6b35', // Laranja vibrante
+                    '#4dabf7', // Azul claro
+                    '#ffd43b', // Amarelo dourado
+                    '#ff8cc8', // Rosa suave
+                    '#9c88ff', // Roxo claro
+                    '#26d0ce', // Ciano
+                    '#f59e0b', // Âmbar
+                    '#ef4444', // Vermelho
+                    '#10b981'  // Verde esmeralda
                 ]
             ];
         } else {

@@ -71,28 +71,28 @@ class TopGamesOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-play-circle')
                 ->color('success')
                 ->chart([10, 30, 60, 85, 95, 100, 90])
-                ->chartColor('rgba(0, 255, 0, 1.0)'), // Verde neon
+                ->chartColor('rgba(0, 255, 65, 1.0)'), // Verde Matrix
 
             Stat::make('JOGO MAIS JOGADO SEMANA', $topGameWeek ? substr($topGameWeek->game, 0, 20) . '...' : 'Aguardando Dados')
                 ->description($topGameWeek ? $topGameWeek->plays . ' apostas esta semana' : 'Sistema preparado para análise')
                 ->descriptionIcon('heroicon-m-calendar-days')
                 ->color('success')
                 ->chart([5, 20, 45, 70, 80, 90, 95])
-                ->chartColor('rgba(0, 255, 127, 1.0)'), // Verde matrix
+                ->chartColor('rgba(77, 171, 247, 1.0)'), // Azul claro
 
             Stat::make('JOGO MAIS JOGADO MÊS', $topGameMonth ? substr($topGameMonth->game, 0, 20) . '...' : 'Aguardando Dados')
                 ->description($topGameMonth ? $topGameMonth->plays . ' apostas este mês' : 'Sistema monitorando tendências')
                 ->descriptionIcon('heroicon-m-calendar')
                 ->color('success')
                 ->chart([8, 25, 50, 75, 85, 92, 100])
-                ->chartColor('rgba(50, 205, 50, 1.0)'), // Verde lime
+                ->chartColor('rgba(38, 208, 206, 1.0)'), // Ciano
 
             Stat::make('TOTAL APOSTAS HOJE', $totalBetsToday ?: '0')
                 ->description('Apostas realizadas hoje')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('blue')
                 ->chart([20, 35, 50, 65, 80, 85, 90])
-                ->chartColor('rgba(0, 180, 255, 1.0)'), // Azul neon
+                ->chartColor('rgba(255, 107, 53, 1.0)'), // Laranja vibrante
 
             // TOP GAME OVERALL com detalhes
             Stat::make('JOGO MAIS POPULAR', $topGames->first() ? substr($topGames->first()->game, 0, 18) . '...' : 'Sistema Pronto')
@@ -100,7 +100,7 @@ class TopGamesOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-star')
                 ->color('warning')
                 ->chart([15, 40, 70, 90, 95, 98, 100])
-                ->chartColor('rgba(255, 215, 0, 1.0)'), // Dourado
+                ->chartColor('rgba(255, 212, 59, 1.0)'), // Amarelo dourado
         ];
     }
 

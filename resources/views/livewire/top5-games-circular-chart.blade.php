@@ -1,8 +1,8 @@
-<div class="bg-gray-900 rounded-lg shadow-lg p-6">
+<div class="bg-black rounded-lg shadow-lg p-6 border border-gray-800">
     <div class="flex items-center justify-between mb-4">
         <h3 class="text-xl font-bold text-white">🎮 TOP 5 JOGOS MAIS JOGADOS</h3>
         <button 
-            class="text-green-400 hover:text-green-300 text-sm font-medium"
+            class="text-green-400 hover:text-green-300 text-sm font-medium transition-colors"
             onclick="window.showTop5Modal()"
         >
             Ver Detalhes
@@ -21,7 +21,7 @@
                         <div class="w-3 h-3 rounded-full mr-2" style="background-color: {{ $chartData['colors'][$index] ?? '#00ff7f' }}"></div>
                         <span class="text-white">{{ $game }}</span>
                     </div>
-                    <div class="text-green-400 font-medium">
+                    <div class="font-medium" style="color: {{ $chartData['colors'][$index] ?? '#00ff41' }}">
                         {{ $chartData['data'][$index] }} apostas
                     </div>
                 </div>
@@ -36,23 +36,23 @@
 </div>
 
 <!-- Modal para detalhes -->
-<div id="top5Modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+<div id="top5Modal" class="fixed inset-0 bg-black bg-opacity-80 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-gray-800 rounded-lg max-w-4xl w-full p-6">
+        <div class="bg-black border border-gray-700 rounded-lg max-w-4xl w-full p-6">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold text-white">📊 TOP 5 CATEGORIAS COMPLETAS</h2>
-                <button onclick="window.closeTop5Modal()" class="text-gray-400 hover:text-white">✕</button>
+                <button onclick="window.closeTop5Modal()" class="text-green-400 hover:text-green-300 text-2xl transition-colors">✕</button>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Gráfico circular -->
-                <div class="bg-gray-900 rounded-lg p-4">
-                    <h3 class="text-lg font-semibold text-white mb-4">🎮 Jogos Mais Jogados</h3>
+                <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                    <h3 class="text-lg font-semibold text-green-400 mb-4">🎮 Jogos Mais Jogados</h3>
                     <canvas id="modalCircularChart" width="250" height="250"></canvas>
                 </div>
                 
                 <!-- Tabela com valores reais -->
-                <div class="bg-gray-900 rounded-lg p-4">
+                <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
                     <h3 class="text-lg font-semibold text-white mb-4">💰 Valores Reais</h3>
                     <div class="space-y-3">
                         @if(count($chartData['labels']) > 0)
@@ -63,8 +63,8 @@
                                         <span class="text-white font-medium">{{ $game }}</span>
                                     </div>
                                     <div class="text-right">
-                                        <div class="text-green-400 font-bold">{{ $chartData['data'][$index] }} apostas</div>
-                                        <div class="text-gray-400 text-sm">R$ {{ number_format($chartData['amounts'][$index] ?? 0, 2, ',', '.') }}</div>
+                                        <div class="font-bold" style="color: {{ $chartData['colors'][$index] ?? '#00ff41' }}">{{ $chartData['data'][$index] }} apostas</div>
+                                        <div class="text-gray-300 text-sm">R$ {{ number_format($chartData['amounts'][$index] ?? 0, 2, ',', '.') }}</div>
                                     </div>
                                 </div>
                             @endforeach
@@ -95,8 +95,8 @@ function initTop5Charts() {
                 datasets: [{
                     data: {!! json_encode($chartData['data']) !!},
                     backgroundColor: {!! json_encode($chartData['colors']) !!},
-                    borderColor: '#1f2937',
-                    borderWidth: 2
+                    borderColor: '#000000',
+                    borderWidth: 3
                 }]
             },
             options: {
@@ -107,11 +107,11 @@ function initTop5Charts() {
                         display: false
                     },
                     tooltip: {
-                        backgroundColor: '#1f2937',
+                        backgroundColor: '#000000',
                         titleColor: '#ffffff',
-                        bodyColor: '#10b981',
-                        borderColor: '#10b981',
-                        borderWidth: 1,
+                        bodyColor: '#00ff41',
+                        borderColor: '#00ff41',
+                        borderWidth: 2,
                         callbacks: {
                             label: function(context) {
                                 const label = context.label || '';
@@ -142,8 +142,8 @@ window.showTop5Modal = function() {
                     datasets: [{
                         data: {!! json_encode($chartData['data']) !!},
                         backgroundColor: {!! json_encode($chartData['colors']) !!},
-                        borderColor: '#1f2937',
-                        borderWidth: 2
+                        borderColor: '#000000',
+                        borderWidth: 3
                     }]
                 },
                 options: {
@@ -159,11 +159,11 @@ window.showTop5Modal = function() {
                             }
                         },
                         tooltip: {
-                            backgroundColor: '#1f2937',
+                            backgroundColor: '#000000',
                             titleColor: '#ffffff',
-                            bodyColor: '#10b981',
-                            borderColor: '#10b981',
-                            borderWidth: 1
+                            bodyColor: '#00ff41',
+                            borderColor: '#00ff41',
+                            borderWidth: 2
                         }
                     },
                     cutout: '40%'
