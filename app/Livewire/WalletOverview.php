@@ -56,19 +56,19 @@ class WalletOverview extends BaseWidget
                 ->description(new HtmlString('<span style="color: white;">Total de depósitos</span>'))
                 ->descriptionIcon('heroicon-o-banknotes')
                 ->chart([10, 30, 55, 75, 85, 95, 100])
-                ->chartColor('rgba(0, 255, 0, 1.0)'), // Verde neon vibrante para depósitos
+                ->chartColor('rgba(0, 255, 65, 1.0)'), // Verde Matrix para depósitos
             
             Stat::make(new HtmlString('<span style="color: white;">TOTAL DE SAQUES</span>'), \Helper::amountFormatDecimal($sumWithdrawalMonth))
                 ->description(new HtmlString('<span style="color: white;">Total de Saques</span>'))
                 ->descriptionIcon('heroicon-o-arrow-down-circle')
                 ->chart([100, 80, 60, 45, 30, 20, 10])
-                ->chartColor('rgba(255, 50, 50, 1.0)'), // Vermelho vibrante para saques
+                ->chartColor('rgba(255, 107, 53, 1.0)'), // Laranja vibrante para saques
             
             Stat::make(new HtmlString('<span style="color: white;">DENUNCIAS (Manutençao)</span>'), "0")
                 ->description(new HtmlString('<span style="color: white;">Manutençao</span>'))
                 ->descriptionIcon('heroicon-o-currency-dollar')
                 ->chart([50, 50, 50, 50, 50, 50, 50])
-                ->chartColor('rgba(50, 205, 50, 1.0)'), // Verde lime para manutenção
+                ->chartColor('rgba(255, 212, 59, 1.0)'), // Amarelo dourado para manutenção
         ];
     }
 

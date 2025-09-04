@@ -31,7 +31,13 @@ class Top5GamesCircularChart extends Component
                 'labels' => $topGames->pluck('game')->toArray(),
                 'data' => $topGames->pluck('plays')->toArray(),
                 'amounts' => $topGames->pluck('total_amount')->toArray(),
-                'colors' => ['#00ff7f', '#32cd32', '#00ff00', '#90ee90', '#98fb98']
+                'colors' => [
+                    '#00ff41', // Verde Matrix principal
+                    '#ff6b35', // Laranja vibrante
+                    '#4dabf7', // Azul claro
+                    '#ffd43b', // Amarelo dourado
+                    '#ff8cc8'  // Rosa suave
+                ]
             ];
         } else {
             // Dados vazios se não houver apostas

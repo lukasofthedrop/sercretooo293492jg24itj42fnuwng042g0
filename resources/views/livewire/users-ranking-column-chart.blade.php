@@ -1,8 +1,8 @@
-<div class="bg-gray-900 rounded-lg shadow-lg p-6">
+<div class="bg-black rounded-lg shadow-lg p-6 border border-gray-800">
     <div class="flex items-center justify-between mb-4">
         <h3 class="text-xl font-bold text-white">👑 RANKING PROFISSIONAL DE USUÁRIOS</h3>
         <button 
-            class="text-green-400 hover:text-green-300 text-sm font-medium"
+            class="text-green-400 hover:text-green-300 text-sm font-medium transition-colors"
             onclick="window.showUsersRankingModal()"
         >
             Ver Detalhes Completos
@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-green-400 font-bold text-sm">R$ {{ number_format($chartData['amounts'][$index] ?? 0, 2, ',', '.') }}</div>
+                            <div class="font-bold text-sm" style="color: {{ $chartData['colors'][$index] ?? '#00ff41' }}">R$ {{ number_format($chartData['amounts'][$index] ?? 0, 2, ',', '.') }}</div>
                         </div>
                     </div>
                 @endif
@@ -48,25 +48,25 @@
 </div>
 
 <!-- Modal para ranking completo -->
-<div id="usersRankingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+<div id="usersRankingModal" class="fixed inset-0 bg-black bg-opacity-80 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-gray-800 rounded-lg max-w-6xl w-full p-6 max-h-90vh overflow-y-auto">
+        <div class="bg-black border border-gray-700 rounded-lg max-w-6xl w-full p-6 max-h-90vh overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white">👑 RANKING COMPLETO DE USUÁRIOS</h2>
-                <button onclick="window.closeUsersRankingModal()" class="text-gray-400 hover:text-white text-2xl">✕</button>
+                <button onclick="window.closeUsersRankingModal()" class="text-green-400 hover:text-green-300 text-2xl transition-colors">✕</button>
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Gráfico de colunas -->
-                <div class="bg-gray-900 rounded-lg p-4">
-                    <h3 class="text-lg font-semibold text-white mb-4">📊 Gráfico de Colunas</h3>
+                <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                    <h3 class="text-lg font-semibold text-green-400 mb-4">📊 Gráfico de Colunas</h3>
                     <div class="h-80">
                         <canvas id="modalColumnChart"></canvas>
                     </div>
                 </div>
                 
                 <!-- Tabela completa -->
-                <div class="bg-gray-900 rounded-lg p-4">
+                <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
                     <h3 class="text-lg font-semibold text-white mb-4">💰 Ranking Detalhado</h3>
                     <div class="space-y-2 max-h-80 overflow-y-auto">
                         @if(count($chartData['labels']) > 0)
@@ -88,7 +88,7 @@
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <div class="text-green-400 font-bold">R$ {{ number_format($chartData['amounts'][$index] ?? 0, 2, ',', '.') }}</div>
+                                        <div class="font-bold" style="color: {{ $chartData['colors'][$index] ?? '#00ff41' }}">R$ {{ number_format($chartData['amounts'][$index] ?? 0, 2, ',', '.') }}</div>
                                         <div class="text-gray-400 text-xs">{{ $chartData['deposits'][$index] }} depósitos</div>
                                     </div>
                                 </div>
@@ -121,8 +121,8 @@ function initUsersChart() {
                     label: 'Total Depositado (R$)',
                     data: {!! json_encode($chartData['amounts']) !!},
                     backgroundColor: {!! json_encode(array_slice($chartData['colors'], 0, count($chartData['labels']))) !!},
-                    borderColor: '#1f2937',
-                    borderWidth: 1,
+                    borderColor: '#000000',
+                    borderWidth: 2,
                     borderRadius: 4
                 }]
             },
@@ -134,11 +134,11 @@ function initUsersChart() {
                         display: false
                     },
                     tooltip: {
-                        backgroundColor: '#1f2937',
+                        backgroundColor: '#000000',
                         titleColor: '#ffffff',
-                        bodyColor: '#10b981',
-                        borderColor: '#10b981',
-                        borderWidth: 1,
+                        bodyColor: '#00ff41',
+                        borderColor: '#00ff41',
+                        borderWidth: 2,
                         callbacks: {
                             title: function(context) {
                                 const index = context[0].dataIndex;
@@ -198,8 +198,8 @@ window.showUsersRankingModal = function() {
                         label: 'Total Depositado (R$)',
                         data: {!! json_encode($chartData['amounts']) !!},
                         backgroundColor: {!! json_encode($chartData['colors']) !!},
-                        borderColor: '#1f2937',
-                        borderWidth: 1,
+                        borderColor: '#000000',
+                        borderWidth: 2,
                         borderRadius: 6
                     }]
                 },
@@ -216,11 +216,11 @@ window.showUsersRankingModal = function() {
                             }
                         },
                         tooltip: {
-                            backgroundColor: '#1f2937',
+                            backgroundColor: '#000000',
                             titleColor: '#ffffff',
-                            bodyColor: '#10b981',
-                            borderColor: '#10b981',
-                            borderWidth: 1
+                            bodyColor: '#00ff41',
+                            borderColor: '#00ff41',
+                            borderWidth: 2
                         }
                     },
                     scales: {
