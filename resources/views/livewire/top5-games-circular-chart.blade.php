@@ -1,357 +1,595 @@
-<!-- INFOGRÁFICO PROFISSIONAL: TOP 5 JOGOS POPULARES -->
-<div class="infographic-container bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+<!-- TOP 5 JOGOS MAIS POPULARES - ApexCharts Professional -->
+<div class="apex-games-container bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg lg:rounded-xl p-4 md:p-5 lg:p-6 shadow-xl border border-slate-700/50 hover:border-green-500/30 transition-all">
+    
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 lg:mb-6 gap-3">
+        <div class="flex items-center gap-2 lg:gap-3">
+            <div class="text-2xl md:text-3xl lg:text-4xl">🎮</div>
+            <div>
+                <h3 class="text-white font-bold text-base md:text-lg lg:text-xl">TOP 5 JOGOS MAIS POPULARES</h3>
+                <p class="text-slate-400 text-xs md:text-sm lg:text-base">Análise de Performance em Tempo Real</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="bg-green-500/20 text-green-400 px-2 lg:px-3 py-1 rounded-full text-xs font-medium animate-pulse">
+                <span class="hidden sm:inline">AO VIVO</span>
+                <span class="sm:hidden">LIVE</span>
+            </div>
+            @if(count($chartData['labels']) > 0)
+            <button onclick="refreshTop5Games()" class="bg-slate-700 hover:bg-slate-600 text-white p-1.5 lg:p-2 rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </button>
+            @endif
+        </div>
+    </div>
+
     @if(count($chartData['labels']) > 0)
-        <!-- HEADER SECTION -->
-        <div class="infographic-header bg-gradient-to-r from-green-600 to-green-500 p-6 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-green-600/20 to-transparent"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-white/20 p-3 rounded-full">
-                            <div class="text-2xl">🎮</div>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-white mb-1">TOP 5 JOGOS MAIS POPULARES</h2>
-                            <p class="text-green-100 text-sm font-medium">Análise de Performance em Tempo Real</p>
-                        </div>
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 lg:gap-5 mb-4 md:mb-5 lg:mb-6">
+            <div class="bg-gradient-to-br from-blue-600/10 to-blue-500/5 border border-blue-500/20 rounded-lg p-3 md:p-4 lg:p-5">
+                <div class="flex flex-row items-center justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-slate-400 text-[10px] sm:text-xs md:text-sm uppercase font-medium truncate">Total Apostas</div>
+                        <div class="text-blue-400 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{{ number_format(array_sum($chartData['data']), 0, ',', '.') }}</div>
                     </div>
-                    <div class="text-right">
-                        <div class="bg-white/20 rounded-xl p-3">
-                            <div class="text-white text-2xl font-bold">{{ count($chartData['labels']) }}</div>
-                            <div class="text-green-100 text-xs font-medium">JOGOS ATIVOS</div>
-                        </div>
-                    </div>
+                    <div class="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-50 flex-shrink-0">📊</div>
                 </div>
             </div>
-            <!-- Decorative Elements -->
-            <div class="absolute top-4 right-4 w-32 h-32 bg-white/5 rounded-full"></div>
-            <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-white/5 rounded-full"></div>
+            
+            <div class="bg-gradient-to-br from-green-600/10 to-green-500/5 border border-green-500/20 rounded-lg p-3 md:p-4 lg:p-5">
+                <div class="flex flex-row items-center justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-slate-400 text-[10px] sm:text-xs md:text-sm uppercase font-medium truncate">Receita Total</div>
+                        <div class="text-green-400 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">R$ {{ number_format(array_sum($chartData['amounts']), 0, ',', '.') }}</div>
+                    </div>
+                    <div class="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-50 flex-shrink-0">💰</div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-purple-600/10 to-purple-500/5 border border-purple-500/20 rounded-lg p-3 md:p-4 lg:p-5">
+                <div class="flex flex-row items-center justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-slate-400 text-[10px] sm:text-xs md:text-sm uppercase font-medium truncate">Média/Aposta</div>
+                        <div class="text-purple-400 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">R$ {{ number_format(array_sum($chartData['amounts']) / max(array_sum($chartData['data']), 1), 0, ',', '.') }}</div>
+                    </div>
+                    <div class="text-xl sm:text-2xl md:text-3xl lg:text-4xl opacity-50 flex-shrink-0">💎</div>
+                </div>
+            </div>
         </div>
 
-        <!-- MAIN INFOGRAPHIC CONTENT -->
-        <div class="p-6 space-y-6">
+        <!-- Main Chart Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 lg:gap-6 mb-6 lg:mb-8">
+            <!-- Bar Chart -->
+            <div class="bg-slate-800/50 rounded-lg p-4 md:p-5 lg:p-6 border border-slate-700 hover:border-green-500/30 transition-all">
+                <h4 class="text-white font-bold text-base md:text-lg lg:text-xl mb-3 md:mb-4 lg:mb-5 flex items-center gap-2 pb-2 md:pb-3 border-b border-slate-700/50">
+                    <span class="text-xl md:text-2xl lg:text-3xl">📈</span> 
+                    <span class="text-base md:text-lg lg:text-xl font-bold uppercase tracking-wider">Ranking por Popularidade</span>
+                </h4>
+                <div id="top5-games-bar-chart" class="chart-container" style="height: 300px; overflow: hidden;">
+                    <!-- ApexCharts Bar Chart -->
+                </div>
+            </div>
             
-            <!-- KPI METRICS ROW -->
-            <div class="grid grid-cols-3 gap-4">
-                <div class="metric-card bg-gradient-to-br from-blue-600/20 to-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-center">
-                    <div class="text-blue-400 text-2xl font-bold">{{ array_sum($chartData['data']) }}</div>
-                    <div class="text-slate-300 text-xs font-medium mt-1">TOTAL APOSTAS</div>
-                    <div class="w-full bg-slate-700 rounded-full h-1 mt-2">
-                        <div class="bg-blue-400 h-1 rounded-full" style="width: 100%"></div>
-                    </div>
-                </div>
-                
-                <div class="metric-card bg-gradient-to-br from-green-600/20 to-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
-                    <div class="text-green-400 text-2xl font-bold">R$ {{ number_format(array_sum($chartData['amounts']), 0, ',', '.') }}</div>
-                    <div class="text-slate-300 text-xs font-medium mt-1">RECEITA TOTAL</div>
-                    <div class="w-full bg-slate-700 rounded-full h-1 mt-2">
-                        <div class="bg-green-400 h-1 rounded-full" style="width: 90%"></div>
-                    </div>
-                </div>
-                
-                <div class="metric-card bg-gradient-to-br from-purple-600/20 to-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center">
-                    <div class="text-purple-400 text-2xl font-bold">{{ round(array_sum($chartData['amounts']) / array_sum($chartData['data']), 0) }}</div>
-                    <div class="text-slate-300 text-xs font-medium mt-1">VALOR MÉDIO</div>
-                    <div class="w-full bg-slate-700 rounded-full h-1 mt-2">
-                        <div class="bg-purple-400 h-1 rounded-full" style="width: 75%"></div>
-                    </div>
+            <!-- Radial Chart -->
+            <div class="bg-slate-800/50 rounded-lg p-4 md:p-5 lg:p-6 border border-slate-700 hover:border-blue-500/30 transition-all">
+                <h4 class="text-white font-bold text-base md:text-lg lg:text-xl mb-3 md:mb-4 lg:mb-5 flex items-center gap-2 pb-2 md:pb-3 border-b border-slate-700/50">
+                    <span class="text-xl md:text-2xl lg:text-3xl">🎯</span> 
+                    <span class="text-base md:text-lg lg:text-xl font-bold uppercase tracking-wider">Performance Individual</span>
+                </h4>
+                <div id="top5-games-radial-chart" class="chart-container" style="height: 300px; overflow: hidden;">
+                    <!-- ApexCharts Radial Chart -->
                 </div>
             </div>
+        </div>
 
-            <!-- MAIN ANALYSIS SECTION -->
-            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <!-- Detailed Ranking List -->
+        <div class="mt-6 md:mt-7 lg:mt-8">
+            <div class="bg-slate-900/30 rounded-lg p-4 md:p-5 lg:p-6 mb-3 md:mb-4 lg:mb-5 border border-slate-700">
+                <h4 class="text-white font-bold text-base md:text-lg lg:text-xl flex items-center gap-2 pb-2 md:pb-3 border-b border-slate-700/50">
+                    <span class="text-xl md:text-2xl lg:text-3xl">🏆</span> 
+                    <span class="text-base md:text-lg lg:text-xl font-bold uppercase tracking-wider">Detalhamento Completo</span>
+                </h4>
+            </div>
+            <div class="space-y-3 lg:space-y-4">
+            
+            @foreach($chartData['labels'] as $index => $game)
+                @php
+                    $percentage = ($chartData['data'][$index] / max(array_sum($chartData['data']), 1)) * 100;
+                    $revenue = $chartData['amounts'][$index] ?? 0;
+                @endphp
                 
-                <!-- DONUT CHART SECTION -->
-                <div class="lg:col-span-2">
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-6 border border-slate-600">
-                        <div class="text-center mb-4">
-                            <h3 class="text-white font-bold text-lg mb-2">Distribuição por Popularidade</h3>
-                            <div class="text-slate-400 text-sm">Baseado no número de apostas</div>
-                        </div>
-                        
-                        <div class="relative flex justify-center">
-                            <canvas id="top5GamesChart" width="250" height="250"></canvas>
-                            <!-- Center Stats -->
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <div class="text-center">
-                                    <div class="text-green-400 text-2xl font-bold animate-pulse">
-                                        {{ array_sum($chartData['data']) }}
-                                    </div>
-                                    <div class="text-slate-400 text-xs font-medium">TOTAL</div>
+                <div class="game-ranking-item bg-gradient-to-r from-slate-800/50 to-transparent rounded-lg p-3 lg:p-4 border border-slate-700/50 hover:border-green-500/30 transition-all">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <!-- Position Badge -->
+                            <div class="position-badge w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center font-bold text-sm lg:text-base text-white shadow-lg flex-shrink-0"
+                                 style="background: linear-gradient(135deg, {{ $chartData['colors'][$index] }}, {{ $chartData['colors'][$index] }}DD);">
+                                {{ $index + 1 }}°
+                            </div>
+                            
+                            <!-- Game Info -->
+                            <div class="min-w-0 flex-1">
+                                <div class="text-white font-semibold text-sm lg:text-base truncate">{{ $game }}</div>
+                                <div class="text-xs mt-0.5">
+                                    @if($index == 0) 
+                                        <span class="text-yellow-400">👑 Líder Absoluto</span>
+                                    @elseif($index == 1) 
+                                        <span class="text-slate-300">🥈 Vice-Líder</span>
+                                    @elseif($index == 2) 
+                                        <span class="text-orange-400">🥉 3º Lugar</span>
+                                    @else 
+                                        <span class="text-slate-400">⭐ Top {{ $index + 1 }}</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Legend -->
-                        <div class="mt-4 grid grid-cols-1 gap-2">
-                            @foreach($chartData['labels'] as $index => $game)
-                                @if($index < 3)
-                                <div class="flex items-center justify-between text-sm">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-3 h-3 rounded-full" style="background-color: {{ $chartData['colors'][$index] }}"></div>
-                                        <span class="text-white text-xs">{{ $game }}</span>
-                                    </div>
-                                    <span class="text-slate-300 font-medium">{{ number_format((($chartData['data'][$index] / array_sum($chartData['data'])) * 100), 1) }}%</span>
-                                </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RANKING SECTION -->
-                <div class="lg:col-span-3">
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-6 border border-slate-600">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-white font-bold text-lg">🏆 Ranking Detalhado</h3>
-                            <div class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-medium">
-                                TEMPO REAL
+                        <!-- Stats -->
+                        <div class="flex items-center gap-3 lg:gap-4 ml-11 sm:ml-0">
+                            <div class="text-right">
+                                <div class="text-slate-400 text-[10px] lg:text-xs uppercase">Apostas</div>
+                                <div class="text-white font-bold text-sm lg:text-base">{{ number_format($chartData['data'][$index], 0, ',', '.') }}</div>
+                            </div>
+                            
+                            <div class="text-right">
+                                <div class="text-slate-400 text-[10px] lg:text-xs uppercase">Receita</div>
+                                <div class="text-green-400 font-bold text-sm lg:text-base">R$ {{ number_format($revenue, 0, ',', '.') }}</div>
+                            </div>
+                            
+                            <div class="text-right min-w-[50px] lg:min-w-[60px]">
+                                <div class="text-slate-400 text-[10px] lg:text-xs uppercase">Share</div>
+                                <div class="text-blue-400 font-bold text-sm lg:text-base">{{ number_format($percentage, 1) }}%</div>
                             </div>
                         </div>
-                        
-                        <div class="space-y-4">
-                            @foreach($chartData['labels'] as $index => $game)
-                                <div class="ranking-item bg-gradient-to-r from-slate-700/50 to-transparent rounded-xl p-4 border border-slate-600/50 hover:border-green-500/50 transition-all duration-300 relative overflow-hidden">
-                                    
-                                    <!-- Position Badge -->
-                                    <div class="absolute top-3 left-3">
-                                        <div class="ranking-badge w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" 
-                                             style="background: linear-gradient(135deg, {{ $chartData['colors'][$index] }}, {{ $chartData['colors'][$index] }}80);">
-                                            {{ $index + 1 }}
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Game Info -->
-                                    <div class="ml-12">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <div>
-                                                <div class="text-white font-semibold text-base">{{ $game }}</div>
-                                                <div class="text-slate-400 text-xs">
-                                                    @if($index == 0) 👑 LÍDER ABSOLUTO
-                                                    @elseif($index == 1) 🥈 VICE-LÍDER  
-                                                    @elseif($index == 2) 🥉 TOP 3
-                                                    @else ⭐ TOP {{ $index + 1 }} @endif
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="text-right">
-                                                <div class="text-green-400 font-bold text-lg">{{ $chartData['data'][$index] }}</div>
-                                                <div class="text-slate-400 text-xs">apostas</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Performance Bar -->
-                                        <div class="w-full bg-slate-600 rounded-full h-2 overflow-hidden">
-                                            <div class="h-full rounded-full transition-all duration-1000 ease-out"
-                                                 style="width: {{ ($chartData['data'][$index] / max($chartData['data'])) * 100 }}%; 
-                                                        background: linear-gradient(90deg, {{ $chartData['colors'][$index] }}, {{ $chartData['colors'][$index] }}80);">
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Revenue Info -->
-                                        @if(isset($chartData['amounts'][$index]))
-                                        <div class="flex justify-between items-center mt-2 text-xs">
-                                            <span class="text-slate-400">Receita:</span>
-                                            <span class="text-green-300 font-medium">R$ {{ number_format($chartData['amounts'][$index], 2, ',', '.') }}</span>
-                                        </div>
-                                        @endif
-                                    </div>
-                                    
-                                    <!-- Hover Effect -->
-                                    <div class="absolute inset-0 bg-gradient-to-r from-green-500/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-                                </div>
-                            @endforeach
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mt-2 lg:mt-3 w-full bg-slate-700 rounded-full h-1.5 lg:h-2 overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-1000 ease-out progress-bar"
+                             style="width: {{ $percentage }}%; background: linear-gradient(90deg, {{ $chartData['colors'][$index] }}, {{ $chartData['colors'][$index] }}99);">
                         </div>
                     </div>
                 </div>
+            @endforeach
             </div>
+        </div>
 
-            <!-- SUMMARY FOOTER -->
-            <div class="bg-gradient-to-r from-green-600/10 to-blue-600/10 rounded-xl p-4 border border-green-500/20">
-                <div class="text-center">
-                    <div class="text-white font-medium text-sm mb-2">
-                        💡 <strong>Insights:</strong> 
-                        <span class="text-slate-300">
-                            O jogo líder representa {{ number_format((max($chartData['data']) / array_sum($chartData['data'])) * 100, 1) }}% 
-                            do total de apostas da plataforma
-                        </span>
-                    </div>
-                    <div class="flex justify-center space-x-6 text-xs text-slate-400">
-                        <span>📊 Atualização: Tempo Real</span>
-                        <span>🎯 Precisão: 99.9%</span>
-                        <span>🔄 Cache: 15min</span>
-                    </div>
+        <!-- Footer Stats -->
+        <div class="mt-6 bg-gradient-to-r from-green-600/10 to-blue-600/10 rounded-lg p-3 sm:p-4 border border-green-500/20">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 text-xs sm:text-sm">
+                <div class="flex items-center gap-2 text-slate-300">
+                    <span class="text-base sm:text-lg">💡</span>
+                    <span class="text-xs sm:text-sm">O jogo líder representa <strong class="text-green-400">{{ number_format((max($chartData['data']) / max(array_sum($chartData['data']), 1)) * 100, 1) }}%</strong> do volume total</span>
+                </div>
+                <div class="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-slate-400">
+                    <span>🔄 Cache: 15min</span>
+                    <span>📊 Precisão: 99.9%</span>
                 </div>
             </div>
         </div>
 
     @else
-        <!-- EMPTY STATE -->
-        <div class="infographic-empty text-center py-20 px-6">
-            <div class="max-w-md mx-auto">
-                <div class="bg-gradient-to-br from-slate-700 to-slate-600 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <div class="text-4xl opacity-50">🎮</div>
-                </div>
-                <h3 class="text-white font-bold text-xl mb-2">Dashboard Aguardando Dados</h3>
-                <p class="text-slate-400 text-sm mb-6">O sistema está preparado para exibir análises assim que os primeiros jogos receberem apostas.</p>
-                
-                <div class="bg-slate-800 rounded-xl p-4 border border-slate-600">
-                    <div class="flex items-center justify-center space-x-2 text-green-400 text-sm">
-                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span class="font-medium">Sistema de Monitoramento Ativo</span>
-                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.5s;"></div>
-                    </div>
-                </div>
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-full mb-4">
+                <span class="text-4xl opacity-50">🎮</span>
+            </div>
+            <h4 class="text-white font-semibold text-lg mb-2">Aguardando Dados</h4>
+            <p class="text-slate-400 text-sm max-w-md mx-auto">
+                Os gráficos serão exibidos assim que os primeiros jogos receberem apostas.
+            </p>
+            <div class="mt-6 inline-flex items-center gap-2 bg-slate-800 rounded-lg px-4 py-2">
+                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span class="text-green-400 text-sm font-medium">Sistema Monitorando</span>
             </div>
         </div>
     @endif
 </div>
 
 <style>
-.infographic-container {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+/* Custom styles for Top 5 Games Widget */
+.apex-games-container {
+    transition: all 0.3s ease;
 }
 
-.metric-card {
-    transition: all 0.3s ease;
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px !important;
+    overflow: hidden !important;
+}
+
+.game-ranking-item {
     position: relative;
     overflow: hidden;
 }
 
-.metric-card::before {
+.game-ranking-item::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-    transform: rotate(45deg);
-    transition: all 0.6s;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
+    transition: left 0.6s ease;
 }
 
-.metric-card:hover::before {
-    animation: shimmer 1.5s infinite;
+.game-ranking-item:hover::before {
+    left: 100%;
 }
 
-.metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.position-badge {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
 }
 
-@keyframes shimmer {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+.game-ranking-item:hover .position-badge {
+    transform: scale(1.1) rotate(5deg);
 }
 
-.ranking-item {
-    position: relative;
-    backdrop-filter: blur(10px);
+.progress-bar {
+    animation: progressFill 1.5s ease-out;
 }
 
-.ranking-badge {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+@keyframes progressFill {
+    from { width: 0; }
 }
 
-.infographic-header {
-    position: relative;
-    background-attachment: fixed;
+/* ApexCharts custom theme */
+.apexcharts-tooltip {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+.apexcharts-tooltip-title {
+    background: rgba(34, 197, 94, 0.1) !important;
+    border-bottom: 1px solid rgba(34, 197, 94, 0.2) !important;
+    font-weight: bold !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .apex-games-container {
+        padding: 1rem !important;
+        margin: 0.5rem 0;
+    }
+    
+    .game-ranking-item {
+        padding: 0.75rem;
+    }
+    
+    .position-badge {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 0.7rem;
+    }
+    
+    /* Stack stats vertically on very small screens */
+    @media (max-width: 400px) {
+        .game-ranking-item .flex-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+    .game-ranking-item {
+        padding: 1rem;
+    }
+    
+    .position-badge {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .apex-games-container {
+        padding: 1.5rem;
+    }
 }
 </style>
 
 @script
 <script>
-let top5InfographicChartInstance = null;
+console.log('🎮 Iniciando Top 5 Games ApexCharts Widget');
 
-function initTop5InfographicChart() {
+// Global chart instances
+window.Top5GamesCharts = window.Top5GamesCharts || {
+    barChart: null,
+    radialChart: null,
+    initialized: false
+};
+
+function initTop5GamesCharts() {
     @if(count($chartData['labels']) == 0)
+        console.log('⚠️ Sem dados para exibir nos gráficos Top 5');
         return;
     @endif
     
-    if (typeof Chart === 'undefined') {
-        console.log('Chart.js carregando...');
-        setTimeout(initTop5InfographicChart, 100);
+    // Check if ApexCharts is available
+    if (typeof ApexCharts === 'undefined') {
+        console.log('⏳ Aguardando ApexCharts...');
+        setTimeout(initTop5GamesCharts, 100);
         return;
     }
     
-    const ctx = document.getElementById('top5GamesChart');
-    if (ctx && !top5InfographicChartInstance) {
-        top5InfographicChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: {!! json_encode($chartData['labels']) !!},
-                datasets: [{
-                    data: {!! json_encode($chartData['data']) !!},
-                    backgroundColor: {!! json_encode($chartData['colors']) !!},
-                    borderColor: '#1e293b',
-                    borderWidth: 4,
-                    hoverBorderWidth: 6,
-                    hoverBorderColor: '#22c55e'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
+    // Prevent duplicate initialization
+    if (window.Top5GamesCharts.initialized) {
+        console.log('✅ Top 5 Games Charts já inicializados');
+        return;
+    }
+    
+    // Prepare data
+    const gameLabels = {!! json_encode($chartData['labels']) !!};
+    const gameData = {!! json_encode($chartData['data']) !!};
+    const gameAmounts = {!! json_encode($chartData['amounts'] ?? []) !!};
+    const gameColors = {!! json_encode($chartData['colors']) !!};
+    
+    // Destroy existing charts
+    if (window.Top5GamesCharts.barChart) {
+        window.Top5GamesCharts.barChart.destroy();
+        window.Top5GamesCharts.barChart = null;
+    }
+    if (window.Top5GamesCharts.radialChart) {
+        window.Top5GamesCharts.radialChart.destroy();
+        window.Top5GamesCharts.radialChart = null;
+    }
+    
+    // Chart theme configuration
+    const chartTheme = {
+        mode: 'dark',
+        palette: 'palette1',
+        monochrome: {
+            enabled: false,
+            color: '#22c55e',
+            shadeTo: 'dark',
+            shadeIntensity: 0.65
+        }
+    };
+    
+    // 1. Horizontal Bar Chart
+    const barContainer = document.querySelector('#top5-games-bar-chart');
+    if (barContainer) {
+        barContainer.innerHTML = '';
+        
+        const barOptions = {
+            series: [{
+                name: 'Apostas',
+                data: gameData.slice().reverse() // Reverse for better visualization
+            }],
+            chart: {
+                type: 'bar',
+                height: 280,
+                background: 'transparent',
+                toolbar: { show: false },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 150
                     },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#ffffff',
-                        bodyColor: '#22c55e',
-                        borderColor: '#22c55e',
-                        borderWidth: 2,
-                        cornerRadius: 12,
-                        padding: 16,
-                        displayColors: true,
-                        callbacks: {
-                            title: function(context) {
-                                return context[0].label;
-                            },
-                            label: function(context) {
-                                const value = context.parsed;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return [
-                                    `🎯 Apostas: ${value}`,
-                                    `📊 Participação: ${percentage}%`,
-                                    @if(isset($chartData['amounts']))
-                                        `💰 Receita: R$ {{ number_format($chartData['amounts'][0] ?? 0, 2, ',', '.') }}`
-                                    @endif
-                                ];
-                            }
-                        }
-                    }
-                },
-                cutout: '70%',
-                animation: {
-                    animateRotate: true,
-                    animateScale: true,
-                    duration: 2000,
-                    easing: 'easeInOutQuart'
-                },
-                elements: {
-                    arc: {
-                        borderRadius: 8
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
                     }
                 }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 6,
+                    horizontal: true,
+                    distributed: true,
+                    dataLabels: {
+                        position: 'right'
+                    }
+                }
+            },
+            colors: gameColors.slice().reverse(),
+            dataLabels: {
+                enabled: true,
+                textAnchor: 'start',
+                style: {
+                    colors: ['#fff'],
+                    fontSize: '12px',
+                    fontWeight: 600
+                },
+                formatter: function(val, opt) {
+                    return val + " apos";
+                },
+                offsetX: window.innerWidth <= 768 ? 10 : 45
+            },
+            xaxis: {
+                categories: gameLabels.slice().reverse(),
+                labels: {
+                    style: {
+                        colors: '#94a3b8',
+                        fontSize: '12px'
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#94a3b8',
+                        fontSize: '12px'
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#334155',
+                strokeDashArray: 4,
+                xaxis: { lines: { show: true } },
+                yaxis: { lines: { show: false } }
+            },
+            theme: chartTheme,
+            tooltip: {
+                theme: 'dark',
+                y: {
+                    formatter: function(val, opts) {
+                        const index = gameData.length - 1 - opts.dataPointIndex;
+                        const amount = gameAmounts[index] || 0;
+                        return val + ' apostas | R$ ' + amount.toLocaleString('pt-BR');
+                    }
+                }
+            },
+            legend: {
+                show: false
             }
-        });
+        };
+        
+        window.Top5GamesCharts.barChart = new ApexCharts(barContainer, barOptions);
+        window.Top5GamesCharts.barChart.render();
+        console.log('✅ Bar Chart renderizado');
     }
+    
+    // 2. Radial Bar Chart
+    const radialContainer = document.querySelector('#top5-games-radial-chart');
+    if (radialContainer) {
+        radialContainer.innerHTML = '';
+        
+        // Calculate percentages for radial chart
+        const maxValue = Math.max(...gameData);
+        const percentages = gameData.map(val => Math.round((val / maxValue) * 100));
+        
+        const radialOptions = {
+            series: percentages.slice(0, 3), // Show only top 3 for better visualization
+            chart: {
+                type: 'radialBar',
+                height: 280,
+                background: 'transparent'
+            },
+            plotOptions: {
+                radialBar: {
+                    offsetY: 0,
+                    startAngle: 0,
+                    endAngle: 270,
+                    hollow: {
+                        margin: 5,
+                        size: '30%',
+                        background: 'transparent',
+                        image: undefined
+                    },
+                    dataLabels: {
+                        name: {
+                            show: true,
+                            fontSize: '14px',
+                            color: '#94a3b8'
+                        },
+                        value: {
+                            show: true,
+                            fontSize: '20px',
+                            color: '#fff',
+                            formatter: function(val) {
+                                return parseInt(val) + '%';
+                            }
+                        }
+                    },
+                    track: {
+                        background: '#1e293b',
+                        strokeWidth: '100%',
+                        margin: 10
+                    }
+                }
+            },
+            colors: gameColors.slice(0, 3),
+            labels: gameLabels.slice(0, 3),
+            theme: chartTheme,
+            legend: {
+                show: true,
+                floating: true,
+                fontSize: '11px',
+                position: 'bottom',
+                offsetX: 0,
+                offsetY: -10,
+                labels: {
+                    colors: '#94a3b8'
+                },
+                markers: {
+                    size: 4
+                },
+                formatter: function(seriesName, opts) {
+                    return seriesName.substring(0, 12) + ": " + gameData[opts.seriesIndex];
+                },
+                itemMargin: {
+                    horizontal: 10,
+                    vertical: 2
+                }
+            },
+            responsive: [{
+                breakpoint: 768,
+                options: {
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        offsetY: 0,
+                        fontSize: '10px'
+                    }
+                }
+            }, {
+                breakpoint: 480,
+                options: {
+                    legend: {
+                        show: false
+                    }
+                }
+            }]
+        };
+        
+        window.Top5GamesCharts.radialChart = new ApexCharts(radialContainer, radialOptions);
+        window.Top5GamesCharts.radialChart.render();
+        console.log('✅ Radial Chart renderizado');
+    }
+    
+    // Mark as initialized
+    window.Top5GamesCharts.initialized = true;
+    console.log('✅ Todos os gráficos Top 5 Games renderizados com sucesso');
 }
 
-// Cleanup and initialization
-document.addEventListener('DOMContentLoaded', function() {
-    initTop5InfographicChart();
+// Refresh function
+window.refreshTop5Games = function() {
+    console.log('🔄 Atualizando gráficos Top 5 Games...');
+    window.Top5GamesCharts.initialized = false;
+    
+    // Add loading animation
+    const containers = ['#top5-games-bar-chart', '#top5-games-radial-chart'];
+    containers.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el) {
+            el.innerHTML = '<div class="flex items-center justify-center h-full"><div class="text-green-400 animate-pulse">Carregando...</div></div>';
+        }
+    });
+    
+    // Reinitialize after a short delay
+    setTimeout(initTop5GamesCharts, 300);
+};
+
+// Initialize on load
+setTimeout(initTop5GamesCharts, 100);
+
+// Reinitialize on Livewire navigation
+document.addEventListener('livewire:navigated', function() {
+    console.log('🔄 Livewire navigated - reinicializando Top 5 Games...');
+    window.Top5GamesCharts.initialized = false;
+    setTimeout(initTop5GamesCharts, 100);
 });
 
-document.addEventListener('livewire:navigated', function() {
-    if (top5InfographicChartInstance) {
-        top5InfographicChartInstance.destroy();
-        top5InfographicChartInstance = null;
+// Reinitialize on component update
+Livewire.hook('morph.updated', ({ el, component }) => {
+    if (el.querySelector && (el.querySelector('#top5-games-bar-chart') || el.querySelector('#top5-games-radial-chart'))) {
+        console.log('🔄 Componente Top 5 Games atualizado - reinicializando...');
+        window.Top5GamesCharts.initialized = false;
+        setTimeout(initTop5GamesCharts, 100);
     }
-    setTimeout(initTop5InfographicChart, 100);
 });
 </script>
 @endscript
