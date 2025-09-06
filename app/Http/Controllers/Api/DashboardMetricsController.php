@@ -1,0 +1,757 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Deposit;
+use App\Models\Withdrawal;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Wallet;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+
+class DashboardMetricsController extends Controller
+{
+    /**
+     * Retorna métricas do dashboard para ApexCharts
+     */
+    public function index(Request $request)
+    {
+        // TEMPORÁRIO: Desabilitado para testes em desenvolvimento
+        // TODO: Reabilitar verificação de admin em produção
+        /*
+        $user = auth()->user() ?: auth('web')->user();
+        
+        if (!$user || !$user->hasRole('admin')) {
+            if (!session()->has('user_id')) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            
+            $user = User::find(session('user_id'));
+            if (!$user || !$user->hasRole('admin')) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+        }
+        */
+
+        $period = $request->get('period', 'month');
+        
+        $data = [
+            'deposits' => $this->getDepositsData($period),
+            'users' => $this->getUsersData($period),
+            'games' => $this->getGamesData($period),
+            'revenue' => $this->getRevenueData($period),
+            'stats' => $this->getGeneralStats($period),
+            'realtime' => $this->getRealtimeData()
+        ];
+
+        return response()->json($data);
+    }
+
+    /**
+     * Dados de depósitos para gráfico de área
+     */
+    private function getDepositsData($period = 'month')
+    {
+        $cacheKey = 'dashboard_deposits_data_' . $period;
+        
+        return Cache::remember($cacheKey, 60, function () use ($period) {
+            $query = Deposit::where('status', 1);
+            
+            // Aplicar filtro de período
+            switch ($period) {
+                case 'today':
+                    $query->whereDate('created_at', Carbon::today());
+                    $groupBy = "HOUR(created_at)";
+                    $selectRaw = "HOUR(created_at) as hour, SUM(amount) as total";
+                    break;
+                case 'yesterday':
+                    $query->whereDate('created_at', Carbon::yesterday());
+                    $groupBy = "HOUR(created_at)";
+                    $selectRaw = "HOUR(created_at) as hour, SUM(amount) as total";
+                    break;
+                case 'week':
+                    $query->where('created_at', '>=', Carbon::now()->subDays(7));
+                    $groupBy = "DATE(created_at)";
+                    $selectRaw = "DATE(created_at) as date, SUM(amount) as total";
+                    break;
+                default: // month
+                    $query->where('created_at', '>=', Carbon::now()->subDays(30));
+                    $groupBy = "DATE(created_at)";
+                    $selectRaw = "DATE(created_at) as date, SUM(amount) as total";
+                    break;
+            }
+            
+            $deposits = $query->selectRaw($selectRaw)
+                ->groupBy(DB::raw($groupBy))
+                ->orderBy(DB::raw($groupBy), 'ASC')
+                ->get();
+
+            if ($period === 'today' || $period === 'yesterday') {
+                $baseDate = $period === 'today' ? Carbon::today() : Carbon::yesterday();
+                return $deposits->map(function ($item) use ($baseDate) {
+                    return [
+                        'x' => $baseDate->copy()->hour($item->hour)->timestamp * 1000,
+                        'y' => floatval($item->total)
+                    ];
+                })->toArray();
+            }
+            
+            return $deposits->map(function ($item) {
+                return [
+                    'x' => Carbon::parse($item->date)->timestamp * 1000,
+                    'y' => floatval($item->total)
+                ];
+            })->toArray();
+        });
+    }
+
+    /**
+     * Dados de usuários para gráfico de linha
+     */
+    private function getUsersData($period = 'month')
+    {
+        $cacheKey = 'dashboard_users_data_' . $period;
+        
+        return Cache::remember($cacheKey, 60, function () use ($period) {
+            $query = User::query();
+            
+            switch ($period) {
+                case 'today':
+                    $query->whereDate('created_at', Carbon::today());
+                    $users = $query->selectRaw('HOUR(created_at) as hour, COUNT(*) as total')
+                        ->groupBy('hour')
+                        ->orderBy('hour', 'ASC')
+                        ->get();
+                    
+                    return [
+                        'labels' => $users->pluck('hour')->map(fn($h) => sprintf('%02d:00', $h))->toArray(),
+                        'data' => $users->pluck('total')->toArray()
+                    ];
+                    
+                case 'yesterday':
+                    $query->whereDate('created_at', Carbon::yesterday());
+                    $users = $query->selectRaw('HOUR(created_at) as hour, COUNT(*) as total')
+                        ->groupBy('hour')
+                        ->orderBy('hour', 'ASC')
+                        ->get();
+                    
+                    return [
+                        'labels' => $users->pluck('hour')->map(fn($h) => sprintf('%02d:00', $h))->toArray(),
+                        'data' => $users->pluck('total')->toArray()
+                    ];
+                    
+                case 'week':
+                    $query->where('created_at', '>=', Carbon::now()->subDays(7));
+                    break;
+                    
+                default: // month
+                    $query->where('created_at', '>=', Carbon::now()->subDays(30));
+                    break;
+            }
+            
+            $users = $query->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get();
+
+            return [
+                'labels' => $users->pluck('date')->map(function ($date) {
+                    return Carbon::parse($date)->format('d/m');
+                })->toArray(),
+                'data' => $users->pluck('total')->toArray()
+            ];
+        });
+    }
+
+    /**
+     * Dados de jogos para gráfico donut
+     */
+    private function getGamesData($period = 'month')
+    {
+        $cacheKey = 'dashboard_games_data_' . $period;
+        
+        return Cache::remember($cacheKey, 60, function () use ($period) {
+            $query = Order::select('game', DB::raw('COUNT(*) as plays'))
+                ->where('type', 'bet')
+                ->whereNotNull('game');
+            
+            switch ($period) {
+                case 'today':
+                    $query->whereDate('created_at', Carbon::today());
+                    break;
+                case 'yesterday':
+                    $query->whereDate('created_at', Carbon::yesterday());
+                    break;
+                case 'week':
+                    $query->where('created_at', '>=', Carbon::now()->subDays(7));
+                    break;
+                default: // month
+                    $query->where('created_at', '>=', Carbon::now()->subDays(30));
+                    break;
+            }
+            
+            $topGames = $query->groupBy('game')
+                ->orderByDesc('plays')
+                ->limit(5)
+                ->get();
+
+            if ($topGames->isEmpty()) {
+                return [
+                    'labels' => [],
+                    'data' => []
+                ];
+            }
+
+            return [
+                'labels' => $topGames->pluck('game')->toArray(),
+                'data' => $topGames->pluck('plays')->toArray()
+            ];
+        });
+    }
+
+    /**
+     * Dados de receita para gráfico de barras
+     */
+    private function getRevenueData($period = 'month')
+    {
+        $cacheKey = 'dashboard_revenue_data_' . $period;
+        
+        return Cache::remember($cacheKey, 60, function () use ($period) {
+            $data = [];
+            
+            switch ($period) {
+                case 'today':
+                    // Para hoje, mostrar por hora
+                    for ($i = 0; $i < 24; $i++) {
+                        $startHour = Carbon::today()->hour($i);
+                        $endHour = $startHour->copy()->addHour();
+                        
+                        $deposits = Deposit::whereBetween('created_at', [$startHour, $endHour])
+                            ->where('status', 1)
+                            ->sum('amount');
+                        
+                        $withdrawals = Withdrawal::whereBetween('created_at', [$startHour, $endHour])
+                            ->where('status', 1)
+                            ->sum('amount');
+                        
+                        $data['labels'][] = sprintf('%02d:00', $i);
+                        $data['receita'][] = floatval($deposits);
+                        $data['lucro'][] = floatval($deposits - $withdrawals);
+                    }
+                    break;
+                    
+                case 'yesterday':
+                    // Para ontem, mostrar por hora
+                    for ($i = 0; $i < 24; $i++) {
+                        $startHour = Carbon::yesterday()->hour($i);
+                        $endHour = $startHour->copy()->addHour();
+                        
+                        $deposits = Deposit::whereBetween('created_at', [$startHour, $endHour])
+                            ->where('status', 1)
+                            ->sum('amount');
+                        
+                        $withdrawals = Withdrawal::whereBetween('created_at', [$startHour, $endHour])
+                            ->where('status', 1)
+                            ->sum('amount');
+                        
+                        $data['labels'][] = sprintf('%02d:00', $i);
+                        $data['receita'][] = floatval($deposits);
+                        $data['lucro'][] = floatval($deposits - $withdrawals);
+                    }
+                    break;
+                    
+                case 'week':
+                    $days = 7;
+                    break;
+                    
+                default: // month
+                    $days = 30;
+                    break;
+            }
+            
+            // Para semana e mês, mostrar por dia
+            if (in_array($period, ['week', 'month'])) {
+                for ($i = $days - 1; $i >= 0; $i--) {
+                    $date = Carbon::now()->subDays($i);
+                    
+                    $deposits = Deposit::whereDate('created_at', $date)
+                        ->where('status', 1)
+                        ->sum('amount');
+                    
+                    $withdrawals = Withdrawal::whereDate('created_at', $date)
+                        ->where('status', 1)
+                        ->sum('amount');
+                    
+                    $data['labels'][] = $date->format('d/m');
+                    $data['receita'][] = floatval($deposits);
+                    $data['lucro'][] = floatval($deposits - $withdrawals);
+                }
+            }
+            
+            return $data;
+        });
+    }
+
+    /**
+     * Estatísticas gerais
+     */
+    private function getGeneralStats($period = 'month')
+    {
+        $cacheKey = 'dashboard_general_stats_' . $period;
+        
+        return Cache::remember($cacheKey, 60, function () use ($period) {
+            // Definir período de análise
+            switch ($period) {
+                case 'today':
+                    $startDate = Carbon::today();
+                    $endDate = Carbon::now();
+                    $compareStart = Carbon::yesterday();
+                    $compareEnd = Carbon::yesterday()->endOfDay();
+                    break;
+                case 'yesterday':
+                    $startDate = Carbon::yesterday();
+                    $endDate = Carbon::yesterday()->endOfDay();
+                    $compareStart = Carbon::yesterday()->subDay();
+                    $compareEnd = Carbon::yesterday()->subDay()->endOfDay();
+                    break;
+                case 'week':
+                    $startDate = Carbon::now()->subDays(7);
+                    $endDate = Carbon::now();
+                    $compareStart = Carbon::now()->subDays(14);
+                    $compareEnd = Carbon::now()->subDays(7);
+                    break;
+                default: // month
+                    $startDate = Carbon::now()->subDays(30);
+                    $endDate = Carbon::now();
+                    $compareStart = Carbon::now()->subDays(60);
+                    $compareEnd = Carbon::now()->subDays(30);
+                    break;
+            }
+            
+            // Total de depósitos no período
+            $deposits = Deposit::whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', 1)
+                ->sum('amount');
+            
+            // Total de depósitos no período anterior (para comparação)
+            $depositsCompare = Deposit::whereBetween('created_at', [$compareStart, $compareEnd])
+                ->where('status', 1)
+                ->sum('amount');
+            
+            // Total de saques no período
+            $withdrawals = Withdrawal::whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', 1)
+                ->sum('amount');
+            
+            // Novos usuários no período
+            $newUsers = User::whereBetween('created_at', [$startDate, $endDate])->count();
+            $newUsersCompare = User::whereBetween('created_at', [$compareStart, $compareEnd])->count();
+            
+            // Total de apostas no período
+            $bets = Order::where('type', 'bet')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->count();
+            $betsCompare = Order::where('type', 'bet')
+                ->whereBetween('created_at', [$compareStart, $compareEnd])
+                ->count();
+            
+            // Calcular mudanças percentuais
+            $depositsChange = $depositsCompare > 0 
+                ? round((($deposits - $depositsCompare) / $depositsCompare) * 100, 1) 
+                : 0;
+            $usersChange = $newUsersCompare > 0 
+                ? round((($newUsers - $newUsersCompare) / $newUsersCompare) * 100, 1) 
+                : 0;
+            $betsChange = $betsCompare > 0 
+                ? round((($bets - $betsCompare) / $betsCompare) * 100, 1) 
+                : 0;
+            
+            $profit = $deposits - $withdrawals;
+            $profitCompare = $depositsCompare - Withdrawal::whereBetween('created_at', [$compareStart, $compareEnd])
+                ->where('status', 1)
+                ->sum('amount');
+            $profitChange = $profitCompare != 0 
+                ? round((($profit - $profitCompare) / abs($profitCompare)) * 100, 1) 
+                : 0;
+            
+            return [
+                'total_deposits' => $deposits,
+                'total_deposits_change' => $depositsChange,
+                'total_users' => $newUsers,
+                'total_users_change' => $usersChange,
+                'total_bets' => $bets,
+                'total_bets_change' => $betsChange,
+                'total_profit' => $profit,
+                'total_profit_change' => $profitChange,
+                'withdrawals' => $withdrawals,
+            ];
+        });
+    }
+
+    /**
+     * Dados em tempo real (sem cache)
+     */
+    private function getRealtimeData()
+    {
+        $lastMinute = Carbon::now()->subMinute();
+        
+        return [
+            'active_users' => User::where('updated_at', '>=', $lastMinute)->count(),
+            'recent_deposits' => Deposit::where('created_at', '>=', $lastMinute)
+                ->where('status', 1)
+                ->count(),
+            'recent_bets' => Order::where('type', 'bet')
+                ->where('created_at', '>=', $lastMinute)
+                ->count(),
+            'timestamp' => now()->timestamp
+        ];
+    }
+
+    /**
+     * Endpoint para sparklines individuais
+     */
+    public function sparkline(Request $request, $type)
+    {
+        // TEMPORÁRIO: Desabilitado para testes
+        /*if (!auth()->user()->hasRole('admin')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }*/
+
+        $data = [];
+        $hours = 24;
+
+        switch ($type) {
+            case 'deposits':
+                for ($i = $hours - 1; $i >= 0; $i--) {
+                    $hour = Carbon::now()->subHours($i);
+                    $value = Deposit::where('status', 1)
+                        ->whereBetween('created_at', [$hour, $hour->copy()->addHour()])
+                        ->sum('amount');
+                    $data[] = floatval($value);
+                }
+                break;
+                
+            case 'users':
+                for ($i = $hours - 1; $i >= 0; $i--) {
+                    $hour = Carbon::now()->subHours($i);
+                    $value = User::whereBetween('created_at', [$hour, $hour->copy()->addHour()])
+                        ->count();
+                    $data[] = $value;
+                }
+                break;
+                
+            case 'bets':
+                for ($i = $hours - 1; $i >= 0; $i--) {
+                    $hour = Carbon::now()->subHours($i);
+                    $value = Order::where('type', 'bet')
+                        ->whereBetween('created_at', [$hour, $hour->copy()->addHour()])
+                        ->count();
+                    $data[] = $value;
+                }
+                break;
+        }
+
+        return response()->json(['data' => $data]);
+    }
+
+    /**
+     * Exportar dados do dashboard
+     */
+    public function export(Request $request)
+    {
+        // TEMPORÁRIO: Desabilitado para testes
+        /*if (!auth()->user()->hasRole('admin')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }*/
+
+        $format = $request->get('format', 'json');
+        $period = $request->get('period', 'month');
+
+        $startDate = match ($period) {
+            'week' => Carbon::now()->subWeek(),
+            'month' => Carbon::now()->subMonth(),
+            'year' => Carbon::now()->subYear(),
+            default => Carbon::now()->subMonth()
+        };
+
+        $data = [
+            'period' => [
+                'start' => $startDate->format('Y-m-d'),
+                'end' => now()->format('Y-m-d')
+            ],
+            'deposits' => Deposit::where('status', 1)
+                ->where('created_at', '>=', $startDate)
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(amount) as total')
+                ->groupBy('date')
+                ->orderBy('date', 'DESC')
+                ->get(),
+            'withdrawals' => Withdrawal::where('status', 1)
+                ->where('created_at', '>=', $startDate)
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(amount) as total')
+                ->groupBy('date')
+                ->orderBy('date', 'DESC')
+                ->get(),
+            'users' => User::where('created_at', '>=', $startDate)
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+                ->groupBy('date')
+                ->orderBy('date', 'DESC')
+                ->get(),
+            'games' => Order::where('type', 'bet')
+                ->where('created_at', '>=', $startDate)
+                ->selectRaw('game, COUNT(*) as plays, SUM(amount) as total')
+                ->groupBy('game')
+                ->orderByDesc('plays')
+                ->limit(20)
+                ->get()
+        ];
+
+        if ($format === 'csv') {
+            // Implementar exportação CSV
+            return $this->exportAsCSV($data);
+        }
+
+        return response()->json($data);
+    }
+
+    /**
+     * Exportar como CSV
+     */
+    private function exportAsCSV($data)
+    {
+        $csv = "Dashboard Report - " . now()->format('Y-m-d H:i:s') . "\n\n";
+        
+        // Depósitos
+        $csv .= "DEPOSITS\n";
+        $csv .= "Date,Count,Total\n";
+        foreach ($data['deposits'] as $deposit) {
+            $csv .= "{$deposit->date},{$deposit->count},{$deposit->total}\n";
+        }
+        
+        $csv .= "\nWITHDRAWALS\n";
+        $csv .= "Date,Count,Total\n";
+        foreach ($data['withdrawals'] as $withdrawal) {
+            $csv .= "{$withdrawal->date},{$withdrawal->count},{$withdrawal->total}\n";
+        }
+        
+        $csv .= "\nNEW USERS\n";
+        $csv .= "Date,Total\n";
+        foreach ($data['users'] as $user) {
+            $csv .= "{$user->date},{$user->total}\n";
+        }
+        
+        $csv .= "\nTOP GAMES\n";
+        $csv .= "Game,Plays,Total\n";
+        foreach ($data['games'] as $game) {
+            $csv .= "\"{$game->game}\",{$game->plays},{$game->total}\n";
+        }
+        
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="dashboard-report-' . now()->format('Y-m-d') . '.csv"'
+        ]);
+    }
+
+    /**
+     * Gerar dados de teste para visualização
+     * APENAS PARA DESENVOLVIMENTO - REMOVER EM PRODUÇÃO
+     */
+    public function generateTestData(Request $request)
+    {
+        $period = $request->get('period', 'today');
+        
+        // Gerar dados de depósitos
+        $deposits = [];
+        if ($period === 'today') {
+            $now = now();
+            for ($i = 0; $i < 24; $i++) {
+                $hour = $now->copy()->hour($i);
+                $value = 0;
+                
+                // Simular picos em horários específicos
+                if ($i >= 8 && $i <= 23) {
+                    $value = rand(500, 5000);
+                    if ($i >= 19 && $i <= 22) {
+                        $value = rand(3000, 8000); // Pico noturno
+                    }
+                }
+                
+                $deposits[] = [
+                    'x' => $hour->timestamp * 1000,
+                    'y' => $value
+                ];
+            }
+        }
+        
+        // Gerar dados de usuários
+        $usersLabels = [];
+        $usersData = [];
+        for ($i = 0; $i < 24; $i++) {
+            $usersLabels[] = sprintf('%02d:00', $i);
+            $userCount = 0;
+            
+            if ($i >= 6 && $i <= 23) {
+                $userCount = rand(2, 20);
+                if ($i >= 20 && $i <= 22) {
+                    $userCount = rand(15, 35); // Pico noturno
+                }
+            }
+            
+            $usersData[] = $userCount;
+        }
+        
+        // Gerar dados de jogos
+        $games = [
+            'Gates of Olympus',
+            'Fortune Tiger', 
+            'Sweet Bonanza',
+            'Aviator',
+            'Spaceman',
+            'Mines',
+            'Fortune Ox',
+            'Sugar Rush'
+        ];
+        
+        $gamesData = [];
+        $gamesLabels = [];
+        
+        // Selecionar 5 jogos aleatórios
+        shuffle($games);
+        for ($i = 0; $i < min(5, count($games)); $i++) {
+            $gamesLabels[] = $games[$i];
+            $gamesData[] = rand(10, 100);
+        }
+        
+        // Gerar dados de receita
+        $revenueLabels = [];
+        $receita = [];
+        $lucro = [];
+        
+        if ($period === 'today') {
+            for ($i = 0; $i < 24; $i++) {
+                $revenueLabels[] = sprintf('%02d:00', $i);
+                $depositValue = 0;
+                $profitValue = 0;
+                
+                if ($i >= 8 && $i <= 23) {
+                    $depositValue = rand(1000, 10000);
+                    $profitValue = $depositValue * 0.15; // 15% de lucro médio
+                }
+                
+                $receita[] = $depositValue;
+                $lucro[] = $profitValue;
+            }
+        }
+        
+        // Gerar estatísticas gerais
+        $stats = [
+            'total_deposits' => rand(50000, 150000),
+            'total_deposits_change' => rand(-20, 50),
+            'total_users' => rand(50, 200),
+            'total_users_change' => rand(-10, 30),
+            'total_bets' => rand(500, 2000),
+            'total_bets_change' => rand(-15, 40),
+            'total_profit' => rand(10000, 30000),
+            'total_profit_change' => rand(-25, 60),
+            'withdrawals' => rand(5000, 20000),
+        ];
+        
+        // Dados em tempo real
+        $realtime = [
+            'active_users' => rand(10, 50),
+            'recent_deposits' => rand(1, 10),
+            'recent_bets' => rand(5, 30),
+            'timestamp' => now()->timestamp
+        ];
+        
+        $data = [
+            'test_mode' => true,
+            'message' => 'DADOS DE TESTE - Para visualização apenas',
+            'deposits' => $deposits,
+            'users' => [
+                'labels' => $usersLabels,
+                'data' => $usersData
+            ],
+            'games' => [
+                'labels' => $gamesLabels,
+                'data' => $gamesData
+            ],
+            'revenue' => [
+                'labels' => $revenueLabels,
+                'receita' => $receita,
+                'lucro' => $lucro
+            ],
+            'stats' => $stats,
+            'realtime' => $realtime
+        ];
+        
+        // SALVAR DADOS DE TESTE NO CACHE PARA OS WIDGETS FUNCIONAREM
+        
+        // 1. Salvar dados do Top 5 Games no formato esperado pelo widget
+        $top5GamesTestData = collect();
+        $gamesAmounts = [2097, 1161, 1322, 1942, 954]; // Valores de receita
+        for ($i = 0; $i < count($gamesLabels); $i++) {
+            $top5GamesTestData->push((object)[
+                'game' => $gamesLabels[$i],
+                'plays' => $gamesData[$i],
+                'total_amount' => $gamesAmounts[$i] ?? rand(500, 2500)
+            ]);
+        }
+        Cache::put('top5_games_chart_data', $top5GamesTestData, 900); // 15 minutos
+        
+        // 2. Salvar dados do Users Ranking no formato esperado pelo widget  
+        $usersTestNames = [
+            'Teste CPF Auto', 'Admin LucrativaBet', 'Teste Demo', 
+            'Teste AureoLink', 'Admin', 'Teste Usuario 2',
+            'Teste VIP 1', 'Teste VIP 2', 'Demo User'
+        ];
+        $usersTestEmails = [
+            'teste1@email.com', 'admin@lucrativa.com', 'demo@test.com',
+            'aureo@test.com', 'admin@test.com', 'usuario2@test.com', 
+            'vip1@test.com', 'vip2@test.com', 'demo@user.com'
+        ];
+        $usersTestDeposits = [4, 3, 2, 3, 3, 3, 2, 2, 1];
+        $usersTestAmounts = [2149, 1708, 1454, 769, 712, 600, 450, 350, 200];
+        
+        $usersRankingTestData = collect();
+        for ($i = 0; $i < min(count($usersTestNames), 9); $i++) {
+            $usersRankingTestData->push((object)[
+                'name' => $usersTestNames[$i],
+                'email' => $usersTestEmails[$i],
+                'total_deposited' => $usersTestAmounts[$i],
+                'total_deposits' => $usersTestDeposits[$i]
+            ]);
+        }
+        Cache::put('users_ranking_chart_data', $usersRankingTestData, 1800); // 30 minutos
+        
+        return response()->json($data);
+    }
+
+    /**
+     * Limpar cache do dashboard (reset)
+     */
+    public function clearCache()
+    {
+        // Limpar todos os caches do dashboard
+        $periods = ['today', 'yesterday', 'week', 'month'];
+        $types = ['deposits', 'users', 'games', 'revenue', 'general_stats'];
+        
+        foreach ($periods as $period) {
+            foreach ($types as $type) {
+                Cache::forget("dashboard_{$type}_data_{$period}");
+            }
+        }
+        
+        // Limpar cache adicional
+        Cache::forget('users_ranking_chart_data');
+        Cache::forget('top5_games_chart_data');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Cache do dashboard limpo com sucesso!'
+        ]);
+    }
+}

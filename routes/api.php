@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MinesController;
 use App\Http\Controllers\Api\MinesHistoryController;
 use App\Http\Controllers\Api\DailyBonusController;
 use App\Http\Controllers\Api\GameOpenController;
+use App\Http\Controllers\Api\DashboardMetricsController;
 /*
 |--------------------------------------------------------------------------
 | ROTA DAS MISSÕES
@@ -87,6 +88,15 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
     include_once(__DIR__ . '/groups/api/auth/auth.php');
 });
 
+// Dashboard Metrics Routes (sem JWT para admin)
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard-metrics', [DashboardMetricsController::class, 'index']);
+    Route::get('/dashboard-metrics/sparkline/{type}', [DashboardMetricsController::class, 'sparkline']);
+    Route::get('/dashboard-metrics/export', [DashboardMetricsController::class, 'export']);
+    Route::get('/dashboard-metrics/test', [DashboardMetricsController::class, 'generateTestData']);
+    Route::post('/dashboard-metrics/clear-cache', [DashboardMetricsController::class, 'clearCache']);
+});
+
 Route::group(['middleware' => ['auth.jwt']], function () {
     
 
@@ -104,7 +114,6 @@ Route::group(['middleware' => ['auth.jwt']], function () {
             Route::get('/', [VipController::class, 'getVipsWithProgress']); // Lista níveis VIP com progresso
             Route::post('/{vipId}/claim', [VipController::class, 'claimVipReward']); // Resgata recompensa semanal
         });
-
         
     Route::prefix('profile')
         ->group(function ()

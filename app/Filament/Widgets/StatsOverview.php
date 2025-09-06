@@ -83,68 +83,71 @@ class StatsOverview extends BaseWidget
         $numberOfUsersWithFourOrMoreDeposits = $depositStats->four_or_more_deposits ?? 0;
 
         return [
-            Stat::make('TOTAL DE CADASTROS', number_format($totalUsers, 0, ',', '.'))
-                ->description(new HtmlString('<strong>'.$totalUsers.'</strong> usuários registrados • <span style="color: #4dabf7">Sistema ativo</span>'))
-                ->descriptionIcon('heroicon-o-users')
-                ->color('blue')
-                ->chart([2, 8, 20, 45, 65, 80, 95])
-                ->chartColor('rgba(77, 171, 247, 1.0)'), // Azul claro para cadastros
-            
-            Stat::make('TOTAL DEPOSITADO HOJE', \Helper::amountFormatDecimal($totalDepositedToday)) 
-                ->description(new HtmlString($totalDepositedToday > 0 ? '💰 <strong>Recebimentos processados</strong>' : '⏳ <span style="color: #ffd43b">Aguardando depósitos hoje</span>'))
+            // Métricas Financeiras Principais - Verde LucrativaBet
+            Stat::make('DEPÓSITOS HOJE', \Helper::amountFormatDecimal($totalDepositedToday)) 
+                ->description($totalDepositedToday > 0 ? '💰 Entrada de capital processada' : '⏳ Aguardando depósitos')
                 ->descriptionIcon('heroicon-o-currency-dollar')
-                ->color('green')
+                ->color('success')
                 ->chart([30, 50, 40, 60, 80, 70, 90])
-                ->chartColor('rgba(0, 255, 65, 1.0)'), // Verde Matrix para depósitos
+                ->chartColor('#22c55e'), // Verde LucrativaBet
             
-            Stat::make('TOTAL DE SAQUES HOJE', \Helper::amountFormatDecimal($totalsacadoToday))
-                ->description(new HtmlString($totalsacadoToday > 0 ? '💳 <strong>Saques processados</strong>' : '🔒 <span style="color: #26d0ce">Sem saques hoje</span>'))
+            Stat::make('SAQUES HOJE', \Helper::amountFormatDecimal($totalsacadoToday))
+                ->description($totalsacadoToday > 0 ? '💳 Saques processados' : '🔒 Sem saques hoje')
                 ->descriptionIcon('heroicon-o-arrow-down-circle')
-                ->color('red')
+                ->color('danger')
                 ->chart([40, 30, 50, 60, 70, 90, 100])
-                ->chartColor('rgba(255, 107, 53, 1.0)'), // Laranja vibrante para saques
+                ->chartColor('#ef4444'), // Vermelho para saques
 
-            Stat::make('SALDO TOTAL DOS PLAYERS', \Helper::amountFormatDecimal($saldodosplayers))
-                ->description(new HtmlString($saldodosplayers > 0 ? '💳 <strong>Saldo disponível nas carteiras</strong>' : '💰 <span style="color: #ffd43b">Aguardando primeiros depósitos</span>'))
+            Stat::make('SALDO DOS PLAYERS', \Helper::amountFormatDecimal($saldodosplayers))
+                ->description('💳 Capital disponível nas carteiras')
                 ->descriptionIcon('heroicon-o-wallet')
-                ->color('purple')
+                ->color('info')
                 ->chart([15, 30, 25, 40, 35, 50, 45])
-                ->chartColor('rgba(255, 212, 59, 1.0)'), // Amarelo dourado para saldo players
+                ->chartColor('#3b82f6'), // Azul para saldo
 
-            Stat::make('SALDO TOTAL DOS AFILIADOS', \Helper::amountFormatDecimal($totalReferRewardsLast7Days))
-                ->description(new HtmlString($totalReferRewardsLast7Days > 0 ? '🤝 <strong>Comissões acumuladas</strong>' : '🔄 <span style="color: #26d0ce">Sistema de afiliação ativo</span>'))
+            // Métricas de Usuários - Tons neutros profissionais
+            Stat::make('TOTAL DE CADASTROS', number_format($totalUsers, 0, ',', '.'))
+                ->description('👥 Base de usuários registrados')
                 ->descriptionIcon('heroicon-o-users')
-                ->color('yellow')
-                ->chart([5, 15, 10, 20, 25, 30, 35])
-                ->chartColor('rgba(38, 208, 206, 1.0)'), // Ciano para afiliados
-            
-            Stat::make('DEPOSITARAM 1 VEZ', $numberOfUsersWithSingleDeposit)
-                ->description(new HtmlString($numberOfUsersWithSingleDeposit > 0 ? '🥉 <strong>Usuários iniciantes</strong> • Potencial conversão' : '⭐ <span style="color: #9c88ff">Aguardando primeiros depósitos</span>'))
-                ->descriptionIcon('heroicon-o-user')
-                ->color('orange')
-                ->chart([30, 45, 55, 60, 65, 70, 75])
-                ->chartColor('rgba(156, 136, 255, 1.0)'), // Roxo claro para 1 depósito
-            
-            Stat::make('DEPOSITARAM 2 VEZES', $numberOfUsersWithTwoDeposits)
-                ->description(new HtmlString($numberOfUsersWithTwoDeposits > 0 ? '🥈 <strong>Usuários engajados</strong> • Bom sinal' : '🔄 <span style="color: #ff8cc8">Sistema monitorando reengajamento</span>'))
-                ->descriptionIcon('heroicon-o-user-plus')
-                ->color('pink')
-                ->chart([20, 30, 25, 35, 45, 50, 55])
-                ->chartColor('rgba(255, 140, 200, 1.0)'), // Rosa suave para 2 depósitos
-            
-            Stat::make('DEPOSITARAM 3 VEZES', $numberOfUsersWithThreeDeposits)
-                ->description(new HtmlString($numberOfUsersWithThreeDeposits > 0 ? '🥇 <strong>Usuários fiéis</strong> • Alta retenção' : '🎯 <span style="color: #9333ea">Aguardando usuários VIP</span>'))
-                ->descriptionIcon('heroicon-o-star')
-                ->color('indigo')
-                ->chart([45, 50, 55, 60, 65, 70, 80])
-                ->chartColor('rgba(147, 51, 234, 1.0)'), // Roxo vibrante para 3 depósitos
+                ->color('gray')
+                ->chart([2, 8, 20, 45, 65, 80, 95])
+                ->chartColor('#6b7280'), // Cinza neutro
 
-            Stat::make('DEPOSITARAM 4+ VEZES', $numberOfUsersWithFourOrMoreDeposits)
-                ->description(new HtmlString($numberOfUsersWithFourOrMoreDeposits > 0 ? '👑 <strong>Usuários VIP</strong> • Máxima fidelidade' : '💎 <span style="color: #ec4899">Sistema preparado para VIPs</span>'))
+            Stat::make('COMISSÕES AFILIADOS', \Helper::amountFormatDecimal($totalReferRewardsLast7Days))
+                ->description('🤝 Sistema de referência ativo')
+                ->descriptionIcon('heroicon-o-user-group')
+                ->color('warning')
+                ->chart([5, 15, 10, 20, 25, 30, 35])
+                ->chartColor('#f59e0b'), // Amarelo para afiliação
+
+            // Métricas de Engajamento - Escala de verde claro
+            Stat::make('1º DEPÓSITO', $numberOfUsersWithSingleDeposit)
+                ->description('🌱 Usuários iniciantes')
+                ->descriptionIcon('heroicon-o-user')
+                ->color('success')
+                ->chart([30, 45, 55, 60, 65, 70, 75])
+                ->chartColor('#4ade80'), // Verde claro
+            
+            Stat::make('2º DEPÓSITO', $numberOfUsersWithTwoDeposits)
+                ->description('📈 Usuários engajados')
+                ->descriptionIcon('heroicon-o-user-plus')
+                ->color('success')
+                ->chart([20, 30, 25, 35, 45, 50, 55])
+                ->chartColor('#22c55e'), // Verde principal
+            
+            Stat::make('3º DEPÓSITO', $numberOfUsersWithThreeDeposits)
+                ->description('🎯 Usuários fiéis')
+                ->descriptionIcon('heroicon-o-star')
+                ->color('success')
+                ->chart([45, 50, 55, 60, 65, 70, 80])
+                ->chartColor('#15803d'), // Verde escuro
+
+            Stat::make('4+ DEPÓSITOS', $numberOfUsersWithFourOrMoreDeposits)
+                ->description('👑 Usuários VIP')
                 ->descriptionIcon('heroicon-o-trophy')
-                ->color('teal')
+                ->color('success')
                 ->chart([25, 35, 30, 40, 45, 55, 60])
-                ->chartColor('rgba(236, 72, 153, 1.0)'), // Pink para 4+ depósitos
+                ->chartColor('#166534'), // Verde muito escuro - VIP
         ];
     }
 

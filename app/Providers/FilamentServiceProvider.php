@@ -32,6 +32,7 @@ class FilamentServiceProvider extends ServiceProvider
 
         FilamentAsset::register([
             Js::make('fontawesomepro-script', asset('js/fontawesomepro.min.js'))->loadedOnRequest(),
+            Js::make('apexcharts', 'https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js'),
         ]);
     }
 }
