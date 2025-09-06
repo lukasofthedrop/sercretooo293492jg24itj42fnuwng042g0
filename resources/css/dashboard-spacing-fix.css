@@ -1,0 +1,299 @@
+/* ========================================
+   LUCRATIVABET - CORREÇÕES PROFISSIONAIS
+   Layout equilibrado e harmonioso
+   ======================================== */
+
+/* Reset base do Filament - mais equilibrado */
+.fi-main,
+.fi-body,
+.fi-page,
+.fi-dashboard-page {
+    padding: 1rem !important;
+    margin: 0 !important;
+}
+
+/* ===== CARDS DE ESTATÍSTICAS PRINCIPAIS ===== */
+/* Cards com altura adequada e respirável */
+.bg-gradient-to-br.from-green-500\/20,
+.bg-gradient-to-br.from-blue-500\/20,
+.bg-gradient-to-br.from-yellow-500\/20,
+.bg-gradient-to-br.from-purple-500\/20 {
+    min-height: 110px !important;
+    padding: 1rem !important;
+    margin-bottom: 0.75rem !important;
+    border-radius: 12px !important;
+}
+
+/* Títulos dos stats cards */
+.text-green-400.text-sm.font-semibold,
+.text-blue-400.text-sm.font-semibold,
+.text-yellow-400.text-sm.font-semibold,
+.text-purple-400.text-sm.font-semibold {
+    margin-bottom: 0.5rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* Valores dos stats cards */
+.text-white.text-2xl.font-bold {
+    margin: 0.75rem 0 0.5rem 0 !important;
+    line-height: 1.3 !important;
+}
+
+/* Percentuais de mudança */
+.text-green-400.text-xs,
+.text-blue-400.text-xs,
+.text-yellow-400.text-xs,
+.text-purple-400.text-xs {
+    margin-top: 0.5rem !important;
+    font-size: 0.8rem !important;
+}
+
+/* ===== GRID LAYOUTS EQUILIBRADOS ===== */
+/* Grid principal dos stats cards */
+.grid.grid-cols-1.md\:grid-cols-4 {
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Grid dos gráficos */
+.grid.grid-cols-1.md\:grid-cols-2 {
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* ===== GRÁFICOS E WIDGETS ===== */
+/* Containers de gráficos com altura adequada */
+.bg-black\/50 {
+    min-height: 300px !important;
+    height: auto !important;
+    padding: 1.25rem !important;
+    margin-bottom: 1rem !important;
+    border-radius: 12px !important;
+}
+
+/* Gráficos específicos - altura profissional */
+#deposits-chart,
+#users-chart,
+#revenue-chart,
+#games-donut-chart {
+    min-height: 250px !important;
+    height: 250px !important;
+}
+
+/* Headers dos gráficos */
+h3.text-green-400.font-bold {
+    margin-bottom: 1rem !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+}
+
+/* ===== WIDGETS ESPECÍFICOS ===== */
+/* Widget de ranking de usuários */
+.users-ranking-container,
+.fi-section:has(.ranking-item) {
+    padding: 1.25rem !important;
+    margin-bottom: 1rem !important;
+    min-height: 350px !important;
+    border-radius: 12px !important;
+}
+
+/* Widget top 5 jogos */
+.top5-games-container,
+.fi-section:has(.game-card) {
+    padding: 1.25rem !important;
+    margin-bottom: 1rem !important;
+    min-height: 350px !important;
+    border-radius: 12px !important;
+}
+
+/* Items de ranking */
+.ranking-item {
+    padding: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+    border-radius: 8px !important;
+}
+
+/* ===== BOTÕES DE FILTRO ===== */
+/* Container dos filtros */
+.mb-6.flex.justify-center {
+    margin-bottom: 1.5rem !important;
+    gap: 0.75rem !important;
+}
+
+/* Botões individuais */
+.filter-btn {
+    padding: 0.75rem 1rem !important;
+    margin: 0.25rem !important;
+    border-radius: 8px !important;
+    min-height: 44px !important;
+}
+
+/* ===== SEÇÕES E HEADERS ===== */
+/* Header principal da página */
+.fi-header.fi-page-header {
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Título principal */
+.fi-header-heading {
+    margin-bottom: 1rem !important;
+    line-height: 1.3 !important;
+}
+
+/* Seção Dashboard Executivo */
+.fi-section:has(h3:contains("DASHBOARD EXECUTIVO")) {
+    padding: 1.25rem !important;
+    margin-bottom: 1.5rem !important;
+    border-radius: 12px !important;
+}
+
+/* ===== WIDGETS FILAMENT ===== */
+/* Widgets padrão do Filament */
+.fi-wi {
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    border-radius: 12px !important;
+}
+
+.fi-wi-body,
+.fi-wi-content {
+    padding: 1rem !important;
+}
+
+.fi-wi-header {
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+/* Stats overview widgets */
+.fi-stats-overview-widget {
+    margin-bottom: 1rem !important;
+}
+
+.fi-stats-overview-widget-card {
+    padding: 1rem !important;
+    margin-bottom: 0.75rem !important;
+    border-radius: 12px !important;
+    min-height: 100px !important;
+}
+
+/* ===== TEXTOS E TIPOGRAFIA ===== */
+/* Line-height natural para textos */
+* {
+    line-height: 1.4 !important;
+}
+
+/* Títulos de seções */
+h3 {
+    margin-bottom: 1rem !important;
+    line-height: 1.3 !important;
+}
+
+/* Parágrafos */
+p {
+    line-height: 1.5 !important;
+    margin-bottom: 0.75rem !important;
+}
+
+/* ===== ESTATÍSTICAS FINAIS ===== */
+/* Cards de totais no final da página */
+.grid:last-child {
+    margin-top: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    gap: 1rem !important;
+}
+
+/* Containers de totais */
+div:has(.text-xl.font-bold) {
+    padding: 1.25rem !important;
+    min-height: 120px !important;
+    border-radius: 12px !important;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+    .fi-main {
+        padding: 0.75rem !important;
+    }
+    
+    .grid.md\:grid-cols-4,
+    .grid.md\:grid-cols-2 {
+        gap: 0.75rem !important;
+    }
+    
+    .bg-gradient-to-br {
+        min-height: 90px !important;
+        padding: 0.75rem !important;
+    }
+    
+    .bg-black\/50 {
+        min-height: 250px !important;
+        padding: 1rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .fi-main {
+        padding: 1.5rem !important;
+    }
+    
+    .grid.lg\:grid-cols-3,
+    .grid.lg\:grid-cols-4 {
+        gap: 1.25rem !important;
+    }
+    
+    .bg-black\/50 {
+        min-height: 320px !important;
+        padding: 1.5rem !important;
+    }
+}
+
+/* ===== OTIMIZAÇÕES ESPECÍFICAS ===== */
+/* Breadcrumbs */
+.fi-breadcrumbs {
+    padding: 0.5rem 0 !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Modais */
+.fi-modal-content {
+    padding: 1.5rem !important;
+    line-height: 1.5 !important;
+}
+
+/* Botões gerais */
+.fi-btn {
+    padding: 0.75rem 1rem !important;
+    margin: 0.25rem !important;
+    min-height: 44px !important;
+    border-radius: 8px !important;
+}
+
+/* Tabelas */
+.fi-table-row {
+    padding: 0.75rem !important;
+    line-height: 1.4 !important;
+}
+
+.fi-table-cell {
+    padding: 0.5rem 0.75rem !important;
+}
+
+/* ===== AJUSTES FINAIS ===== */
+/* Padding inferior da página */
+.fi-body {
+    padding-bottom: 2rem !important;
+}
+
+/* Containers com scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Otimização de altura total */
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+}

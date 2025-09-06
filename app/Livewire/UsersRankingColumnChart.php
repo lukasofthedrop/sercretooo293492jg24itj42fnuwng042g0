@@ -56,16 +56,16 @@ class UsersRankingColumnChart extends Component
                 'deposits' => $deposits,
                 'amounts' => $amounts,
                 'colors' => [
-                    '#00ff41', // Verde Matrix principal 
-                    '#ff6b35', // Laranja vibrante
-                    '#4dabf7', // Azul claro
-                    '#ffd43b', // Amarelo dourado
-                    '#ff8cc8', // Rosa suave
-                    '#9c88ff', // Roxo claro
-                    '#26d0ce', // Ciano
-                    '#f59e0b', // Âmbar
-                    '#ef4444', // Vermelho
-                    '#10b981'  // Verde esmeralda
+                    '#22c55e', // Verde LucrativaBet principal
+                    '#4ade80', // Verde claro
+                    '#15803d', // Verde escuro
+                    '#06b6d4', // Ciano profissional
+                    '#3b82f6', // Azul profissional  
+                    '#10b981', // Verde esmeralda
+                    '#14b8a6', // Teal
+                    '#059669', // Verde médio
+                    '#16a34a', // Verde padrão
+                    '#166534'  // Verde muito escuro
                 ]
             ];
         } else {

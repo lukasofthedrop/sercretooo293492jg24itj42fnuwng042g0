@@ -52,23 +52,26 @@ class WalletOverview extends BaseWidget
     
         return [
             
-            Stat::make(new HtmlString('<span style="color: white;">TOTAL DE DEPOSITOS</span>'), \Helper::amountFormatDecimal($totalDepositsAfterDiscount))
-                ->description(new HtmlString('<span style="color: white;">Total de depósitos</span>'))
+            Stat::make('TOTAL DE DEPÓSITOS', \Helper::amountFormatDecimal($totalDepositsAfterDiscount))
+                ->description('💰 Entrada de capital na plataforma')
                 ->descriptionIcon('heroicon-o-banknotes')
+                ->color('success')
                 ->chart([10, 30, 55, 75, 85, 95, 100])
-                ->chartColor('rgba(0, 255, 65, 1.0)'), // Verde Matrix para depósitos
+                ->chartColor('#22c55e'), // Verde LucrativaBet
             
-            Stat::make(new HtmlString('<span style="color: white;">TOTAL DE SAQUES</span>'), \Helper::amountFormatDecimal($sumWithdrawalMonth))
-                ->description(new HtmlString('<span style="color: white;">Total de Saques</span>'))
+            Stat::make('TOTAL DE SAQUES', \Helper::amountFormatDecimal($sumWithdrawalMonth))
+                ->description('💳 Saques processados com sucesso')
                 ->descriptionIcon('heroicon-o-arrow-down-circle')
+                ->color('danger')
                 ->chart([100, 80, 60, 45, 30, 20, 10])
-                ->chartColor('rgba(255, 107, 53, 1.0)'), // Laranja vibrante para saques
+                ->chartColor('#ef4444'), // Vermelho para saques
             
-            Stat::make(new HtmlString('<span style="color: white;">DENUNCIAS (Manutençao)</span>'), "0")
-                ->description(new HtmlString('<span style="color: white;">Manutençao</span>'))
-                ->descriptionIcon('heroicon-o-currency-dollar')
-                ->chart([50, 50, 50, 50, 50, 50, 50])
-                ->chartColor('rgba(255, 212, 59, 1.0)'), // Amarelo dourado para manutenção
+            Stat::make('SISTEMA OPERACIONAL', "✅ ATIVO")
+                ->description('🛡️ Monitoramento 24/7 ativo')
+                ->descriptionIcon('heroicon-o-shield-check')
+                ->color('info')
+                ->chart([100, 100, 100, 100, 100, 100, 100])
+                ->chartColor('#3b82f6'), // Azul para sistema
         ];
     }
 
