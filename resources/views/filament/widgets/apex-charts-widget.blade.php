@@ -202,7 +202,7 @@
             initialized: false
         };
         
-        function initLucrativaCharts() {
+        async function initLucrativaCharts() {
             // Prevenir inicialização duplicada
             if (window.LucrativaCharts.initialized) {
                 console.log('⚠️ Charts já inicializados');
@@ -242,6 +242,57 @@
             depositsContainer.innerHTML = '';
             usersContainer.innerHTML = '';
             
+            // Buscar dados reais da API
+            let depositsData = [];
+            let depositsCategories = [];
+            let usersData = [];
+            let usersCategories = [];
+            
+            try {
+                console.log('📡 Buscando dados da API...');
+                const response = await fetch('/api/admin/dashboard-metrics?period=today');
+                const apiData = await response.json();
+                
+                // Processar dados de depósitos
+                if (apiData.deposits && apiData.deposits.length > 0) {
+                    depositsData = apiData.deposits.map(item => item.y || 0);
+                    depositsCategories = apiData.deposits.map(item => {
+                        const date = new Date(item.x);
+                        return date.getHours() + 'h';
+                    });
+                } else {
+                    // Se não houver dados, criar array vazio para 24 horas
+                    for (let i = 0; i < 24; i++) {
+                        depositsData.push(0);
+                        depositsCategories.push(i + 'h');
+                    }
+                }
+                
+                // Processar dados de usuários
+                if (apiData.users && apiData.users.data) {
+                    usersData = apiData.users.data;
+                    usersCategories = apiData.users.labels || [];
+                } else {
+                    // Se não houver dados, criar array vazio para 24 horas
+                    for (let i = 0; i < 24; i++) {
+                        usersData.push(0);
+                        usersCategories.push(i + 'h');
+                    }
+                }
+                
+                console.log('✅ Dados da API recebidos:', { depositsData, usersData });
+                
+            } catch (error) {
+                console.error('❌ Erro ao buscar dados da API:', error);
+                // Usar dados vazios em caso de erro
+                for (let i = 0; i < 24; i++) {
+                    depositsData.push(0);
+                    depositsCategories.push(i + 'h');
+                    usersData.push(0);
+                    usersCategories.push(i + 'h');
+                }
+            }
+            
             // Configuração tema
             const chartTheme = {
                 mode: 'dark',
@@ -254,11 +305,11 @@
                 }
             };
             
-            // Gráfico de Depósitos
+            // Gráfico de Depósitos com dados reais
             const depositsOptions = {
                 series: [{
                     name: 'Depósitos',
-                    data: [1200, 1800, 2100, 2400, 2800, 3200, 3800, 4200, 4500, 5100]
+                    data: depositsData
                 }],
                 chart: {
                     type: 'area',
@@ -287,7 +338,7 @@
                     }
                 },
                 xaxis: {
-                    categories: ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h', '23h', '24h'],
+                    categories: depositsCategories,
                     labels: {
                         style: {
                             colors: '#94a3b8',
@@ -320,14 +371,23 @@
                             return 'R$ ' + val.toLocaleString('pt-BR');
                         }
                     }
+                },
+                noData: {
+                    text: 'Sem dados de depósitos para hoje',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    style: {
+                        color: '#94a3b8',
+                        fontSize: '14px'
+                    }
                 }
             };
             
-            // Gráfico de Usuários
+            // Gráfico de Usuários com dados reais
             const usersOptions = {
                 series: [{
                     name: 'Novos Usuários',
-                    data: [5, 12, 8, 15, 23, 18, 28, 32, 25, 35]
+                    data: usersData
                 }],
                 chart: {
                     type: 'bar',
@@ -350,7 +410,7 @@
                 },
                 dataLabels: { enabled: false },
                 xaxis: {
-                    categories: ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h', '23h', '24h'],
+                    categories: usersCategories,
                     labels: {
                         style: {
                             colors: '#94a3b8',
@@ -375,6 +435,15 @@
                 theme: chartTheme,
                 tooltip: {
                     theme: 'dark'
+                },
+                noData: {
+                    text: 'Sem dados de usuários para hoje',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    style: {
+                        color: '#94a3b8',
+                        fontSize: '14px'
+                    }
                 }
             };
             
@@ -382,14 +451,20 @@
             try {
                 window.LucrativaCharts.deposits = new ApexCharts(depositsContainer, depositsOptions);
                 window.LucrativaCharts.deposits.render();
-                console.log('✅ Gráfico de depósitos renderizado');
+                console.log('✅ Gráfico de depósitos renderizado com dados reais');
                 
                 window.LucrativaCharts.users = new ApexCharts(usersContainer, usersOptions);
                 window.LucrativaCharts.users.render();
-                console.log('✅ Gráfico de usuários renderizado');
+                console.log('✅ Gráfico de usuários renderizado com dados reais');
                 
                 // Marcar como inicializado
                 window.LucrativaCharts.initialized = true;
+                
+                // Atualizar a cada 30 segundos
+                setTimeout(() => {
+                    window.LucrativaCharts.initialized = false;
+                    initLucrativaCharts();
+                }, 30000);
                 
             } catch (error) {
                 console.error('❌ Erro ao renderizar gráficos:', error);
