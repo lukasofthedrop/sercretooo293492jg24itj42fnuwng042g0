@@ -126,6 +126,15 @@ class User extends Authenticatable implements FilamentUser, JWTSubject
     }
 
     /**
+     * Affiliate settings relation
+     * @return HasOne
+     */
+    public function affiliateSettings(): HasOne
+    {
+        return $this->hasOne(AffiliateSettings::class);
+    }
+
+    /**
      * Check if the user can access the panel.
      * @param Panel $panel
      * @return bool

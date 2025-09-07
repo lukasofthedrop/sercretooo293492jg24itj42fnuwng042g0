@@ -8,5 +8,6 @@ Route::prefix('affiliates')
     {
         Route::get('/', [AffiliateController::class, 'index']);
         Route::get('/generate', [AffiliateController::class, 'generateCode']);
+        Route::get('/metrics', [AffiliateController::class, 'getMetrics']);
         Route::post('/request', [AffiliateController::class, 'makeRequest']);
     });
