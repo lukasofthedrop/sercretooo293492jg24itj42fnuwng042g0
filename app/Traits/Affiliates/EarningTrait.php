@@ -5,6 +5,7 @@ namespace App\Traits\Affiliates;
 use App\Models\AffiliateHistory;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\AffiliateSettings;
 
 trait EarningTrait
 {
@@ -38,13 +39,16 @@ trait EarningTrait
     {
         $affiliateHistories = AffiliateHistory::where('inviter', $user->id)->where('commission_type', 'cpa')->where('status', 0)->get();
         if(count($affiliateHistories) > 0) {
+            // Usa configurações seguras do AffiliateSettings
+            $settings = AffiliateSettings::getOrCreateForUser($user->id);
+            
             foreach ($affiliateHistories as $affiliateHistory) {
                 /// o valor de perda é maior que o valor depositado
                 if($affiliateHistory->losses_amount >= $affiliateHistory->deposited_amount) {
 
-                    /// pega a porcentagem do ganho
+                    /// usa o valor CPA das configurações seguras
                     $wallet = Wallet::where('user_id', $user->id)->first();
-                    $wallet->increment('refer_rewards', $user->affiliate_cpa);
+                    $wallet->increment('refer_rewards', $settings->cpa_value);
                 }
             }
         }

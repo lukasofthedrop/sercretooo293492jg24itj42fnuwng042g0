@@ -141,7 +141,7 @@ class User extends Authenticatable implements FilamentUser, JWTSubject
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole(['admin']);
+        return $this->hasRole(['admin', 'afiliado']) || !empty($this->inviter_code);
     }
 
     /**

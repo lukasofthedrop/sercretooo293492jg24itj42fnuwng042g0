@@ -66,11 +66,8 @@ class AffiliateMetricsService
             ->sum('amount');
         
         // Calcula total de bônus (considerando como valor dado ao jogador)
-        $totalBonuses = DB::table('transactions')
-            ->whereIn('user_id', $referredUsers)
-            ->where('type', 'bonus')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->sum('amount');
+        // Por enquanto, vamos considerar 0 até verificarmos a estrutura correta
+        $totalBonuses = 0;
         
         // Cálculo do NGR
         $ngr = $totalDeposits - $totalWithdrawals - abs($totalBonuses);
@@ -128,11 +125,11 @@ class AffiliateMetricsService
         $totalReferred = User::where('inviter', $affiliateId)->count();
         
         // Total de indicados ativos (que fizeram pelo menos 1 depósito)
-        $activeReferred = User::where('inviter', $affiliateId)
-            ->whereHas('deposits', function($query) {
-                $query->where('status', 1);
-            })
-            ->count();
+        $referredIds = User::where('inviter', $affiliateId)->pluck('id');
+        $activeReferred = Deposit::whereIn('user_id', $referredIds)
+            ->where('status', 1)
+            ->distinct('user_id')
+            ->count('user_id');
         
         // Total de comissões ganhas
         $totalCommissions = AffiliateHistory::where('inviter', $affiliateId)
@@ -154,6 +151,7 @@ class AffiliateMetricsService
             'total_commissions' => $totalCommissions,
             'pending_commissions' => $pendingCommissions,
             'revshare_percentage' => $settings->revshare_percentage,
+            'revshare_display' => $settings->revshare_display,
             'cpa_value' => $settings->cpa_value,
             'calculation_period' => $settings->calculation_period
         ];

@@ -51,6 +51,10 @@ use App\Filament\Resources\DistributionSystemResource; // Adicionado
 use App\Filament\Resources\MinesConfigResource; // Adicionado
 use App\Filament\Resources\DailyBonusConfigResource; // Adicionado
 use App\Filament\Resources\GameOpenConfigResource; // Adicionado
+use App\Filament\Pages\AffiliateHistory;
+use App\Filament\Pages\AffiliateReports;
+use App\Filament\Pages\AffiliateAnalytics;
+use App\Filament\Pages\AffiliateDashboard;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -95,6 +99,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 DashboardAdmin::class,
+                AffiliateDashboard::class,
             ])
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
@@ -106,17 +111,26 @@ class AdminPanelProvider extends PanelProvider
 
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
-                return $builder->groups([
-                    NavigationGroup::make()
+                $user = auth()->user();
+                $isAdmin = $user && $user->hasRole('admin');
+                
+                $groups = [];
+                
+                // Dashboard - só admin vê
+                if ($isAdmin) {
+                    $groups[] = NavigationGroup::make()
                         ->items([
                             NavigationItem::make('dashboard')
                                 ->icon('heroicon-o-home')
                                 ->label(fn (): string => __('filament-panels::pages/dashboard.title'))
                                 ->url(fn (): string => DashboardAdmin::getUrl())
                                 ->isActiveWhen(fn () => request()->routeIs('filament.pages.dashboard')),
-                        ]),
-                    
-                    NavigationGroup::make('DEFINIÇÕES DA PLATAFORMA')
+                        ]);
+                }
+                
+                // Definições - só admin
+                if ($isAdmin) {
+                    $groups[] = NavigationGroup::make('DEFINIÇÕES DA PLATAFORMA')
                         ->items([
                             NavigationItem::make('settings')
                             ->icon('heroicon-o-cog')
@@ -166,18 +180,23 @@ class AdminPanelProvider extends PanelProvider
                                 ->label(fn (): string => 'DEFINIÇÕES DE E-MAIL')
                                 ->url(fn (): string => SettingMailPage::getUrl())
                                 ->isActiveWhen(fn () => request()->routeIs('filament.pages.setting-mail-page')),
-                        ]),
+                        ]);
+                }
 
-                    
-                    NavigationGroup::make('PROMOÇÕES DA PLATAFORMA')  // Novo grupo de promoções
+                // Promoções - só admin
+                if ($isAdmin) {
+                    $groups[] = NavigationGroup::make('PROMOÇÕES DA PLATAFORMA')
                     ->items([
                         ...CupomResource::getNavigationItems(),  // Adiciona o recurso Cupom ao grupo
                         ...PromotionResource::getNavigationItems(),  // Adiciona o recurso Promotion ao grupo
                         ...MissionResource::getNavigationItems(),
                         ...VipResource::getNavigationItems(),
-                        ]),
+                        ]);
+                }
 
-                    NavigationGroup::make('GESTÃO DA PLATAFORMA')
+                // Gestão da Plataforma - só admin
+                if ($isAdmin) {
+                    $groups[] = NavigationGroup::make('GESTÃO DA PLATAFORMA')
                         ->items([
 
                             ...UserResource::getNavigationItems(),    
@@ -187,11 +206,55 @@ class AdminPanelProvider extends PanelProvider
                             ...DailyBonusConfigResource::getNavigationItems(),
                             ...GameOpenConfigResource::getNavigationItems(),
 
-                        ]),
+                        ]);
+                }
 
+                // Gestão de Afiliados - mostra diferente para admin e afiliado
+                if ($user) {
+                    $affiliateItems = [];
+                    
+                    // Dashboard do afiliado - todos veem
+                    $affiliateItems[] = NavigationItem::make('affiliate-dashboard')
+                        ->icon('heroicon-o-currency-dollar')
+                        ->label(fn (): string => 'Minha Dashboard Afiliado')
+                        ->url('/admin/afiliado/minha-dashboard')
+                        ->isActiveWhen(fn () => request()->is('admin/afiliado/minha-dashboard*'));
+                    
+                    // Itens apenas para admin
+                    if ($isAdmin) {
+                        $affiliateItems[] = NavigationItem::make('affiliate-management')
+                            ->icon('heroicon-o-users')
+                            ->label(fn (): string => 'Gestão de Afiliados')
+                            ->url(fn (): string => AffiliateHistory::getUrl())
+                            ->isActiveWhen(fn () => request()->is('admin/afiliado*'));
+                        
+                        $affiliateItems[] = NavigationItem::make('affiliate-reports')
+                            ->icon('heroicon-o-chart-bar')
+                            ->label(fn (): string => 'Relatórios de Afiliados')
+                            ->url(fn (): string => AffiliateReports::getUrl())
+                            ->isActiveWhen(fn () => request()->is('admin/afiliado/relatorios*'));
+                        
+                        $affiliateItems[] = NavigationItem::make('affiliate-analytics')
+                            ->icon('heroicon-o-chart-pie')
+                            ->label(fn (): string => 'Análise Individual')
+                            ->url(fn (): string => AffiliateAnalytics::getUrl())
+                            ->isActiveWhen(fn () => request()->is('admin/afiliado/analise*'));
+                    }
+                    
+                    // Se for afiliado comum, mostra apenas a dashboard em um grupo simplificado
+                    if (!$isAdmin) {
+                        $groups[] = NavigationGroup::make('AFILIADO')
+                            ->items($affiliateItems);
+                    } else {
+                        // Admin vê tudo no grupo completo
+                        $groups[] = NavigationGroup::make('GESTÃO DE AFILIADOS')
+                            ->items($affiliateItems);
+                    }
+                }
 
-
-                    NavigationGroup::make('SAQUES DA PLATAFORMA')
+                // Saques - só admin
+                if ($isAdmin) {
+                    $groups[] = NavigationGroup::make('SAQUES DA PLATAFORMA')
                         ->items([
                             NavigationItem::make('withdraw_affiliates')
                                 ->icon('heroicon-o-banknotes')
@@ -199,10 +262,12 @@ class AdminPanelProvider extends PanelProvider
                                 ->url(fn (): string => AffiliateWithdrawResource::getUrl())
                                 ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.sub-affiliates.index')),
                             ...WithdrawalResource::getNavigationItems(),
-                        ]),
+                        ]);
+                }
 
-
-                    NavigationGroup::make('JOGOS DA PLATAFORMA')
+                // Jogos - só admin
+                if ($isAdmin) {
+                    $groups[] = NavigationGroup::make('JOGOS DA PLATAFORMA')
                         ->items([
                             // bx NavigationItem::make(label: 'sync-games')
                              //   ->icon('heroicon-o-arrow-path')
@@ -212,18 +277,21 @@ class AdminPanelProvider extends PanelProvider
                             ...CategoryResource::getNavigationItems(),
                             ...ProviderResource::getNavigationItems(),
                             ...GameResource::getNavigationItems(),
-                        ]),
+                        ]);
+                }
 
-
-
-                    NavigationGroup::make('Otimização')
+                // Sistema - só admin
+                if ($isAdmin) {
+                    $groups[] = NavigationGroup::make('Otimização')
                         ->label('SISTEMA')
                         ->items([
                             NavigationItem::make('LIMPAR CACHE')
                                 ->url(url('/clear'), shouldOpenInNewTab: false)
                                 ->icon('heroicon-o-trash'),
-                        ]),
-                ]);
+                        ]);
+                }
+                
+                return $builder->groups($groups);
             })
             ->middleware([
                 EncryptCookies::class,
