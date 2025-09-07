@@ -72,6 +72,18 @@ class AffiliateDashboard extends Page
         $user = auth()->user();
         $settings = AffiliateSettings::getOrCreateForUser($user->id);
         
+        // Verifica último saque do afiliado (para controle semanal)
+        $lastWithdraw = \DB::table('affiliate_withdraws')
+            ->where('user_id', $user->id)
+            ->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->orderBy('created_at', 'desc')
+            ->first();
+            
+        $canWithdraw = !$lastWithdraw; // Pode sacar se não sacou nos últimos 7 dias
+        $nextWithdrawDate = $lastWithdraw 
+            ? Carbon::parse($lastWithdraw->created_at)->addDays(7)->format('d/m/Y')
+            : null;
+        
         // Busca indicados
         $referred = User::where('inviter', $user->id)->get();
         $referredCount = $referred->count();
@@ -169,7 +181,11 @@ class AffiliateDashboard extends Page
             'revshare_percentage' => 40,
             'monthly_data' => $monthlyData,
             'recent_referred' => $recentReferred,
-            'settings' => $settings
+            'settings' => $settings,
+            // Controle de saque semanal
+            'can_withdraw' => $canWithdraw,
+            'next_withdraw_date' => $nextWithdrawDate,
+            'last_withdraw' => $lastWithdraw
         ];
     }
 }

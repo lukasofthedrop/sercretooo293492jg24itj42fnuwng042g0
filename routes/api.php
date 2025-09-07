@@ -80,6 +80,12 @@ Route::group(['middleware' => ['auth.jwt']], function () {
         Route::post('/claim', [DailyBonusController::class, 'claim']);
     });
     Route::get('/games/open-check', [GameOpenController::class, 'checkDailyDeposit']);
+    
+    // Rotas de saque afiliado
+    Route::prefix('affiliate')->group(function () {
+        Route::post('/withdrawal/request', [\App\Http\Controllers\AffiliateWithdrawalController::class, 'requestWithdrawal']);
+        Route::get('/withdrawal/history', [\App\Http\Controllers\AffiliateWithdrawalController::class, 'getWithdrawalHistory']);
+    });
 });
 /*
  * Auth Route with JWT

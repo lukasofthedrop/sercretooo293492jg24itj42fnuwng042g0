@@ -296,12 +296,46 @@
                 </div>
             </div>
             
-            <div class="stat-card">
+            <div class="stat-card" style="position: relative;">
                 <div class="stat-label">Saldo Disponível</div>
                 <div class="stat-value highlight">R$ {{ number_format($available_balance, 2, ',', '.') }}</div>
                 <div class="stat-change">
                     <i class="fas fa-wallet"></i> Para saque
                 </div>
+                @if($available_balance > 0 && $can_withdraw)
+                <button onclick="openWithdrawModal()" style="
+                    position: absolute;
+                    bottom: 1rem;
+                    right: 1rem;
+                    background: linear-gradient(135deg, #22c55e 0%, #3BC117 100%);
+                    color: white;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fas fa-money-bill-wave"></i> Solicitar Saque
+                </button>
+                @elseif($available_balance > 0 && !$can_withdraw)
+                <div style="
+                    position: absolute;
+                    bottom: 1rem;
+                    right: 1rem;
+                    background: rgba(251, 191, 36, 0.1);
+                    border: 1px solid rgba(251, 191, 36, 0.3);
+                    color: rgba(251, 191, 36, 0.9);
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-size: 0.7rem;
+                    font-weight: 500;
+                ">
+                    <i class="fas fa-clock"></i> Próximo saque: {{ $next_withdraw_date }}
+                </div>
+                @endif
             </div>
             
             <div class="stat-card">
@@ -406,15 +440,20 @@
 
         <!-- Tabela de Indicados Recentes -->
         <div class="table-container">
-            <div class="table-header">
-                <h3 class="table-title">Indicados Recentes</h3>
+            <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="table-title">👥 Usuários Cadastrados pelo Seu Link</h3>
+                <span style="color: #22c55e; font-size: 0.875rem;">
+                    Total: {{ $total_referred }} usuários
+                </span>
             </div>
             <table class="referred-table">
                 <thead>
                     <tr>
                         <th>Nome</th>
+                        <th>Email</th>
                         <th>Data de Cadastro</th>
                         <th>Status</th>
+                        <th>Último Depósito</th>
                         <th>Total Depositado</th>
                         <th>Comissão ({{ $revshare_percentage }}%)</th>
                     </tr>
@@ -422,7 +461,10 @@
                 <tbody>
                     @forelse($recent_referred as $referred)
                     <tr>
-                        <td>{{ $referred['name'] }}</td>
+                        <td style="font-weight: 600;">{{ $referred['name'] }}</td>
+                        <td style="color: rgba(241, 245, 249, 0.7);">
+                            {{ substr($referred['email'], 0, 3) }}***{{ substr($referred['email'], strpos($referred['email'], '@')) }}
+                        </td>
                         <td>{{ $referred['created_at'] }}</td>
                         <td>
                             <span class="status-badge {{ $referred['is_active'] ? 'active' : 'inactive' }}">
@@ -430,13 +472,20 @@
                                 {{ $referred['is_active'] ? 'Ativo' : 'Inativo' }}
                             </span>
                         </td>
-                        <td>R$ {{ number_format($referred['total_deposited'], 2, ',', '.') }}</td>
+                        <td>{{ $referred['is_active'] ? 'Últimos 30 dias' : 'Há mais de 30 dias' }}</td>
+                        <td style="font-weight: 600; color: #22c55e;">
+                            R$ {{ number_format($referred['total_deposited'], 2, ',', '.') }}
+                        </td>
                         <td class="commission-value">R$ {{ number_format($referred['commission_generated'], 2, ',', '.') }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" style="text-align: center; color: rgba(241, 245, 249, 0.5); padding: 2rem;">
-                            Nenhum indicado ainda. Compartilhe seu código para começar!
+                        <td colspan="7" style="text-align: center; color: rgba(241, 245, 249, 0.5); padding: 2rem;">
+                            <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 1rem; display: block; opacity: 0.5;"></i>
+                            Nenhum usuário cadastrado ainda. Compartilhe seu link para começar!<br>
+                            <span style="font-size: 0.875rem; margin-top: 0.5rem; display: block;">
+                                Link: {{ $invite_link }}
+                            </span>
                         </td>
                     </tr>
                     @endforelse
@@ -445,7 +494,179 @@
         </div>
     </div>
 
+    <!-- Modal de Solicitação de Saque -->
+    <div id="withdrawModal" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    ">
+        <div style="
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="color: #f1f5f9; font-size: 1.5rem; font-weight: 600;">
+                    💰 Solicitar Saque Semanal
+                </h2>
+                <button onclick="closeWithdrawModal()" style="
+                    background: transparent;
+                    border: none;
+                    color: #ef4444;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                ">×</button>
+            </div>
+            
+            @if(!$can_withdraw)
+            <div style="
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid rgba(239, 68, 68, 0.3);
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1.5rem;
+            ">
+                <p style="color: rgba(239, 68, 68, 0.9); font-size: 0.875rem; margin: 0;">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    Você já realizou um saque esta semana. Próximo saque disponível em: {{ $next_withdraw_date }}
+                </p>
+            </div>
+            @endif
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="color: rgba(241, 245, 249, 0.8); font-size: 0.875rem; margin-bottom: 0.5rem; display: block;">
+                    Saldo Disponível
+                </label>
+                <div style="
+                    background: rgba(34, 197, 94, 0.1);
+                    border: 1px solid rgba(34, 197, 94, 0.3);
+                    padding: 1rem;
+                    border-radius: 8px;
+                    color: #22c55e;
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                ">
+                    R$ {{ number_format($available_balance, 2, ',', '.') }}
+                </div>
+            </div>
+
+            <form onsubmit="handleWithdrawSubmit(event)">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: rgba(241, 245, 249, 0.8); font-size: 0.875rem; margin-bottom: 0.5rem; display: block;">
+                        Valor do Saque
+                    </label>
+                    <input type="text" id="withdrawAmount" placeholder="R$ 0,00" style="
+                        width: 100%;
+                        background: rgba(15, 23, 42, 0.5);
+                        border: 1px solid rgba(241, 245, 249, 0.2);
+                        color: #f1f5f9;
+                        padding: 0.75rem;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                    " required>
+                    <small style="color: rgba(241, 245, 249, 0.5); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+                        Mínimo para saque: R$ 50,00
+                    </small>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: rgba(241, 245, 249, 0.8); font-size: 0.875rem; margin-bottom: 0.5rem; display: block;">
+                        Chave PIX
+                    </label>
+                    <input type="text" id="pixKey" placeholder="Digite sua chave PIX" style="
+                        width: 100%;
+                        background: rgba(15, 23, 42, 0.5);
+                        border: 1px solid rgba(241, 245, 249, 0.2);
+                        color: #f1f5f9;
+                        padding: 0.75rem;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                    " required>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: rgba(241, 245, 249, 0.8); font-size: 0.875rem; margin-bottom: 0.5rem; display: block;">
+                        Tipo de Chave
+                    </label>
+                    <select id="pixType" style="
+                        width: 100%;
+                        background: rgba(15, 23, 42, 0.5);
+                        border: 1px solid rgba(241, 245, 249, 0.2);
+                        color: #f1f5f9;
+                        padding: 0.75rem;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                    " required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="cpf">CPF</option>
+                        <option value="email">E-mail</option>
+                        <option value="phone">Telefone</option>
+                        <option value="random">Chave Aleatória</option>
+                    </select>
+                </div>
+
+                <div style="
+                    background: rgba(251, 191, 36, 0.1);
+                    border: 1px solid rgba(251, 191, 36, 0.3);
+                    padding: 1rem;
+                    border-radius: 8px;
+                    margin-bottom: 1.5rem;
+                ">
+                    <p style="color: rgba(251, 191, 36, 0.9); font-size: 0.875rem; margin: 0;">
+                        <i class="fas fa-info-circle"></i> 
+                        Saques são processados em até 24 horas úteis. Taxa de processamento: 5%.
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" onclick="closeWithdrawModal()" style="
+                        flex: 1;
+                        background: rgba(107, 114, 128, 0.2);
+                        border: 1px solid rgba(107, 114, 128, 0.3);
+                        color: #9ca3af;
+                        padding: 0.75rem;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    ">
+                        Cancelar
+                    </button>
+                    <button type="submit" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #22c55e 0%, #3BC117 100%);
+                        border: none;
+                        color: white;
+                        padding: 0.75rem;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+                    ">
+                        <i class="fas fa-check"></i> Confirmar Saque
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function copyCode() {
             const codeInput = document.getElementById('affiliateCode');
@@ -640,6 +861,179 @@
                 }
                 
             }, 500); // Aguarda 500ms para garantir que tudo carregou
+        });
+
+        // Funções do Modal de Saque
+        function openWithdrawModal() {
+            const modal = document.getElementById('withdrawModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeWithdrawModal() {
+            const modal = document.getElementById('withdrawModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleWithdrawSubmit(event) {
+            event.preventDefault();
+            
+            // Verifica se pode sacar (controle semanal)
+            const canWithdraw = {{ $can_withdraw ? 'true' : 'false' }};
+            
+            if (!canWithdraw) {
+                // Mensagem amigável para o afiliado
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Limite Semanal',
+                    html: `
+                        <p style="color: #f1f5f9;">Por política de segurança e para garantir melhor processamento, permitimos apenas <strong>1 saque por semana</strong>.</p>
+                        <p style="color: #22c55e; margin-top: 1rem;"><strong>Próximo saque disponível:</strong> {{ $next_withdraw_date }}</p>
+                        <p style="color: rgba(241, 245, 249, 0.7); font-size: 0.875rem; margin-top: 1rem;">Isso garante que todos os saques sejam processados com rapidez e segurança.</p>
+                    `,
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                    color: '#f1f5f9',
+                    confirmButtonColor: '#22c55e',
+                    confirmButtonText: 'Entendi'
+                });
+                return;
+            }
+            
+            const amount = document.getElementById('withdrawAmount').value;
+            const pixKey = document.getElementById('pixKey').value;
+            const pixType = document.getElementById('pixType').value;
+            
+            // Validação básica
+            const numericAmount = parseFloat(amount.replace('R$', '').replace('.', '').replace(',', '.'));
+            
+            if (numericAmount < 50) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Valor Mínimo',
+                    text: 'O valor mínimo para saque é R$ 50,00',
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                    color: '#f1f5f9',
+                    confirmButtonColor: '#22c55e'
+                });
+                return;
+            }
+            
+            if (numericAmount > {{ $available_balance }}) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Saldo Insuficiente',
+                    text: 'Você não possui saldo suficiente para este valor',
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                    color: '#f1f5f9',
+                    confirmButtonColor: '#22c55e'
+                });
+                return;
+            }
+            
+            // Mostra loading
+            Swal.fire({
+                title: 'Processando...',
+                text: 'Sua solicitação está sendo processada',
+                allowOutsideClick: false,
+                background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                color: '#f1f5f9',
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Faz requisição real ao backend
+            fetch('/api/affiliate/withdrawal/request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    'Authorization': 'Bearer ' + (localStorage.getItem('access_token') || '')
+                },
+                body: JSON.stringify({
+                    amount: numericAmount,
+                    pix_key: pixKey,
+                    pix_type: pixType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saque Solicitado com Sucesso!',
+                        html: `
+                            <div style="text-align: left;">
+                                <p style="margin-bottom: 0.5rem;"><strong>Valor:</strong> R$ ${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.data.amount)}</p>
+                                <p style="margin-bottom: 0.5rem;"><strong>PIX:</strong> ${pixKey}</p>
+                                <p style="margin-bottom: 0.5rem;"><strong>Tipo:</strong> ${pixType.toUpperCase()}</p>
+                            </div>
+                            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                                <p style="color: #22c55e; margin: 0; font-size: 0.875rem;">
+                                    <i class="fas fa-clock"></i> Processamento em até <strong>${data.data.processing_time}</strong>
+                                </p>
+                            </div>
+                            <p style="color: rgba(241, 245, 249, 0.7); font-size: 0.75rem; margin-top: 1rem;">
+                                Você receberá uma notificação quando o pagamento for efetuado.
+                            </p>
+                            <p style="color: #22c55e; font-size: 0.75rem; margin-top: 0.5rem;">
+                                <strong>Próximo saque disponível:</strong> ${data.data.next_withdraw_date}
+                            </p>
+                        `,
+                        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                        color: '#f1f5f9',
+                        confirmButtonColor: '#22c55e',
+                        confirmButtonText: 'Ótimo!'
+                    }).then(() => {
+                        // Recarrega a página para atualizar saldo e status
+                        window.location.reload();
+                    });
+                    
+                    closeWithdrawModal();
+                    
+                    // Limpa o formulário
+                    document.getElementById('withdrawAmount').value = '';
+                    document.getElementById('pixKey').value = '';
+                    document.getElementById('pixType').value = '';
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro ao solicitar saque',
+                        text: data.message || 'Ocorreu um erro ao processar sua solicitação',
+                        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                        color: '#f1f5f9',
+                        confirmButtonColor: '#22c55e'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro de conexão',
+                    text: 'Não foi possível conectar ao servidor. Tente novamente.',
+                    background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%)',
+                    color: '#f1f5f9',
+                    confirmButtonColor: '#22c55e'
+                });
+            });
+        }
+
+        // Formata valor em real enquanto digita
+        document.addEventListener('DOMContentLoaded', function() {
+            const withdrawInput = document.getElementById('withdrawAmount');
+            if (withdrawInput) {
+                withdrawInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value) {
+                        value = (parseInt(value) / 100).toFixed(2);
+                        value = value.replace('.', ',');
+                        value = 'R$ ' + value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                        e.target.value = value;
+                    }
+                });
+            }
         });
     </script>
 </x-filament-panels::page>
