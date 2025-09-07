@@ -70,6 +70,12 @@ foreach ($admins as $adminData) {
         ]);
     }
     
+    // Garantir que o usuário tenha a role admin
+    if (!$user->hasRole('admin')) {
+        $user->assignRole('admin');
+        echo "  ✓ Role 'admin' atribuída para {$adminData['email']}\n";
+    }
+    
     // Garantir que o usuário tenha uma carteira
     $wallet = DB::table('wallets')->where('user_id', $user->id)->first();
     if (!$wallet) {
