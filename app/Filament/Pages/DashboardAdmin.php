@@ -113,39 +113,93 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
                 ->color('danger')
                 ->button()
                 ->requiresConfirmation()
-                ->modalHeading('Limpar Cache e Dados')
-                ->modalDescription('Isso irá limpar todo o cache do dashboard. Confirma?')
-                ->modalSubmitActionLabel('Limpar Tudo')
+                ->modalHeading('🔄 Sistema de Reset')
+                ->modalDescription('Escolha o tipo de reset que deseja realizar:')
+                ->modalSubmitActionLabel('Executar')
                 ->modalCancelActionLabel('Cancelar')
-                ->action(function () {
+                ->form([
+                    \Filament\Forms\Components\Radio::make('reset_type')
+                        ->label('Tipo de Reset')
+                        ->options([
+                            'cache' => '🧹 Limpar Cache - Remove apenas o cache temporário',
+                            'full' => '⚠️ Reset Completo - Remove TODOS os dados de teste (mantém apenas admins)'
+                        ])
+                        ->default('cache')
+                        ->required(),
+                    
+                    \Filament\Forms\Components\TextInput::make('confirm_password')
+                        ->label('Senha de Confirmação')
+                        ->password()
+                        ->placeholder('Digite sua senha para confirmar')
+                        ->helperText('Necessário apenas para Reset Completo')
+                        ->visible(fn ($get) => $get('reset_type') === 'full'),
+                ])
+                ->action(function (array $data) {
                     try {
-                        // Chamar o método do controller diretamente
                         $controller = new \App\Http\Controllers\Api\DashboardMetricsController();
-                        $response = $controller->clearCache();
-                        $data = json_decode($response->getContent(), true);
                         
-                        if ($data && $data['success']) {
-                            // Também limpar cache local
-                            \Illuminate\Support\Facades\Cache::flush();
+                        if ($data['reset_type'] === 'cache') {
+                            // Reset simples - apenas cache
+                            $response = $controller->clearCache();
+                            $result = json_decode($response->getContent(), true);
                             
-                            // IMPORTANTE: Após limpar, gerar dados de teste para manter gráficos funcionando
-                            $request = new \Illuminate\Http\Request(['period' => 'today']);
-                            $testResponse = $controller->generateTestData($request);
-                            $testData = json_decode($testResponse->getContent(), true);
-                            
-                            // Forçar refresh da página para recarregar tudo
-                            $this->redirect('/admin');
-                            
-                            \Filament\Notifications\Notification::make()
-                                ->title('Cache limpo e dados de teste gerados!')
-                                ->body('Dashboard resetado com dados fictícios novos.')
-                                ->success()
-                                ->send();
+                            if ($result && $result['success']) {
+                                \Illuminate\Support\Facades\Cache::flush();
+                                
+                                // Gerar dados de teste
+                                $request = new \Illuminate\Http\Request(['period' => 'today']);
+                                $controller->generateTestData($request);
+                                
+                                $this->redirect('/admin');
+                                
+                                \Filament\Notifications\Notification::make()
+                                    ->title('✅ Cache Limpo!')
+                                    ->body('Cache do dashboard foi limpo com sucesso.')
+                                    ->success()
+                                    ->send();
+                            }
                         } else {
-                            \Filament\Notifications\Notification::make()
-                                ->title('Erro ao limpar cache')
-                                ->danger()
-                                ->send();
+                            // Reset completo do sistema
+                            if (empty($data['confirm_password'])) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('❌ Senha Necessária')
+                                    ->body('Digite sua senha para confirmar o reset completo.')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+                            
+                            // Preparar request com senha
+                            $request = new \Illuminate\Http\Request([
+                                'confirm_password' => $data['confirm_password']
+                            ]);
+                            
+                            // Simular autenticação para o controller
+                            auth()->login(auth()->user());
+                            
+                            $response = $controller->resetSystem($request);
+                            $result = json_decode($response->getContent(), true);
+                            
+                            if ($response->status() === 200 && isset($result['success'])) {
+                                // Fazer logout e redirecionar
+                                auth()->logout();
+                                
+                                \Filament\Notifications\Notification::make()
+                                    ->title('🎉 Sistema Resetado!')
+                                    ->body('Sistema limpo e pronto para operação real. Faça login novamente.')
+                                    ->success()
+                                    ->persistent()
+                                    ->send();
+                                
+                                // Redirecionar para login
+                                return redirect('/admin/login');
+                            } else {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('❌ Erro no Reset')
+                                    ->body($result['message'] ?? 'Verifique sua senha e tente novamente.')
+                                    ->danger()
+                                    ->send();
+                            }
                         }
                     } catch (\Exception $e) {
                         \Filament\Notifications\Notification::make()
