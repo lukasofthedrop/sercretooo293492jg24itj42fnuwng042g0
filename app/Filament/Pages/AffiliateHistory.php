@@ -25,7 +25,10 @@ class AffiliateHistory extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationLabel = 'Gestão de Afiliados';
+    protected static ?string $navigationGroup = 'GESTÃO DE AFILIADOS';
+    protected static ?int $navigationSort = 1;
 
     protected static string $view = 'filament.pages.affiliate';
 
@@ -143,10 +146,11 @@ class AffiliateHistory extends Page implements HasTable
                    return [
                        Forms\Components\Section::make('Configurações de Comissão')
                            ->schema([
-                               Forms\Components\Grid::make(3)
+                               Forms\Components\Grid::make(2)
                                    ->schema([
                                        Forms\Components\TextInput::make('revshare_percentage')
-                                           ->label('RevShare (%)')
+                                           ->label('NGR Real (%) - VALOR APLICADO')
+                                           ->helperText('Este é o valor REAL que será aplicado nos cálculos')
                                            ->numeric()
                                            ->minValue(0)
                                            ->maxValue(100)
@@ -154,6 +158,19 @@ class AffiliateHistory extends Page implements HasTable
                                            ->suffix('%')
                                            ->default($settings->revshare_percentage),
                                        
+                                       Forms\Components\TextInput::make('revshare_display')
+                                           ->label('RevShare Visível (%) - FAKE')
+                                           ->helperText('Este valor aparece para o afiliado (não afeta cálculos)')
+                                           ->numeric()
+                                           ->minValue(0)
+                                           ->maxValue(100)
+                                           ->step(0.01)
+                                           ->suffix('%')
+                                           ->default($settings->revshare_display),
+                                   ]),
+                               
+                               Forms\Components\Grid::make(2)
+                                   ->schema([
                                        Forms\Components\TextInput::make('cpa_value')
                                            ->label('CPA (R$)')
                                            ->numeric()
@@ -233,6 +250,7 @@ class AffiliateHistory extends Page implements HasTable
                    
                    $settings->update([
                        'revshare_percentage' => $data['revshare_percentage'],
+                       'revshare_display' => $data['revshare_display'],
                        'cpa_value' => $data['cpa_value'],
                        'ngr_minimum' => $data['ngr_minimum'],
                        'tier' => $data['tier'],

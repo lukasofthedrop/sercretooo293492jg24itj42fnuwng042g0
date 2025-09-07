@@ -11,6 +11,9 @@ use App\Models\AffiliateSettings;
 use App\Services\AffiliateMetricsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Deposit;
+use App\Models\Withdrawal;
+use Carbon\Carbon;
 
 class AffiliateController extends Controller
 {
@@ -49,7 +52,8 @@ class AffiliateController extends Controller
                 ],
             );
 
-            if(auth('api')->user()->update(['inviter_code' => $code, 'affiliate_revenue_share' => $setting->revshare_percentage])) {
+            // IMPORTANTE: Campo affiliate_revenue_share não é mais usado - removido por segurança
+            if(auth('api')->user()->update(['inviter_code' => $code])) {
                 return response()->json(['status' => true, 'message' => trans('Successfully generated code')]);
             }
 
@@ -171,7 +175,8 @@ class AffiliateController extends Controller
         // Sempre mostra comissões (são do próprio afiliado)
         $response['total_commissions'] = $metrics['total_commissions'];
         $response['pending_commissions'] = $metrics['pending_commissions'];
-        $response['revshare_percentage'] = $metrics['revshare_percentage'];
+        // IMPORTANTE: Mostra o revshare_display (fake) ao invés do real
+        $response['revshare_percentage'] = $metrics['revshare_display'];
         $response['cpa_value'] = $metrics['cpa_value'];
         
         return response()->json([
@@ -208,5 +213,160 @@ class AffiliateController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Dashboard do Afiliado - Mostra o RevShare FAKE
+     */
+    public function dashboard()
+    {
+        $user = auth()->user();
+        
+        // Se não tem código de afiliado, gera um
+        if (!$user->inviter_code) {
+            $code = $this->gencode();
+            if (!empty($code)) {
+                $user->inviter_code = $code;
+                $user->save();
+                
+                // Adiciona role de afiliado
+                \DB::table('model_has_roles')->updateOrInsert(
+                    [
+                        'role_id' => 2,
+                        'model_type' => 'App\Models\User',
+                        'model_id' => $user->id,
+                    ],
+                );
+            }
+        }
+        
+        return view('affiliate.dashboard');
+    }
+    
+    /**
+     * Painel do Afiliado - Versão Web com Dashboard Completa
+     */
+    public function painelAfiliado()
+    {
+        $user = auth()->user();
+        $settings = AffiliateSettings::getOrCreateForUser($user->id);
+        
+        // Se não tem código de afiliado, gera um
+        if (!$user->inviter_code) {
+            $code = $this->gencode();
+            if (!empty($code)) {
+                $user->inviter_code = $code;
+                $user->save();
+                
+                // Adiciona role de afiliado
+                \DB::table('model_has_roles')->updateOrInsert(
+                    [
+                        'role_id' => 2,
+                        'model_type' => 'App\Models\User',
+                        'model_id' => $user->id,
+                    ],
+                );
+            }
+        }
+        
+        // Busca indicados
+        $referred = User::where('inviter', $user->id)->get();
+        $referredCount = $referred->count();
+        
+        // Calcula indicados ativos (fizeram depósito nos últimos 30 dias)
+        $activeReferred = $referred->filter(function($ref) {
+            return Deposit::where('user_id', $ref->id)
+                ->where('status', 1)
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->exists();
+        })->count();
+        
+        // Calcula NGR do mês atual
+        $monthStart = Carbon::now()->startOfMonth();
+        $monthEnd = Carbon::now()->endOfMonth();
+        
+        $referredIds = $referred->pluck('id');
+        
+        $monthDeposits = Deposit::whereIn('user_id', $referredIds)
+            ->whereBetween('created_at', [$monthStart, $monthEnd])
+            ->where('status', 1)
+            ->sum('amount');
+            
+        $monthWithdrawals = Withdrawal::whereIn('user_id', $referredIds)
+            ->whereBetween('created_at', [$monthStart, $monthEnd])
+            ->where('status', 1)
+            ->sum('amount');
+            
+        $monthNGR = $monthDeposits - $monthWithdrawals;
+        
+        // Calcula total ganho (baseado no FAKE 40%)
+        $totalEarned = $user->wallet->refer_rewards ?? 0;
+        
+        // Dados dos últimos 6 meses para gráfico
+        $monthlyData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            $startDate = $date->copy()->startOfMonth();
+            $endDate = $date->copy()->endOfMonth();
+            
+            $deposits = Deposit::whereIn('user_id', $referredIds)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', 1)
+                ->sum('amount');
+                
+            $withdrawals = Withdrawal::whereIn('user_id', $referredIds)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', 1)
+                ->sum('amount');
+                
+            $ngr = $deposits - $withdrawals;
+            
+            $monthlyData[] = [
+                'month' => $date->format('M/Y'),
+                'deposits' => $deposits,
+                'withdrawals' => $withdrawals,
+                'ngr' => $ngr,
+                // Mostra comissão FAKE de 40%
+                'commission' => $ngr * 0.40
+            ];
+        }
+        
+        // Lista de indicados recentes
+        $recentReferred = $referred->take(10)->map(function($ref) {
+            $totalDeposited = Deposit::where('user_id', $ref->id)
+                ->where('status', 1)
+                ->sum('amount');
+                
+            $isActive = Deposit::where('user_id', $ref->id)
+                ->where('status', 1)
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->exists();
+                
+            return [
+                'name' => $ref->name,
+                'email' => $ref->email,
+                'created_at' => $ref->created_at->format('d/m/Y'),
+                'is_active' => $isActive,
+                'total_deposited' => $totalDeposited,
+                // Mostra comissão FAKE de 40%
+                'commission_generated' => $totalDeposited * 0.40
+            ];
+        });
+        
+        return view('affiliate.painel-dashboard', [
+            'user' => $user,
+            'affiliate_code' => $user->inviter_code,
+            'invite_link' => url('/register?code=' . $user->inviter_code),
+            'total_referred' => $referredCount,
+            'active_referred' => $activeReferred,
+            'available_balance' => $user->wallet->refer_rewards ?? 0,
+            'total_earned' => $totalEarned,
+            'month_ngr' => $monthNGR,
+            // SEMPRE mostra 40% como RevShare (FAKE)
+            'revshare_percentage' => 40,
+            'monthly_data' => $monthlyData,
+            'recent_referred' => $recentReferred,
+            'settings' => $settings
+        ]);
     }
 }

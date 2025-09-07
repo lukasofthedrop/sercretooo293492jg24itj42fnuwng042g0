@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\LicenseKeyController;
+use App\Http\Controllers\Api\Profile\AffiliateController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -118,7 +119,80 @@ Route::get('/login', function() {
     return redirect('/admin/login');
 })->name('login');
 
-// APP
+// DASHBOARD DO AFILIADO - ANTES DO CATCH-ALL
+Route::middleware(['auth'])->group(function () {
+    Route::get('/affiliate/dashboard', [AffiliateController::class, 'dashboard'])->name('affiliate.dashboard');
+});
+
+// Teste simples
+Route::get('/teste-afiliado', function() {
+    return "Dashboard do Afiliado funcionando!";
+});
+
+// Teste temporário sem auth
+Route::get('/painel-afiliado-demo', function() {
+    $user = \App\Models\User::find(15); // Admin user
+    
+    if (!$user) {
+        return "Usuário não encontrado";
+    }
+    
+    $settings = \App\Models\AffiliateSettings::getOrCreateForUser($user->id);
+    
+    // Dados simulados para demonstração
+    $monthlyData = [
+        ['month' => 'Abr/2025', 'ngr' => 5000, 'commission' => 2000],
+        ['month' => 'Mai/2025', 'ngr' => 7500, 'commission' => 3000],
+        ['month' => 'Jun/2025', 'ngr' => 10000, 'commission' => 4000],
+        ['month' => 'Jul/2025', 'ngr' => 12500, 'commission' => 5000],
+        ['month' => 'Ago/2025', 'ngr' => 15000, 'commission' => 6000],
+        ['month' => 'Set/2025', 'ngr' => 8000, 'commission' => 3200],
+    ];
+    
+    $recentReferred = [
+        [
+            'name' => 'João Silva',
+            'email' => 'joao@example.com',
+            'created_at' => '01/09/2025',
+            'is_active' => true,
+            'total_deposited' => 500,
+            'commission_generated' => 200
+        ],
+        [
+            'name' => 'Maria Santos',
+            'email' => 'maria@example.com',
+            'created_at' => '28/08/2025',
+            'is_active' => true,
+            'total_deposited' => 750,
+            'commission_generated' => 300
+        ],
+        [
+            'name' => 'Pedro Costa',
+            'email' => 'pedro@example.com',
+            'created_at' => '15/08/2025',
+            'is_active' => false,
+            'total_deposited' => 250,
+            'commission_generated' => 100
+        ]
+    ];
+    
+    return view('affiliate.painel-dashboard', [
+        'user' => $user,
+        'affiliate_code' => $user->inviter_code ?? 'AFF2025DEMO',
+        'invite_link' => url('/register?code=' . ($user->inviter_code ?? 'AFF2025DEMO')),
+        'total_referred' => 12,
+        'active_referred' => 8,
+        'available_balance' => 3200.50,
+        'total_earned' => 15750.00,
+        'month_ngr' => 8000,
+        'revshare_percentage' => 40,
+        'monthly_data' => $monthlyData,
+        'recent_referred' => $recentReferred,
+        'settings' => $settings
+    ]);
+});
+
+// APP - CATCH-ALL ROUTE - DEVE SER A ÚLTIMA!
 include_once(__DIR__ . '/groups/layouts/app.php');
 
 // Rotas LICENSE API

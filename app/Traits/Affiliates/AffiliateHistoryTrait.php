@@ -4,6 +4,7 @@ namespace App\Traits\Affiliates;
 
 use App\Models\AffiliateHistory;
 use App\Models\User;
+use App\Models\AffiliateSettings;
 
 trait AffiliateHistoryTrait
 {
@@ -19,11 +20,15 @@ trait AffiliateHistoryTrait
         if(!empty($sponsor)) {
             $affiliate = AffiliateHistory::where('user_id', $user->id)->first();
             if(empty($affiliate)) {
-                if($sponsor->affiliate_revenue_share > 0) {
+                // Usa as configurações personalizadas do afiliado
+                $settings = AffiliateSettings::getOrCreateForUser($sponsor->id);
+                
+                // IMPORTANTE: Usa revshare_percentage (valor REAL) para cálculos
+                if($settings->revshare_percentage > 0) {
                     AffiliateHistory::create([
                         'user_id' => $user->id,
                         'inviter' => $sponsor->id,
-                        'commission' => $sponsor->affiliate_revenue_share,
+                        'commission' => $settings->revshare_percentage,
                         'commission_type' => 'revshare',
                         'deposited' => 0,
                         'losses' => 0,
@@ -31,11 +36,11 @@ trait AffiliateHistoryTrait
                     ]);
                 }
 
-                if($sponsor->affiliate_cpa > 0) {
+                if($settings->cpa_value > 0) {
                     AffiliateHistory::create([
                         'user_id' => $user->id,
                         'inviter' => $sponsor->id,
-                        'commission' => $sponsor->affiliate_cpa,
+                        'commission' => $settings->cpa_value,
                         'commission_type' => 'cpa',
                         'deposited' => 0,
                         'losses' => 0,

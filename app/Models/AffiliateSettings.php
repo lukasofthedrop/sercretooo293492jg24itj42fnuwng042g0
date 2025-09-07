@@ -10,6 +10,7 @@ class AffiliateSettings extends Model
     protected $fillable = [
         'user_id',
         'revshare_percentage',
+        'revshare_display',
         'cpa_value',
         'ngr_minimum',
         'tier',
@@ -30,6 +31,7 @@ class AffiliateSettings extends Model
         'can_see_reports' => 'boolean',
         'is_active' => 'boolean',
         'revshare_percentage' => 'decimal:2',
+        'revshare_display' => 'decimal:2',
         'cpa_value' => 'decimal:2',
         'ngr_minimum' => 'decimal:2'
     ];
@@ -45,6 +47,7 @@ class AffiliateSettings extends Model
             ['user_id' => $userId],
             [
                 'revshare_percentage' => 20.00,
+                'revshare_display' => 20.00,
                 'cpa_value' => 50.00,
                 'ngr_minimum' => 100.00,
                 'tier' => 'bronze',
