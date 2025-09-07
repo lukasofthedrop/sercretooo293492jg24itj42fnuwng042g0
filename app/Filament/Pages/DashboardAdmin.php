@@ -125,6 +125,7 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
                             'full' => '⚠️ Reset Completo - Remove TODOS os dados de teste (mantém apenas admins)'
                         ])
                         ->default('cache')
+                        ->reactive()
                         ->required(),
                     
                     \Filament\Forms\Components\TextInput::make('confirm_password')
@@ -132,6 +133,7 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
                         ->password()
                         ->placeholder('Digite sua senha para confirmar')
                         ->helperText('Necessário apenas para Reset Completo')
+                        ->requiredIf('reset_type', 'full')
                         ->visible(fn ($get) => $get('reset_type') === 'full'),
                 ])
                 ->action(function (array $data) {
