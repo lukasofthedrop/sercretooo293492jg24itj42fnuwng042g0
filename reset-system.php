@@ -101,8 +101,8 @@ class ResetSystem {
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         
         try {
-            // IDs dos admins a preservar
-            $adminEmails = ['admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'];
+            // IDs dos admins a preservar - INCLUÍDO lucrativa@bet.com
+            $adminEmails = ['lucrativa@bet.com', 'admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'];
             $adminIds = DB::table('users')
                 ->whereIn('email', $adminEmails)
                 ->pluck('id')

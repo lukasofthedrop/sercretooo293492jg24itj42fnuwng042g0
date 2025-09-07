@@ -771,8 +771,8 @@ class DashboardMetricsController extends Controller
             if (method_exists($user, 'hasRole') && $user->hasRole('admin')) {
                 $isAdmin = true;
             }
-            // Ou verificar pelo email
-            elseif (in_array($user->email, ['admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'])) {
+            // Ou verificar pelo email - INCLUÍDO lucrativa@bet.com
+            elseif (in_array($user->email, ['lucrativa@bet.com', 'admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'])) {
                 $isAdmin = true;
             }
         }
@@ -811,8 +811,8 @@ class DashboardMetricsController extends Controller
                 file_put_contents($backupDir . '/' . $table . '.json', json_encode($data, JSON_PRETTY_PRINT));
             }
 
-            // 2. IDs dos admins a preservar
-            $adminEmails = ['admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'];
+            // 2. IDs dos admins a preservar - INCLUÍDO lucrativa@bet.com COMO PRINCIPAL
+            $adminEmails = ['lucrativa@bet.com', 'admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'];
             $adminIds = User::whereIn('email', $adminEmails)->pluck('id')->toArray();
 
             // 3. Desabilitar foreign key checks
