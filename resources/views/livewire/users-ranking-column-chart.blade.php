@@ -3,22 +3,22 @@
     @if(count($chartData['labels']) > 0)
         
         <!-- PREMIUM HEADER SECTION -->
-        <div class="infographic-vip-header bg-gradient-to-r from-yellow-600 via-yellow-500 to-orange-500 p-6 relative overflow-hidden">
+        <div class="infographic-vip-header bg-gradient-to-r from-yellow-600 via-yellow-500 to-orange-500 p-4 md:p-5 lg:p-6 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-yellow-600/30 to-orange-500/20"></div>
             <div class="relative z-10">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
-                            <div class="text-2xl">👑</div>
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2 md:space-x-4">
+                        <div class="bg-white/20 p-2 md:p-3 rounded-full backdrop-blur-sm">
+                            <div class="text-xl md:text-2xl">👑</div>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold text-white mb-1">RANKING PREMIUM VIP</h2>
-                            <p class="text-yellow-100 text-sm font-medium">Análise Avançada de Usuários de Alto Valor</p>
+                            <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-white mb-1">RANKING PREMIUM VIP</h2>
+                            <p class="text-yellow-100 text-xs md:text-sm font-medium">Análise Avançada de Usuários de Alto Valor</p>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="bg-white/20 rounded-xl p-3 backdrop-blur-sm">
-                            <div class="text-white text-2xl font-bold">{{ count($chartData['labels']) }}</div>
+                    <div class="text-center sm:text-right">
+                        <div class="bg-white/20 rounded-xl p-2 md:p-3 backdrop-blur-sm">
+                            <div class="text-white text-xl md:text-2xl font-bold">{{ count($chartData['labels']) }}</div>
                             <div class="text-yellow-100 text-xs font-medium">USUÁRIOS VIP</div>
                         </div>
                     </div>
@@ -32,13 +32,13 @@
         </div>
 
         <!-- MAIN INFOGRAPHIC CONTENT -->
-        <div class="p-6 space-y-6">
+        <div class="p-4 md:p-5 lg:p-6 space-y-4 md:space-y-5 lg:space-y-6">
             
             <!-- EXECUTIVE KPI DASHBOARD -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="executive-kpi bg-gradient-to-br from-green-600/20 to-emerald-500/10 border border-green-500/30 rounded-xl p-4 text-center relative overflow-hidden">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <div class="executive-kpi bg-gradient-to-br from-green-600/20 to-emerald-500/10 border border-green-500/30 rounded-xl p-3 md:p-4 text-center relative overflow-hidden">
                     <div class="absolute top-2 right-2 text-green-400 opacity-20">💰</div>
-                    <div class="text-green-400 text-2xl font-bold">R$ {{ number_format(array_sum($chartData['amounts']), 0, ',', '.') }}</div>
+                    <div class="text-green-400 text-lg md:text-xl lg:text-2xl font-bold">R$ {{ number_format(array_sum($chartData['amounts']), 0, ',', '.') }}</div>
                     <div class="text-slate-300 text-xs font-medium mt-1">RECEITA VIP TOTAL</div>
                     <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
                         <div class="bg-green-400 h-1.5 rounded-full" style="width: 100%"></div>
@@ -74,11 +74,11 @@
             </div>
 
             <!-- ADVANCED ANALYTICS SECTION -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
                 
                 <!-- COMBO CHART SECTION -->
                 <div class="lg:col-span-2">
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-6 border border-slate-600">
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-4 md:p-5 lg:p-6 border border-slate-600">
                         <div class="flex items-center justify-between mb-6">
                             <div>
                                 <h3 class="text-white font-bold text-lg mb-1">📊 Análise Combo: Valores + Tendência</h3>
@@ -90,8 +90,8 @@
                             </div>
                         </div>
                         
-                        <div class="chart-container" style="height: 350px;">
-                            <canvas id="usersComboChart" width="100%" height="350"></canvas>
+                        <div class="chart-container relative" style="height: 320px;">
+                            <canvas id="usersComboChart" style="width: 100%; height: 100%;"></canvas>
                         </div>
                         
                         <!-- Chart Legend -->
@@ -110,7 +110,7 @@
 
                 <!-- VIP TIERS SECTION -->
                 <div class="lg:col-span-1">
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-6 border border-slate-600 h-full">
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-4 md:p-5 lg:p-6 border border-slate-600 h-full">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-white font-bold text-lg">🏅 Tiers VIP</h3>
                             <div class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded-full text-xs font-medium">
@@ -118,13 +118,13 @@
                             </div>
                         </div>
                         
-                        <div class="space-y-4">
+                        <div class="space-y-3">
                             @foreach($chartData['fullNames'] as $index => $fullName)
                                 @if($index < 6)
-                                <div class="vip-tier-item bg-gradient-to-r from-slate-700/80 to-transparent rounded-lg p-3 border border-slate-600/50 relative overflow-hidden">
+                                <div class="vip-tier-item bg-gradient-to-r from-slate-700/80 to-transparent rounded-lg p-4 border border-slate-600/50">
                                     
                                     <!-- Tier Badge -->
-                                    <div class="absolute top-2 right-2">
+                                    <div class="float-right ml-2">
                                         @if($index == 0)
                                             <div class="tier-badge bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs px-2 py-1 rounded-full font-bold">DIAMOND</div>
                                         @elseif($index == 1)
@@ -137,29 +137,29 @@
                                     </div>
                                     
                                     <!-- User Info -->
-                                    <div class="pr-16">
-                                        <div class="flex items-center space-x-2 mb-2">
-                                            <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" 
+                                    <div>
+                                        <div class="flex items-center space-x-3 mb-2">
+                                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shadow-lg" 
                                                  style="background: linear-gradient(135deg, {{ $chartData['colors'][$index] }}, {{ $chartData['colors'][$index] }}80);">
                                                 {{ $index + 1 }}
                                             </div>
-                                            <div class="text-white font-medium text-sm">{{ $fullName }}</div>
+                                            <div class="text-white font-semibold text-sm truncate flex-1">{{ $fullName }}</div>
                                         </div>
                                         
-                                        <div class="space-y-1 text-xs">
-                                            <div class="flex justify-between">
-                                                <span class="text-slate-400">Valor:</span>
-                                                <span class="text-green-400 font-medium">R$ {{ number_format($chartData['amounts'][$index], 0, ',', '.') }}</span>
+                                        <div class="grid grid-cols-2 gap-2 mt-3">
+                                            <div>
+                                                <span class="text-slate-400 text-xs block">Valor Total</span>
+                                                <span class="text-green-400 font-bold text-base">R$ {{ number_format($chartData['amounts'][$index], 0, ',', '.') }}</span>
                                             </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-slate-400">Depósitos:</span>
-                                                <span class="text-blue-400 font-medium">{{ $chartData['deposits'][$index] }}</span>
+                                            <div>
+                                                <span class="text-slate-400 text-xs block">Depósitos</span>
+                                                <span class="text-blue-400 font-bold text-base">{{ $chartData['deposits'][$index] }}</span>
                                             </div>
                                         </div>
                                         
-                                        <!-- Mini Progress Bar -->
-                                        <div class="w-full bg-slate-600 rounded-full h-1 mt-2">
-                                            <div class="h-1 rounded-full" 
+                                        <!-- Progress Bar -->
+                                        <div class="w-full bg-slate-600 rounded-full h-2 mt-4">
+                                            <div class="h-2 rounded-full transition-all duration-500" 
                                                  style="width: {{ ($chartData['amounts'][$index] / max($chartData['amounts'])) * 100 }}%; 
                                                         background: linear-gradient(90deg, {{ $chartData['colors'][$index] }}, {{ $chartData['colors'][$index] }}80);">
                                             </div>
@@ -179,7 +179,7 @@
             </div>
 
             <!-- PERFORMANCE INSIGHTS SECTION -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 lg:gap-6">
                 
                 <!-- Key Performance Metrics -->
                 <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-6 border border-slate-600">
@@ -254,7 +254,7 @@
             </div>
 
             <!-- EXECUTIVE SUMMARY FOOTER -->
-            <div class="bg-gradient-to-r from-yellow-600/10 via-orange-500/10 to-red-500/10 rounded-xl p-4 border border-yellow-500/20">
+            <div class="bg-gradient-to-r from-yellow-600/10 via-orange-500/10 to-red-500/10 rounded-xl p-4 border border-yellow-500/20 max-h-32 overflow-y-auto">
                 <div class="text-center">
                     <div class="text-white font-medium text-sm mb-2">
                         🏆 <strong>Resumo Executivo:</strong> 
@@ -287,7 +287,7 @@
                 
                 <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto">
                     <div class="bg-slate-800 rounded-xl p-4 border border-slate-600">
-                        <div class="text-green-400 text-2xl font-bold">0</div>
+                        <div class="text-green-400 text-lg md:text-xl lg:text-2xl font-bold">0</div>
                         <div class="text-slate-400 text-xs">Usuários Diamond</div>
                     </div>
                     <div class="bg-slate-800 rounded-xl p-4 border border-slate-600">
@@ -393,14 +393,33 @@
 <script>
 let usersVipComboChartInstance = null;
 
+// Função para carregar Chart.js dinamicamente
+function loadChartJS(callback) {
+    if (typeof Chart !== 'undefined') {
+        callback();
+        return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+    script.onload = function() {
+        console.log('✅ Chart.js carregado com sucesso!');
+        callback();
+    };
+    script.onerror = function() {
+        console.error('❌ Erro ao carregar Chart.js');
+    };
+    document.head.appendChild(script);
+}
+
 function initUsersVipComboChart() {
     @if(count($chartData['labels']) == 0)
         return;
     @endif
     
     if (typeof Chart === 'undefined') {
-        console.log('Chart.js carregando...');
-        setTimeout(initUsersVipComboChart, 100);
+        console.log('Chart.js não disponível, carregando...');
+        loadChartJS(initUsersVipComboChart);
         return;
     }
     
@@ -473,6 +492,14 @@ function initUsersVipComboChart() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 10,
+                        left: 10,
+                        right: 10
+                    }
+                },
                 interaction: {
                     mode: 'index',
                     intersect: false,
@@ -577,7 +604,7 @@ function initUsersVipComboChart() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    initUsersVipComboChart();
+    loadChartJS(initUsersVipComboChart);
 });
 
 document.addEventListener('livewire:navigated', function() {
@@ -585,7 +612,16 @@ document.addEventListener('livewire:navigated', function() {
         usersVipComboChartInstance.destroy();
         usersVipComboChartInstance = null;
     }
-    setTimeout(initUsersVipComboChart, 100);
+    setTimeout(() => {
+        loadChartJS(initUsersVipComboChart);
+    }, 100);
 });
+
+// Garantir inicialização se página já carregada
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(() => {
+        loadChartJS(initUsersVipComboChart);
+    }, 100);
+}
 </script>
 @endscript
