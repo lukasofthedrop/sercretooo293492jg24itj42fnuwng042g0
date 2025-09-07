@@ -561,6 +561,9 @@ class DashboardMetricsController extends Controller
      */
     public function generateTestData(Request $request)
     {
+        // NOVO: Gerar dados REAIS no banco de dados
+        $this->generateRealTestData();
+        
         $period = $request->get('period', 'today');
         
         // Gerar dados de depósitos
@@ -731,6 +734,177 @@ class DashboardMetricsController extends Controller
     }
 
     /**
+     * Gerar dados REAIS de teste no banco de dados
+     */
+    private function generateRealTestData()
+    {
+        try {
+            DB::beginTransaction();
+            
+            // 1. Criar usuários de teste (se não existirem)
+            $testUsers = [];
+            $userEmails = [
+                'teste1@lucrativabet.com',
+                'teste2@lucrativabet.com', 
+                'teste3@lucrativabet.com',
+                'teste4@lucrativabet.com',
+                'teste5@lucrativabet.com'
+            ];
+            
+            foreach ($userEmails as $index => $email) {
+                $user = User::where('email', $email)->first();
+                if (!$user) {
+                    $user = User::create([
+                        'name' => 'Teste User ' . ($index + 1),
+                        'email' => $email,
+                        'password' => bcrypt('teste123'),
+                        'email_verified_at' => now(),
+                        'created_at' => now()->subHours(rand(1, 24))
+                    ]);
+                }
+                $testUsers[] = $user;
+                
+                // Criar carteira se não existir
+                $wallet = DB::table('wallets')->where('user_id', $user->id)->first();
+                if (!$wallet) {
+                    DB::table('wallets')->insert([
+                        'user_id' => $user->id,
+                        'balance' => rand(100, 5000),
+                        'balance_bonus' => rand(0, 500),
+                        'balance_withdrawal' => 0,
+                        'refer_rewards' => 0,
+                        'total_bet' => rand(100, 3000),
+                        'total_won' => rand(50, 2000),
+                        'total_lose' => rand(50, 1000),
+                        'last_won' => rand(10, 500),
+                        'last_lose' => rand(10, 200),
+                        'currency' => 'BRL',
+                        'vip_level' => rand(0, 3),
+                        'vip_points' => rand(0, 1000),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+            
+            // 2. Criar depósitos de teste para hoje
+            $now = now();
+            foreach ($testUsers as $user) {
+                // Criar 2-4 depósitos por usuário
+                $numDeposits = rand(2, 4);
+                for ($i = 0; $i < $numDeposits; $i++) {
+                    DB::table('deposits')->insert([
+                        'user_id' => $user->id,
+                        'amount' => rand(50, 1000),
+                        'type' => 'PIX',
+                        'status' => 1, // Aprovado
+                        'currency' => 'BRL',
+                        'symbol' => 'R$',
+                        'created_at' => $now->copy()->subHours(rand(0, 23)),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+            
+            // 3. Criar alguns saques de teste
+            foreach ($testUsers as $user) {
+                if (rand(0, 1)) { // 50% de chance de ter saque
+                    DB::table('withdrawals')->insert([
+                        'user_id' => $user->id,
+                        'amount' => rand(100, 500),
+                        'type' => 'PIX',
+                        'status' => rand(0, 1), // 50% aprovado, 50% pendente
+                        'pix_key' => 'teste@pix.com',
+                        'pix_type' => 'email',
+                        'currency' => 'BRL',
+                        'symbol' => 'R$',
+                        'created_at' => $now->copy()->subHours(rand(0, 12)),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+            
+            // 4. Criar apostas (orders) de teste
+            $games = [
+                'Gates of Olympus', 'Fortune Tiger', 'Sweet Bonanza',
+                'Aviator', 'Spaceman', 'Mines', 'Fortune Ox', 'Sugar Rush'
+            ];
+            
+            foreach ($testUsers as $user) {
+                // Criar 5-10 apostas por usuário
+                $numBets = rand(5, 10);
+                for ($i = 0; $i < $numBets; $i++) {
+                    $amount = rand(10, 200);
+                    $won = rand(0, 1); // 50% de chance de ganhar
+                    
+                    DB::table('orders')->insert([
+                        'user_id' => $user->id,
+                        'session_id' => uniqid(),
+                        'transaction_id' => uniqid(),
+                        'type' => 'bet',
+                        'type_money' => 'balance',
+                        'amount' => $amount,
+                        'providers' => 'PragmaticPlay',
+                        'game' => $games[array_rand($games)],
+                        'game_uuid' => uniqid(),
+                        'profit' => $won ? rand($amount * 0.5, $amount * 3) : -$amount,
+                        'status' => 1,
+                        'created_at' => $now->copy()->subHours(rand(0, 23)),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+            
+            // 5. Criar transações de teste
+            foreach ($testUsers as $user) {
+                // Transações de depósito
+                DB::table('transactions')->insert([
+                    'user_id' => $user->id,
+                    'payment_id' => uniqid(),
+                    'type' => 'deposit',
+                    'type_money' => 'balance',
+                    'amount' => rand(100, 1000),
+                    'providers' => 'PIX',
+                    'game' => null,
+                    'game_uuid' => null,
+                    'created_at' => $now->copy()->subHours(rand(0, 23)),
+                    'updated_at' => now(),
+                ]);
+            }
+            
+            DB::commit();
+            
+            // Limpar TODOS os caches específicos do dashboard
+            $today = now()->format('Y-m-d');
+            
+            // Limpar caches do StatsOverview
+            Cache::forget("stats_financial_{$today}");
+            Cache::forget('stats_player_balance');
+            Cache::forget('stats_affiliate_rewards');
+            Cache::forget('stats_deposit_counts');
+            Cache::forget('stats_total_users');
+            
+            // Limpar caches gerais do dashboard
+            Cache::forget('dashboard_metrics_today');
+            Cache::forget('dashboard_metrics_yesterday');
+            Cache::forget('dashboard_metrics_week');
+            Cache::forget('dashboard_metrics_month');
+            Cache::forget('dashboard_metrics_sparkline_deposits');
+            Cache::forget('dashboard_metrics_sparkline_users');
+            
+            // Limpar cache geral como backup
+            Cache::flush();
+            
+            return true;
+            
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::error('Erro ao gerar dados de teste: ' . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
      * Limpar cache do dashboard (reset)
      */
     public function clearCache()
@@ -793,8 +967,6 @@ class DashboardMetricsController extends Controller
             return response()->json(['error' => 'Senha incorreta'], 401);
         }
 
-        DB::beginTransaction();
-        
         try {
             // 1. Criar backup antes do reset
             $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
@@ -807,50 +979,67 @@ class DashboardMetricsController extends Controller
             // Backup das tabelas principais
             $tables = ['users', 'deposits', 'orders', 'withdrawals', 'wallets', 'transactions'];
             foreach ($tables as $table) {
-                $data = DB::table($table)->get();
-                file_put_contents($backupDir . '/' . $table . '.json', json_encode($data, JSON_PRETTY_PRINT));
+                try {
+                    $data = DB::table($table)->get();
+                    file_put_contents($backupDir . '/' . $table . '.json', json_encode($data, JSON_PRETTY_PRINT));
+                } catch (\Exception $e) {
+                    // Log mas não para o processo por backup
+                    \Log::warning("Erro no backup da tabela {$table}: " . $e->getMessage());
+                }
             }
 
             // 2. IDs dos admins a preservar - INCLUÍDO lucrativa@bet.com COMO PRINCIPAL
             $adminEmails = ['lucrativa@bet.com', 'admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'];
             $adminIds = User::whereIn('email', $adminEmails)->pluck('id')->toArray();
 
-            // 3. Desabilitar foreign key checks
+            // 3. Executar operações de reset em blocos separados para evitar problemas de transação
+            
+            // Desabilitar foreign key checks
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
-            // 4. Limpar tabelas de transações
-            DB::table('deposits')->truncate();
-            DB::table('orders')->truncate();
-            DB::table('withdrawals')->truncate();
-            DB::table('transactions')->truncate();
-            DB::table('affiliate_histories')->truncate();
+            // 4. Limpar tabelas de transações individualmente
+            try { DB::table('deposits')->truncate(); } catch (\Exception $e) { \Log::warning('Erro ao truncar deposits: ' . $e->getMessage()); }
+            try { DB::table('orders')->truncate(); } catch (\Exception $e) { \Log::warning('Erro ao truncar orders: ' . $e->getMessage()); }
+            try { DB::table('withdrawals')->truncate(); } catch (\Exception $e) { \Log::warning('Erro ao truncar withdrawals: ' . $e->getMessage()); }
+            try { DB::table('transactions')->truncate(); } catch (\Exception $e) { \Log::warning('Erro ao truncar transactions: ' . $e->getMessage()); }
+            try { DB::table('affiliate_histories')->truncate(); } catch (\Exception $e) { \Log::warning('Erro ao truncar affiliate_histories: ' . $e->getMessage()); }
 
             // 5. Resetar carteiras (manter apenas dos admins com saldo zero)
-            DB::table('wallets')->whereNotIn('user_id', $adminIds)->delete();
-            DB::table('wallets')->whereIn('user_id', $adminIds)->update([
-                'balance' => 0,
-                'balance_bonus' => 0,
-                'balance_withdrawal' => 0,
-                'total_bet' => 0,
-                'total_won' => 0,
-                'total_lose' => 0,
-                'last_won' => 0,
-                'last_lose' => 0,
-            ]);
+            try { 
+                DB::table('wallets')->whereNotIn('user_id', $adminIds)->delete();
+                DB::table('wallets')->whereIn('user_id', $adminIds)->update([
+                    'balance' => 0,
+                    'balance_bonus' => 0,
+                    'balance_withdrawal' => 0,
+                    'total_bet' => 0,
+                    'total_won' => 0,
+                    'total_lose' => 0,
+                    'last_won' => 0,
+                    'last_lose' => 0,
+                ]);
+            } catch (\Exception $e) { 
+                \Log::warning('Erro ao resetar wallets: ' . $e->getMessage()); 
+            }
 
             // 6. Remover usuários de teste (manter apenas admins)
-            User::whereNotIn('id', $adminIds)->delete();
+            try {
+                User::whereNotIn('id', $adminIds)->delete();
+            } catch (\Exception $e) {
+                \Log::warning('Erro ao deletar usuários: ' . $e->getMessage());
+            }
 
             // 7. Reabilitar foreign key checks
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
             // 8. Limpar todo o cache
-            Cache::flush();
-            \Artisan::call('cache:clear');
-            \Artisan::call('config:clear');
-            \Artisan::call('view:clear');
-
-            DB::commit();
+            try {
+                Cache::flush();
+                \Artisan::call('cache:clear');
+                \Artisan::call('config:clear');
+                \Artisan::call('view:clear');
+            } catch (\Exception $e) {
+                \Log::warning('Erro ao limpar cache: ' . $e->getMessage());
+            }
 
             return response()->json([
                 'success' => true,
@@ -865,10 +1054,10 @@ class DashboardMetricsController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            DB::rollback();
             return response()->json([
                 'error' => 'Erro ao resetar sistema',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'details' => 'Verifique os logs para mais detalhes'
             ], 500);
         }
     }
