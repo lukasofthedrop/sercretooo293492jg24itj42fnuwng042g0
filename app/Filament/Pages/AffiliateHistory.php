@@ -56,7 +56,10 @@ class AffiliateHistory extends Page implements HasTable
     public function table(Table $table): Table
     {  
         return $table
-        ->query(self::$model::query())
+        ->query(self::$model::query()
+            ->whereNotNull('inviter_code')
+            ->where('email', '!=', 'lucrativa@bet.com')
+        )
         ->defaultSort('created_at', 'desc')
 
         ->columns([
