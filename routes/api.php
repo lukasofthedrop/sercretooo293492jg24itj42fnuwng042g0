@@ -95,6 +95,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/dashboard-metrics/export', [DashboardMetricsController::class, 'export']);
     Route::get('/dashboard-metrics/test', [DashboardMetricsController::class, 'generateTestData']);
     Route::post('/dashboard-metrics/clear-cache', [DashboardMetricsController::class, 'clearCache']);
+    Route::post('/dashboard-metrics/reset-system', [DashboardMetricsController::class, 'resetSystem']);
 });
 
 Route::group(['middleware' => ['auth.jwt']], function () {

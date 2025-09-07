@@ -754,4 +754,122 @@ class DashboardMetricsController extends Controller
             'message' => 'Cache do dashboard limpo com sucesso!'
         ]);
     }
+
+    /**
+     * Reset completo do sistema para operação real
+     * Remove todos os dados de teste mantendo apenas admins
+     */
+    public function resetSystem(Request $request)
+    {
+        // Verificar se é admin
+        $user = auth()->user() ?: auth('web')->user();
+        
+        // Verificar se é admin (por role ou email)
+        $isAdmin = false;
+        if ($user) {
+            // Verificar por role se existir o método
+            if (method_exists($user, 'hasRole') && $user->hasRole('admin')) {
+                $isAdmin = true;
+            }
+            // Ou verificar pelo email
+            elseif (in_array($user->email, ['admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'])) {
+                $isAdmin = true;
+            }
+        }
+        
+        if (!$isAdmin) {
+            return response()->json(['error' => 'Não autorizado'], 403);
+        }
+
+        // Confirmar senha do admin para segurança extra
+        if (!$request->has('confirm_password')) {
+            return response()->json([
+                'error' => 'Senha de confirmação necessária',
+                'require_password' => true
+            ], 400);
+        }
+
+        if (!password_verify($request->confirm_password, $user->password)) {
+            return response()->json(['error' => 'Senha incorreta'], 401);
+        }
+
+        DB::beginTransaction();
+        
+        try {
+            // 1. Criar backup antes do reset
+            $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
+            $backupDir = storage_path('backups/reset_' . $timestamp);
+            
+            if (!file_exists($backupDir)) {
+                mkdir($backupDir, 0777, true);
+            }
+
+            // Backup das tabelas principais
+            $tables = ['users', 'deposits', 'orders', 'withdrawals', 'wallets', 'transactions'];
+            foreach ($tables as $table) {
+                $data = DB::table($table)->get();
+                file_put_contents($backupDir . '/' . $table . '.json', json_encode($data, JSON_PRETTY_PRINT));
+            }
+
+            // 2. IDs dos admins a preservar
+            $adminEmails = ['admin@admin.com', 'admin@lucrativabet.com', 'dev@lucrativabet.com'];
+            $adminIds = User::whereIn('email', $adminEmails)->pluck('id')->toArray();
+
+            // 3. Desabilitar foreign key checks
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+            // 4. Limpar tabelas de transações
+            DB::table('deposits')->truncate();
+            DB::table('orders')->truncate();
+            DB::table('withdrawals')->truncate();
+            DB::table('transactions')->truncate();
+            DB::table('affiliate_histories')->truncate();
+
+            // 5. Resetar carteiras (manter apenas dos admins com saldo zero)
+            DB::table('wallets')->whereNotIn('user_id', $adminIds)->delete();
+            DB::table('wallets')->whereIn('user_id', $adminIds)->update([
+                'balance' => 0,
+                'balance_bonus' => 0,
+                'balance_withdrawal' => 0,
+                'total_bet' => 0,
+                'total_won' => 0,
+                'total_lose' => 0,
+                'last_won' => 0,
+                'last_lose' => 0,
+            ]);
+
+            // 6. Remover usuários de teste (manter apenas admins)
+            User::whereNotIn('id', $adminIds)->delete();
+
+            // 7. Reabilitar foreign key checks
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+            // 8. Limpar todo o cache
+            Cache::flush();
+            \Artisan::call('cache:clear');
+            \Artisan::call('config:clear');
+            \Artisan::call('view:clear');
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sistema resetado com sucesso! Pronto para operação real.',
+                'backup_path' => $backupDir,
+                'stats' => [
+                    'users_remaining' => count($adminIds),
+                    'deposits' => 0,
+                    'orders' => 0,
+                    'total_balance' => 0
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'Erro ao resetar sistema',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
