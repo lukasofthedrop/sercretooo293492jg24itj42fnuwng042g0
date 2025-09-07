@@ -12,7 +12,8 @@
 ### 1️⃣ ACESSE O DASHBOARD
 ```
 http://localhost:8000/admin
-Login: admin@admin.com
+Login: lucrativa@bet.com
+Senha: foco123@
 ```
 
 ### 2️⃣ CLIQUE NO BOTÃO "LIMPAR CACHE/RESET"
@@ -63,6 +64,7 @@ Para **Reset Completo**:
 
 ### MANTIDO ✅
 - Usuários administrativos:
+  - lucrativa@bet.com (PRINCIPAL)
   - admin@admin.com
   - admin@lucrativabet.com
   - dev@lucrativabet.com
@@ -126,7 +128,7 @@ Após o reset:
 ## 🆘 TROUBLESHOOTING
 
 ### Problema: "Senha incorreta"
-**Solução**: Use a senha do usuário admin@admin.com
+**Solução**: Use a senha do usuário lucrativa@bet.com (foco123@)
 
 ### Problema: "Não autorizado"
 **Solução**: Certifique-se de estar logado como admin

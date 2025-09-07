@@ -15,8 +15,9 @@ echo "========================================\n\n";
 
 // Verificar usuários existentes
 $existingUsers = DB::table('users')->whereIn('email', [
-    'admin@admin.com',
-    'admin@lucrativabet.com', 
+    'lucrativa@bet.com',
+    'admin@admin.com', // Manter por compatibilidade temporária
+    'admin@lucrativabet.com',
     'dev@lucrativabet.com'
 ])->pluck('email')->toArray();
 
@@ -25,12 +26,17 @@ if (count($existingUsers) > 0) {
     echo "- " . implode("\n- ", $existingUsers) . "\n\n";
 }
 
-// Dados dos admins
+// Dados dos admins - CREDENCIAL PRINCIPAL ALTERADA CONFORME SOLICITADO
 $admins = [
+    [
+        'name' => 'Lucrativa Admin',
+        'email' => 'lucrativa@bet.com',
+        'password' => 'foco123@', // Senha definida pelo usuário
+    ],
     [
         'name' => 'Admin',
         'email' => 'admin@admin.com',
-        'password' => 'admin', // Senha padrão
+        'password' => 'admin', // Mantido para compatibilidade
     ],
     [
         'name' => 'Admin Lucrativa',
@@ -90,7 +96,12 @@ foreach ($admins as $adminData) {
 
 echo "\n✅ USUÁRIOS ADMINISTRATIVOS RESTAURADOS!\n";
 echo "=========================================\n";
-echo "\n📝 CREDENCIAIS DE ACESSO:\n";
+echo "\n📝 CREDENCIAL PRINCIPAL:\n";
+echo "-------------------------\n";
+echo "Email: lucrativa@bet.com\n";
+echo "Senha: foco123@\n";
+echo "\n";
+echo "📝 OUTRAS CREDENCIAIS (backup):\n";
 echo "-------------------------\n";
 echo "Email: admin@admin.com\n";
 echo "Senha: admin\n";
