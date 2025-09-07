@@ -1,0 +1,40 @@
+[
+    {
+        "id": 1,
+        "payment_id": null,
+        "user_id": 23,
+        "amount": "124.00",
+        "type": "PIX",
+        "proof": null,
+        "status": 0,
+        "pix_key": "teste@pix.com",
+        "pix_type": "email",
+        "bank_info": null,
+        "currency": "BRL",
+        "symbol": "R$",
+        "created_at": "2025-09-06 18:37:40",
+        "updated_at": "2025-09-07 01:37:40",
+        "cpf": null,
+        "name": null,
+        "gateway": "mercadopago"
+    },
+    {
+        "id": 2,
+        "payment_id": null,
+        "user_id": 25,
+        "amount": "430.00",
+        "type": "PIX",
+        "proof": null,
+        "status": 1,
+        "pix_key": "teste@pix.com",
+        "pix_type": "email",
+        "bank_info": null,
+        "currency": "BRL",
+        "symbol": "R$",
+        "created_at": "2025-09-06 20:37:40",
+        "updated_at": "2025-09-07 01:37:40",
+        "cpf": null,
+        "name": null,
+        "gateway": "mercadopago"
+    }
+]

@@ -7,6 +7,8 @@ use App\Models\AffiliateHistory;
 use App\Models\AffiliateWithdraw;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\AffiliateSettings;
+use App\Services\AffiliateMetricsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -128,6 +130,60 @@ class AffiliateController extends Controller
     public function show(string $id)
     {
         //
+    }
+
+    /**
+     * Get affiliate metrics respecting visibility permissions
+     */
+    public function getMetrics()
+    {
+        $userId = auth('api')->id();
+        $settings = AffiliateSettings::getOrCreateForUser($userId);
+        $metrics = AffiliateMetricsService::getAffiliateMetrics($userId);
+        
+        // Filtra métricas baseado nas permissões
+        $response = [
+            'tier' => $metrics['tier'],
+            'is_active' => $metrics['is_active'],
+            'total_referred' => $metrics['total_referred'],
+            'active_referred' => $metrics['active_referred'],
+            'conversion_rate' => $metrics['conversion_rate'],
+            'calculation_period' => $metrics['calculation_period']
+        ];
+        
+        // Adiciona métricas condicionalmente baseado nas permissões
+        if ($settings->can_see_ngr) {
+            $response['ngr'] = $metrics['ngr'];
+        }
+        
+        if ($settings->can_see_deposits) {
+            $response['total_deposits'] = $metrics['ngr']['total_deposits'] ?? 0;
+        }
+        
+        if ($settings->can_see_losses) {
+            $response['total_losses'] = $metrics['ngr']['total_withdrawals'] ?? 0;
+        }
+        
+        if ($settings->can_see_reports) {
+            $response['detailed_metrics'] = $metrics;
+        }
+        
+        // Sempre mostra comissões (são do próprio afiliado)
+        $response['total_commissions'] = $metrics['total_commissions'];
+        $response['pending_commissions'] = $metrics['pending_commissions'];
+        $response['revshare_percentage'] = $metrics['revshare_percentage'];
+        $response['cpa_value'] = $metrics['cpa_value'];
+        
+        return response()->json([
+            'status' => true,
+            'metrics' => $response,
+            'permissions' => [
+                'can_see_ngr' => $settings->can_see_ngr,
+                'can_see_deposits' => $settings->can_see_deposits,
+                'can_see_losses' => $settings->can_see_losses,
+                'can_see_reports' => $settings->can_see_reports
+            ]
+        ]);
     }
 
     /**
