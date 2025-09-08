@@ -14,7 +14,7 @@ class AffiliateWithdrawalController extends Controller
         $user = auth()->user();
         
         // Verifica se pode sacar (controle semanal)
-        $lastWithdraw = DB::table('affiliate_withdrawals')
+        $lastWithdraw = DB::table('affiliate_withdraws')
             ->where('user_id', $user->id)
             ->where('created_at', '>=', Carbon::now()->subDays(7))
             ->first();
@@ -48,14 +48,16 @@ class AffiliateWithdrawalController extends Controller
         }
         
         // Cria solicitação de saque
-        $withdrawal = DB::table('affiliate_withdrawals')->insert([
+        $withdrawal = DB::table('affiliate_withdraws')->insert([
             'user_id' => $user->id,
             'amount' => $amountDisplay, // Valor total mostrado
             'amount_display' => $amountDisplay, // Valor com RevShare 40%
             'amount_real' => $amountReal, // Valor real NGR 5%
             'pix_key' => $request->pix_key,
             'pix_type' => $request->pix_type,
-            'status' => 'pending',
+            'status' => 0, // 0 = pendente
+            'currency' => 'BRL',
+            'symbol' => 'R$',
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -87,14 +89,14 @@ class AffiliateWithdrawalController extends Controller
     {
         $user = auth()->user();
         
-        $withdrawals = DB::table('affiliate_withdrawals')
+        $withdrawals = DB::table('affiliate_withdraws')
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function($w) {
                 return [
                     'id' => $w->id,
-                    'amount' => $w->amount_display, // Sempre mostra o valor com RevShare 40%
+                    'amount' => $w->amount_display ?? $w->amount, // Sempre mostra o valor com RevShare 40%
                     'pix_key' => substr($w->pix_key, 0, 3) . '***' . substr($w->pix_key, -3),
                     'status' => $this->translateStatus($w->status),
                     'created_at' => Carbon::parse($w->created_at)->format('d/m/Y H:i'),
@@ -111,13 +113,13 @@ class AffiliateWithdrawalController extends Controller
     private function translateStatus($status)
     {
         $translations = [
-            'pending' => 'Pendente',
-            'processing' => 'Processando',
-            'approved' => 'Aprovado',
-            'completed' => 'Concluído',
-            'rejected' => 'Rejeitado'
+            0 => 'Pendente',
+            1 => 'Aprovado',
+            2 => 'Cancelado',
+            3 => 'Processando',
+            4 => 'Concluído'
         ];
         
-        return $translations[$status] ?? $status;
+        return $translations[$status] ?? 'Desconhecido';
     }
 }

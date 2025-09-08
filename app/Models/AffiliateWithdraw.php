@@ -28,8 +28,11 @@ class AffiliateWithdraw extends Model
         'payment_id',
         'user_id',
         'amount',
+        'amount_display',
+        'amount_real',
         'type',
         'bank_info',
+        'admin_notes',
         'type',
         'proof',
         'pix_key',
@@ -38,7 +41,8 @@ class AffiliateWithdraw extends Model
         'symbol',
         'status',
         'cpf',
-        'name'
+        'name',
+        'processed_at'
     ];
 
 

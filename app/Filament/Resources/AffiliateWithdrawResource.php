@@ -16,8 +16,9 @@ class AffiliateWithdrawResource extends Resource
 {
     protected static ?string $model = AffiliateWithdraw::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationGroup = 'GESTÃO DE AFILIADOS';
+    protected static ?int $navigationSort = 2;
 
     public static function canAccess(): bool
     {
@@ -60,34 +61,59 @@ class AffiliateWithdrawResource extends Resource
                     ->label('Usuário')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('amount')
-                    ->label('Valor')
-                    ->formatStateUsing(fn (AffiliateWithdraw $record): string => $record->symbol . ' ' . $record->amount)
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('amount_display')
+                    ->label('Valor Solicitado (40%)')
+                    ->formatStateUsing(fn ($state, AffiliateWithdraw $record): string => 
+                        ($record->symbol ?? 'R$') . ' ' . number_format($state ?? $record->amount, 2, ',', '.'))
+                    ->sortable()
+                    ->color('success'),
+                Tables\Columns\TextColumn::make('amount_real')
+                    ->label('Valor Real (5%)')
+                    ->formatStateUsing(fn ($state, AffiliateWithdraw $record): string => 
+                        ($record->symbol ?? 'R$') . ' ' . number_format($state ?? ($record->amount * 0.125), 2, ',', '.'))
+                    ->sortable()
+                    ->color('warning')
+                    ->description('Valor que será pago'),
                 Tables\Columns\TextColumn::make('pix_type')
                     ->label('Tipo de Chave')
-                    ->formatStateUsing(fn (string $state): string => \Helper::formatPixType($state))
+                    ->formatStateUsing(fn (?string $state): string => match($state) {
+                        'cpf' => 'CPF',
+                        'cnpj' => 'CNPJ', 
+                        'email' => 'E-mail',
+                        'phone' => 'Telefone',
+                        'random' => 'Chave Aleatória',
+                        default => $state ?? 'N/A'
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pix_key')
-                    ->label('Chave Pix'),
+                    ->label('Chave Pix')
+                    ->copyable()
+                    ->copyMessage('Chave copiada!'),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->formatStateUsing(fn (AffiliateWithdraw $record): string => match($record->status) {
-                        0 => 'Pendente',
-                        1 => 'Aprovado',
-                        2 => 'Cancelado',
+                        0 => '⏳ Pendente',
+                        1 => '✅ Aprovado',
+                        2 => '❌ Cancelado',
                         default => 'Desconhecido'
                     })
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Criado em')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Atualizado em')
-                    ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->badge()
+                    ->color(fn (AffiliateWithdraw $record): string => match($record->status) {
+                        0 => 'warning',
+                        1 => 'success',
+                        2 => 'danger',
+                        default => 'gray'
+                    }),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Solicitado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('processed_at')
+                    ->label('Processado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -117,6 +143,26 @@ class AffiliateWithdrawResource extends Resource
                     ->query(fn ($query, $data) => isset($data['status']) ? $query->where('status', $data['status']) : $query),
             ])
             ->actions([
+                Action::make('view_economy')
+                    ->label('Ver Economia')
+                    ->icon('heroicon-o-calculator')
+                    ->color('info')
+                    ->modalHeading('💰 Economia com Manipulação')
+                    ->modalContent(function (AffiliateWithdraw $record) {
+                        $display = $record->amount_display ?? $record->amount;
+                        $real = $record->amount_real ?? ($record->amount * 0.125);
+                        $economia = $display - $real;
+                        $percentual = ($economia / $display) * 100;
+                        
+                        return view('filament.modals.withdrawal-economy', [
+                            'display' => $display,
+                            'real' => $real,
+                            'economia' => $economia,
+                            'percentual' => $percentual,
+                            'user' => $record->user->name
+                        ]);
+                    })
+                    ->modalButton('Fechar'),
 
                 Action::make('delete')
                     ->label('Excluir')
