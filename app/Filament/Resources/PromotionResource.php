@@ -10,11 +10,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\HtmlString;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Section;
-use Illuminate\Support\HtmlString;
 
 
 
@@ -81,9 +80,14 @@ class PromotionResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('imagem')
+                TextColumn::make('imagem')
                     ->label('Imagem')
-                    ->rounded(),
+                    ->formatStateUsing(function ($state) {
+                        if (!$state) return '';
+                        $url = '/storage/' . $state;
+                        return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">');
+                    })
+                    ->html(),
                 TextColumn::make('titulo')
                     ->label('Título')
                     ->searchable()

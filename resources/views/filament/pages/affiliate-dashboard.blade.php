@@ -1,4 +1,30 @@
 <x-filament-panels::page>
+    <!-- Botão de Logout -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+        <a href="/logout-completo" 
+           class="logout-btn"
+           style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
+                  color: white; 
+                  padding: 10px 20px; 
+                  border-radius: 8px; 
+                  text-decoration: none; 
+                  font-weight: bold;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  border: 1px solid rgba(239, 68, 68, 0.5);
+                  transition: all 0.3s;
+                  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);"
+           onmouseover="this.style.transform='scale(1.05)'"
+           onmouseout="this.style.transform='scale(1)'">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
+                <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+            </svg>
+            Sair
+        </a>
+    </div>
+    
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     

@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Illuminate\Support\HtmlString;
 use Filament\Tables\Table;
 
 class CategoryResource extends Resource
@@ -78,8 +79,14 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('NOME DA CATEGORIA')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image')
-                    ->label('IMAGEM DA CATEGORIA'),
+                Tables\Columns\TextColumn::make('image')
+                    ->label('IMAGEM DA CATEGORIA')
+                    ->formatStateUsing(function ($state) {
+                        if (!$state) return '';
+                        $url = '/storage/' . $state;
+                        return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">');
+                    })
+                    ->html(),
                 Tables\Columns\TextColumn::make('url')
                     ->label('LINK OPCIONAL')
                     ->url(fn ($record) => $record->url ?? '#') // Adiciona link ou "#" se estiver vazio

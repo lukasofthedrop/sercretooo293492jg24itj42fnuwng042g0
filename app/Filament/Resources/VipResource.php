@@ -11,7 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\HtmlString;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 
@@ -70,9 +70,14 @@ class VipResource extends Resource
                 TextColumn::make('weekly_reward')
                     ->label('Recompensa Semanal')
                     ->sortable(),
-                ImageColumn::make('image')
+                TextColumn::make('image')
                     ->label('Imagem')
-                    ->size(50),
+                    ->formatStateUsing(function ($state) {
+                        if (!$state) return '';
+                        $url = '/storage/' . $state;
+                        return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">');
+                    })
+                    ->html(),
             ])
             ->filters([])
             ->actions([

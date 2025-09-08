@@ -8,7 +8,8 @@ use Filament\Forms;
 use Filament\Forms\Components\{FileUpload, Select, TextInput, Textarea};
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\{ImageColumn, TextColumn};
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\HtmlString;
 use Filament\Tables\Table;
 
 class MissionResource extends Resource
@@ -103,9 +104,14 @@ class MissionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            ImageColumn::make('image')
+            TextColumn::make('image')
                 ->label('Imagem')
-                ->rounded(),
+                ->formatStateUsing(function ($state) {
+                    if (!$state) return '';
+                    $url = '/storage/' . $state;
+                    return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">');
+                })
+                ->html(),
             TextColumn::make('title')
                 ->label('Título')
                 ->searchable()

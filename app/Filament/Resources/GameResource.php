@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Illuminate\Support\HtmlString;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -140,9 +141,14 @@ class GameResource extends Resource
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\ImageColumn::make('cover')
+                Tables\Columns\TextColumn::make('cover')
                 ->label('IMAGEM DO JOGO')
-                ,
+                ->formatStateUsing(function ($state) {
+                    if (!$state) return '';
+                    $url = '/storage/' . $state;
+                    return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">');
+                })
+                ->html(),
                 Tables\Columns\TextColumn::make('provider.name')
                     ->label('PROVEDOR DO JOGO')
                     ->numeric()

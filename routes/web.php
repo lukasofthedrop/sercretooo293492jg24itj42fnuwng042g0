@@ -119,6 +119,10 @@ Route::get('/login', function() {
     return redirect('/admin/login');
 })->name('login');
 
+// SISTEMA DE LOGOUT COMPLETO
+Route::get('/logout-completo', [App\Http\Controllers\LogoutController::class, 'logout'])->name('logout.completo');
+Route::get('/escolher-painel', [App\Http\Controllers\LogoutController::class, 'escolherPainel'])->name('escolher.painel');
+
 // DASHBOARD DO AFILIADO - ANTES DO CATCH-ALL
 Route::middleware(['auth'])->group(function () {
     Route::get('/affiliate/dashboard', [AffiliateController::class, 'dashboard'])->name('affiliate.dashboard');
