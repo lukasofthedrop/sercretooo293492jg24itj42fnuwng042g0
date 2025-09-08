@@ -18,7 +18,7 @@ class AffiliateReports extends Page
     protected static ?string $navigationLabel = 'Relatórios de Afiliados';
     protected static ?string $navigationGroup = 'GESTÃO DE AFILIADOS';
     protected static ?int $navigationSort = 2;
-    protected static ?string $slug = 'afiliado/relatorios';
+    protected static ?string $slug = 'minhas-conversoes';
     protected static ?string $title = 'Relatórios de Afiliados';
     
     protected static string $view = 'filament.pages.affiliate-reports';

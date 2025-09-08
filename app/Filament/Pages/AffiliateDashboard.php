@@ -15,7 +15,7 @@ class AffiliateDashboard extends Page
     protected static ?string $navigationLabel = 'Minha Dashboard Afiliado';
     protected static ?string $navigationGroup = 'GESTÃO DE AFILIADOS';
     protected static ?int $navigationSort = 4;
-    protected static ?string $slug = 'afiliado/minha-dashboard';
+    protected static ?string $slug = 'minha-dashboard';
     protected static ?string $title = 'Dashboard do Afiliado';
     
     protected static string $view = 'filament.pages.affiliate-dashboard';

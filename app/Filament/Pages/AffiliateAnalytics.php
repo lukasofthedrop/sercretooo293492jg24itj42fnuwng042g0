@@ -24,7 +24,7 @@ class AffiliateAnalytics extends Page implements HasTable
     protected static ?string $navigationLabel = 'Análise Individual';
     protected static ?string $navigationGroup = 'GESTÃO DE AFILIADOS';
     protected static ?int $navigationSort = 3;
-    protected static ?string $slug = 'afiliado/analise';
+    protected static ?string $slug = 'analise-individual';
     protected static ?string $title = 'Análise Individual de Afiliados';
     
     protected static string $view = 'filament.pages.affiliate-analytics';

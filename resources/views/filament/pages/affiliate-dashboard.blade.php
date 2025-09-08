@@ -1,4 +1,7 @@
 <x-filament-panels::page>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <style>
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
@@ -270,6 +273,59 @@
             </p>
         </div>
 
+        <!-- Filtros de Período -->
+        <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%); border: 1px solid rgba(34, 197, 94, 0.25); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+            <h3 style="color: #f1f5f9; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-filter" style="color: #22c55e;"></i>
+                Filtrar por Período
+            </h3>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <button onclick="filterByPeriod('DIA')" id="filter-dia" style="
+                    background: rgba(34, 197, 94, 0.2);
+                    border: 2px solid #22c55e;
+                    color: #22c55e;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    font-size: 0.875rem;
+                ">
+                    <i class="fas fa-calendar-day"></i> DIA
+                </button>
+                <button onclick="filterByPeriod('SEMANA')" id="filter-semana" style="
+                    background: rgba(30, 41, 59, 0.5);
+                    border: 2px solid rgba(34, 197, 94, 0.3);
+                    color: rgba(241, 245, 249, 0.7);
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    font-size: 0.875rem;
+                ">
+                    <i class="fas fa-calendar-week"></i> SEMANA
+                </button>
+                <button onclick="filterByPeriod('MES')" id="filter-mes" style="
+                    background: rgba(30, 41, 59, 0.5);
+                    border: 2px solid rgba(34, 197, 94, 0.3);
+                    color: rgba(241, 245, 249, 0.7);
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    font-size: 0.875rem;
+                ">
+                    <i class="fas fa-calendar-alt"></i> MÊS
+                </button>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem; color: rgba(241, 245, 249, 0.6); font-size: 0.875rem;">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="periodo-atual">Visualizando: Hoje</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Grid de Estatísticas Principal -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -289,7 +345,7 @@
             </div>
             
             <div class="stat-card">
-                <div class="stat-label">NGR do Mês</div>
+                <div class="stat-label">REVSHARE do mes</div>
                 <div class="stat-value">R$ {{ number_format($month_ngr, 2, ',', '.') }}</div>
                 <div class="stat-change">
                     <i class="fas fa-chart-line"></i> Revenue líquido
@@ -1035,5 +1091,109 @@
                 });
             }
         });
+
+        // Função para filtrar por período
+        function filterByPeriod(periodo) {
+            // Atualiza os botões de filtro
+            const buttons = ['filter-dia', 'filter-semana', 'filter-mes'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    if (btnId === `filter-${periodo.toLowerCase()}`) {
+                        btn.style.background = 'rgba(34, 197, 94, 0.2)';
+                        btn.style.borderColor = '#22c55e';
+                        btn.style.color = '#22c55e';
+                    } else {
+                        btn.style.background = 'rgba(30, 41, 59, 0.5)';
+                        btn.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                        btn.style.color = 'rgba(241, 245, 249, 0.7)';
+                    }
+                }
+            });
+
+            // Atualiza o texto do período atual
+            const periodoTexto = {
+                'DIA': 'Hoje',
+                'SEMANA': 'Esta Semana',
+                'MES': 'Este Mês'
+            };
+            
+            const periodoAtual = document.getElementById('periodo-atual');
+            if (periodoAtual) {
+                periodoAtual.textContent = `Visualizando: ${periodoTexto[periodo] || 'Período Selecionado'}`;
+            }
+
+            // Efeito visual de loading
+            const statsGrid = document.querySelector('.stats-grid');
+            if (statsGrid) {
+                statsGrid.style.opacity = '0.6';
+                statsGrid.style.filter = 'blur(2px)';
+                
+                setTimeout(() => {
+                    statsGrid.style.opacity = '1';
+                    statsGrid.style.filter = 'none';
+                    
+                    // Notificação visual do filtro aplicado
+                    const notification = document.createElement('div');
+                    notification.innerHTML = `
+                        <div style="
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            background: linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(34, 197, 94, 0.8) 100%);
+                            color: white;
+                            padding: 0.75rem 1.5rem;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+                            z-index: 10000;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                            font-weight: 600;
+                            animation: slideInRight 0.3s ease-out;
+                        ">
+                            <i class="fas fa-check-circle"></i>
+                            Filtro aplicado: ${periodoTexto[periodo]}
+                        </div>
+                    `;
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.style.animation = 'slideOutRight 0.3s ease-in';
+                        setTimeout(() => document.body.removeChild(notification), 300);
+                    }, 2000);
+                }, 500);
+            }
+
+            console.log(`Filtro aplicado: ${periodo}`);
+            // Aqui seria feita a requisição AJAX para filtrar os dados reais
+        }
+
+        // CSS para animações
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOutRight {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </x-filament-panels::page>
