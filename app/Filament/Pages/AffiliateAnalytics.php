@@ -105,7 +105,7 @@ class AffiliateAnalytics extends Page implements HasTable
                     ->label('Ver Análise')
                     ->icon('heroicon-o-chart-bar')
                     ->color('primary')
-                    ->url(fn($record) => "/admin/afiliado/analise/{$record->id}"),
+                    ->url(fn($record) => "/admin/analise-individual?affiliate_id={$record->id}"),
             ])
             ->bulkActions([])
             ->defaultSort('created_at', 'desc');

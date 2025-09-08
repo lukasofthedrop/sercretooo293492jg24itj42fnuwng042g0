@@ -1,7 +1,7 @@
 <x-filament-panels::page>
-    @if(request()->route('id'))
+    @if(request()->has('affiliate_id'))
         @php
-            $data = $this->getAnalyticsData(request()->route('id'));
+            $data = $this->getAnalyticsData(request()->get('affiliate_id'));
         @endphp
         
         @if(!empty($data))

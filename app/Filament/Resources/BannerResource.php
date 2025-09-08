@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -74,7 +75,10 @@ class BannerResource extends Resource
                         ])->columns(2),
                         Forms\Components\FileUpload::make('image')
                             ->image()
-                            ->required(),
+                            ->required()
+                            ->directory('/')
+                            ->disk('public')
+                            ->visibility('public'),
                     ])
             ]);
     }
@@ -87,8 +91,13 @@ class BannerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
-                    ->label('Imagem'),
+                Tables\Columns\TextColumn::make('image')
+                    ->label('Imagem')
+                    ->formatStateUsing(function ($state) {
+                        $url = '/storage/' . $state;
+                        return new HtmlString('<img src="' . $url . '" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">');
+                    })
+                    ->html(),
                 Tables\Columns\TextColumn::make('link')
                     ->label('Link'),
                 Tables\Columns\TextColumn::make('type')
