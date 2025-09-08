@@ -84,7 +84,8 @@ class PromotionResource extends Resource
                     ->label('Imagem')
                     ->formatStateUsing(function ($state) {
                         if (!$state) return '';
-                        $url = '/storage/' . $state;
+                        // Imagens de promoções já incluem o caminho completo
+                        $url = str_starts_with($state, 'uploads/') ? '/storage/' . $state : '/storage/' . $state;
                         return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">');
                     })
                     ->html(),

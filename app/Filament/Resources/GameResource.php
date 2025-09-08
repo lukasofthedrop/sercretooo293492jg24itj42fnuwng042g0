@@ -145,7 +145,8 @@ class GameResource extends Resource
                 ->label('IMAGEM DO JOGO')
                 ->formatStateUsing(function ($state) {
                     if (!$state) return '';
-                    $url = '/storage/' . $state;
+                    // Imagens de games já incluem o caminho completo (Games/...)
+                    $url = str_starts_with($state, 'Games/') ? '/storage/' . $state : '/storage/' . $state;
                     return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">');
                 })
                 ->html(),
