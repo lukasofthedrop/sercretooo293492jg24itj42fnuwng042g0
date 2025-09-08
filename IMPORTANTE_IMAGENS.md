@@ -37,7 +37,30 @@ public/
 
 ## 🔧 CORREÇÕES APLICADAS
 
-### 1. BannerResource.php (linha 94-100)
+### 1. PROBLEMA COM ImageColumn (CRÍTICO!)
+**Problema:** ImageColumn do Filament não funciona com nossa estrutura
+**Solução:** SEMPRE usar TextColumn com formatStateUsing() e HtmlString
+
+**Padrão correto para TODOS os Resources:**
+```php
+use Illuminate\Support\HtmlString;
+
+// ERRADO - NÃO FUNCIONA!
+Tables\Columns\ImageColumn::make('image')
+    ->label('Imagem'),
+
+// CORRETO - SEMPRE USE ISSO!
+Tables\Columns\TextColumn::make('image')
+    ->label('Imagem')
+    ->formatStateUsing(function ($state) {
+        if (!$state) return '';
+        $url = '/storage/' . $state;
+        return new HtmlString('<img src="' . $url . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">');
+    })
+    ->html(),
+```
+
+### 2. BannerResource.php (linha 94-100)
 ```php
 Tables\Columns\TextColumn::make('image')
     ->label('Imagem')
@@ -177,6 +200,12 @@ CTRL + F5
 - **2025-09-08:** Corrigido APP_URL de 8001 para 8080
 - **2025-09-08:** Ajustado BannerResource para usar TextColumn com HTML
 - **2025-09-08:** Corrigido URL do botão "Ver Análise" em AffiliateAnalytics
+- **2025-09-08:** SOLUÇÃO DEFINITIVA - Convertido TODOS os ImageColumn para TextColumn:
+  - CategoryResource: imagens de categorias
+  - VipResource: imagens VIP
+  - PromotionResource: imagens de promoções
+  - GameResource: capas de jogos
+  - MissionResource: imagens de missões
 
 ---
 
