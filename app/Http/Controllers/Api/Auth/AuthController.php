@@ -79,7 +79,7 @@ class AuthController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users|max:255',
                 'phone' => 'required|string|min:10|max:15',
-                'password' => ['required', Rules\Password::min(6)],
+                'password' => ['required', Rules\Password::min(12)->mixedCase()->numbers()->symbols()],
                 'cupom' => 'nullable|string',  // Removido o exists para personalizar a verificação do cupom
                 'reference_code' => 'nullable|string', 
             ];
@@ -263,7 +263,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email|exists:users,email',
             'token' => 'required',
-            'password' => 'required|string|min:6|confirmed'
+            'password' => ['required', 'string', 'min:12', 'confirmed', 'regex:/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).*$/']
         ]);
 
         $tokenData = DB::table('password_reset_tokens')

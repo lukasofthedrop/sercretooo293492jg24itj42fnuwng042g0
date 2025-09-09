@@ -29,9 +29,9 @@ class TopGamesOverview extends BaseWidget
         $gameStats = DB::table('orders')
             ->select('game',
                 DB::raw('COUNT(*) as total_plays'),
-                DB::raw('SUM(CASE WHEN DATE(created_at) = "'.$today->toDateString().'" THEN 1 ELSE 0 END) as today_plays'),
-                DB::raw('SUM(CASE WHEN created_at >= "'.$weekStart->toDateTimeString().'" THEN 1 ELSE 0 END) as week_plays'),
-                DB::raw('SUM(CASE WHEN created_at >= "'.$monthStart->toDateTimeString().'" THEN 1 ELSE 0 END) as month_plays')
+                DB::raw('SUM(CASE WHEN DATE(created_at) = ? THEN 1 ELSE 0 END) as today_plays', [$today->toDateString()]),
+                DB::raw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as week_plays', [$weekStart->toDateTimeString()]),
+                DB::raw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as month_plays', [$monthStart->toDateTimeString()])
             )
             ->where('type', 'bet')
             ->groupBy('game')

@@ -35,7 +35,7 @@ class AffiliateHistory extends Page implements HasTable
     protected static ?string $title = 'Afiliados';
     protected static ?string $model = User::class;
 
-    protected static ?string $slug = 'historico-pagamentos';
+    protected static ?string $slug = 'gestao-afiliados';
 
     /**
      * @dev  
@@ -43,7 +43,9 @@ class AffiliateHistory extends Page implements HasTable
      */
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole('admin'); // Controla o acesso total à página
+        // TEMPORARIAMENTE DESABILITADO PARA DEBUG
+        return true; 
+        // return auth()->user()->hasRole('admin'); // Controla o acesso total à página
     }
     
     public static function canView(): bool

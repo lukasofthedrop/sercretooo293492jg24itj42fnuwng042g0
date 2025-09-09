@@ -1,6 +1,8 @@
 <?php
 
-namespace Filament\Tables\Actions;
+namespace App\Filament\Pages\AffiliateHistory\Pages\Actions;
+
+use Filament\Tables\Actions\Action;
 
 use App\Filament\Pages\AffiliateHistory;
 use App\Filament\Pages\DetailsAffiliate;

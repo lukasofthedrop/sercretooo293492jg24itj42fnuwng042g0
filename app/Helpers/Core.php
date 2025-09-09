@@ -1133,15 +1133,45 @@ class Core
      */
     public static function upload($file)
     {
-        $extension  = $file->extension();
-        $size       = $file->getSize();
-        $path       = Storage::disk('public')->putFile('uploads', $file, 'public');
-        $name       = explode('uploads/', $path);
+        // Validação de tipo de arquivo
+        $allowedMimes = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx'];
+        $extension = strtolower($file->extension());
+        
+        if (!in_array($extension, $allowedMimes)) {
+            throw new \Exception('Tipo de arquivo não permitido. Apenas: ' . implode(', ', $allowedMimes));
+        }
+        
+        // Validação de tamanho (máx 5MB = 5242880 bytes)
+        $maxSize = 5242880;
+        $size = $file->getSize();
+        
+        if ($size > $maxSize) {
+            throw new \Exception('Arquivo muito grande. Tamanho máximo: 5MB');
+        }
+        
+        // Validação MIME type real (previne renomeação de arquivos)
+        $allowedMimeTypes = [
+            'image/jpeg',
+            'image/png', 
+            'image/gif',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ];
+        
+        $mimeType = $file->getMimeType();
+        if (!in_array($mimeType, $allowedMimeTypes)) {
+            throw new \Exception('Tipo MIME inválido: ' . $mimeType);
+        }
+        
+        // Gerar nome único para evitar sobrescrita
+        $fileName = Str::uuid() . '.' . $extension;
+        $path = Storage::disk('public')->putFileAs('uploads', $file, $fileName);
 
-        if ($path && isset($name[1])) {
+        if ($path) {
             return [
                 'path'      => $path,
-                'name'      => $name[1],
+                'name'      => $fileName,
                 'extension' => $extension,
                 'size'      => $size
             ];

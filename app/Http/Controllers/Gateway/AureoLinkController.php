@@ -29,7 +29,12 @@ class AureoLinkController extends Controller
     public function webhook(Request $request)
     {
         try {
-            Log::info('AureoLink Webhook received', $request->all());
+            // Log apenas dados não sensíveis
+            Log::info('AureoLink Webhook received', [
+                'transaction_id' => $request->input('transaction.id'),
+                'status' => $request->input('transaction.status'),
+                'timestamp' => now()
+            ]);
 
             $data = $request->all();
             

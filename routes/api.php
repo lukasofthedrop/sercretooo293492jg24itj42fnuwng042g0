@@ -13,6 +13,12 @@ use App\Http\Controllers\Api\MinesHistoryController;
 use App\Http\Controllers\Api\DailyBonusController;
 use App\Http\Controllers\Api\GameOpenController;
 use App\Http\Controllers\Api\DashboardMetricsController;
+
+// API Health Check
+Route::get('/', function () {
+    return response()->json(['message' => 'API is running']);
+});
+
 /*
 |--------------------------------------------------------------------------
 | ROTA DAS MISSÕES

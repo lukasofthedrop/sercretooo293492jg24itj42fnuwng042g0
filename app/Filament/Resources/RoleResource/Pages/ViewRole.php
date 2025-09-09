@@ -1,8 +1,8 @@
 <?php
 
-namespace Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource\Pages;
+namespace App\Filament\Resources\RoleResource\Pages;
 
-use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource;
+use App\Filament\Resources\RoleResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 

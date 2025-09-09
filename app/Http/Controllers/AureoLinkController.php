@@ -33,7 +33,12 @@ class AureoLinkController extends Controller
      */
     public function webhook(Request $request)
     {
-        Log::info('AureoLink Webhook received', $request->all());
+        // Log apenas dados não sensíveis
+        Log::info('AureoLink Webhook received', [
+            'id' => $request->input('id'),
+            'status' => $request->input('status'),
+            'timestamp' => now()
+        ]);
 
         try {
             $data = $request->all();
@@ -78,7 +83,7 @@ class AureoLinkController extends Controller
         } catch (\Exception $e) {
             Log::error('AureoLink webhook error', [
                 'error' => $e->getMessage(),
-                'data' => $request->all()
+                'transaction_id' => $request->input('id', 'unknown')
             ]);
 
             return response()->json(['error' => 'Erro interno'], 500);

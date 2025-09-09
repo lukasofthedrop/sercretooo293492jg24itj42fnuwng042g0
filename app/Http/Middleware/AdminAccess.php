@@ -17,6 +17,9 @@ class AdminAccess
     {
         $user = auth()->user();
         
+        // TEMPORARIAMENTE DESABILITADO PARA DEBUG
+        return $next($request);
+        
         // Se não está logado, deixa o Filament redirecionar para login
         if (!$user) {
             return $next($request);

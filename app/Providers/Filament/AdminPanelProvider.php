@@ -42,6 +42,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Pages\DashboardAdmin;
+use App\Filament\Pages\AffiliateDashboard; // Dashboard de Afiliados
 
 // NOVAS FUNÇOES 
 
@@ -201,7 +202,7 @@ class AdminPanelProvider extends PanelProvider
                         ->icon('heroicon-o-users')
                         ->label(fn (): string => 'Gestão de Afiliados')
                         ->url(fn (): string => AffiliateHistory::getUrl())
-                        ->isActiveWhen(fn () => request()->is('admin/afiliado/historico*')),
+                        ->isActiveWhen(fn () => request()->is('admin/gestao-afiliados*')),
                     
                     NavigationItem::make('affiliate-reports')
                         ->icon('heroicon-o-chart-pie')

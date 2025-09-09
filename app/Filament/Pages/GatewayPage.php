@@ -13,7 +13,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
-use Jackiedo\DotenvEditor\Facades\DotenvEditor;
+// use Jackiedo\DotenvEditor\Facades\DotenvEditor; // REMOVIDO POR SEGURANÇA
 
 class GatewayPage extends Page
 {

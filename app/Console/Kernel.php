@@ -12,8 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-
-
+        // Backup automático diário
+        // $schedule->command('backup:auto')->daily()->at('03:00');
     }
 
     /**
