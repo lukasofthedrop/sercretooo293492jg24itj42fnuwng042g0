@@ -1,203 +1,55 @@
 {
-  "project_info": {
-    "name": "LucrativaBet",
-    "type": "Online Casino Platform",
-    "version": "1.0.0",
-    "description": "Complete online casino platform with affiliate system, multi-provider games integration, and payment gateways"
-  },
+  "project_name": "LucrativaBet",
+  "description": "Plataforma de cassino online com sistema de afiliados, gestão de usuários e wallets",
   "tech_stack": {
     "backend": {
       "language": "PHP",
-      "framework": "Laravel 10.x",
-      "admin_panel": "Filament v3",
+      "framework": "Laravel 10.48.2",
       "database": "MySQL",
-      "cache": "Redis/File",
-      "queue": "Database",
-      "websockets": "Laravel Websockets"
+      "cache": "Redis",
+      "auth": "Laravel Sanctum with 2FA"
     },
     "frontend": {
-      "framework": "Vue.js 3",
-      "css": "TailwindCSS",
-      "bundler": "Vite",
-      "ui_library": "Flowbite",
-      "charts": "ApexCharts, Chart.js"
+      "framework": "Blade Templates + Livewire",
+      "css": "Tailwind CSS",
+      "js": "Alpine.js, Chart.js",
+      "ui_components": "Filament v3"
     },
-    "dependencies": {
-      "authentication": "Laravel Sanctum, JWT Auth",
-      "permissions": "Spatie Laravel Permission",
-      "payments": "Stripe, Custom Gateways (AureoLink, DigitosPay)",
-      "social": "Laravel Socialite",
-      "validation": "PT-BR Validator"
+    "infrastructure": {
+      "web_server": "PHP Built-in Server",
+      "port": 8000,
+      "environment": "Development/Production"
     }
   },
   "features": {
     "user_management": {
       "registration": true,
       "login": true,
-      "social_login": true,
-      "2fa": false,
-      "roles": ["admin", "affiliate", "user"],
-      "wallet_system": true
+      "password_reset": true,
+      "two_factor_auth": true,
+      "roles": ["admin", "user", "affiliate"],
+      "total_users": 14789
     },
-    "gaming": {
-      "providers": [
-        "FiverProvider",
-        "PragmaticPlay",
-        "WorldSlot",
-        "Custom Games"
-      ],
-      "categories": "Dynamic",
-      "favorites": true,
-      "game_history": true,
-      "reviews": true,
-      "slots": true,
-      "live_casino": true,
-      "originals": true
+    "wallet_system": {
+      "multiple_currencies": true,
+      "balance_types": ["withdrawal", "bonus", "rollover"],
+      "total_wallets": 3315,
+      "total_balance": "R$ 52,557.61"
     },
     "affiliate_system": {
-      "enabled": true,
-      "commission_levels": "Multi-level",
+      "commission_types": ["NGR", "RevShare"],
+      "tiers": ["Bronze", "Silver", "Gold"],
       "tracking": true,
-      "reports": true,
-      "withdrawals": true,
-      "inviter_codes": true,
-      "cpa_system": true,
-      "revenue_share": true
+      "reporting": true
     },
-    "payments": {
-      "deposits": {
-        "methods": ["PIX", "Credit Card", "Bank Transfer"],
-        "gateways": ["AureoLink", "DigitosPay", "Stripe"],
-        "min_deposit": 10,
-        "max_deposit": 50000
-      },
-      "withdrawals": {
-        "methods": ["PIX", "Bank Transfer"],
-        "processing_time": "1-3 days",
-        "min_withdrawal": 20,
-        "max_withdrawal": 10000
-      }
+    "gaming": {
+      "providers": ["Pragmatic Play", "Spribe", "PGSoft", "Evolution"],
+      "games_count": 500,
+      "categories": ["slots", "live_casino", "sports_betting"]
     },
-    "promotions": {
-      "bonuses": true,
-      "missions": true,
-      "vip_system": true,
-      "coupons": true,
-      "daily_bonus": true,
-      "cashback": true
-    },
-    "admin_features": {
-      "dashboard": true,
-      "user_management": true,
-      "game_management": true,
-      "financial_reports": true,
-      "affiliate_management": true,
-      "settings_management": true,
-      "banner_management": true,
-      "email_configuration": true,
-      "css_customization": true
+    "admin_panel": {
+      "framework": "Filament v3",
+      "features": ["dashboard", "users", "wallets", "games", "settings", "reports"]
     }
-  },
-  "api_endpoints": {
-    "authentication": [
-      "/api/auth/login",
-      "/api/auth/register",
-      "/api/auth/logout",
-      "/api/auth/refresh"
-    ],
-    "games": [
-      "/api/games",
-      "/api/games/{slug}",
-      "/api/games/play/{id}",
-      "/api/games/demo/{id}",
-      "/api/games/categories",
-      "/api/games/providers"
-    ],
-    "wallet": [
-      "/api/wallet/balance",
-      "/api/wallet/deposit",
-      "/api/wallet/withdraw",
-      "/api/wallet/transactions"
-    ],
-    "affiliate": [
-      "/api/affiliate/dashboard",
-      "/api/affiliate/conversions",
-      "/api/affiliate/users",
-      "/api/affiliate/payments"
-    ]
-  },
-  "database_structure": {
-    "main_tables": [
-      "users",
-      "wallets",
-      "games",
-      "providers",
-      "categories",
-      "deposits",
-      "withdrawals",
-      "affiliate_histories",
-      "affiliate_withdraws",
-      "transactions",
-      "missions",
-      "settings",
-      "banners",
-      "custom_layouts"
-    ],
-    "migrations_count": 80,
-    "models_count": 45
-  },
-  "security_features": {
-    "authentication": "Multi-guard (web, api)",
-    "authorization": "Role-based with Spatie",
-    "csrf_protection": true,
-    "api_rate_limiting": true,
-    "encryption": "Laravel default",
-    "password_hashing": "bcrypt",
-    "session_management": "Database/Redis"
-  },
-  "file_structure": {
-    "total_php_files": 270,
-    "total_js_files": 45,
-    "total_vue_files": 12,
-    "critical_files": [
-      "app-CRDk2_8R.js",
-      "app-BiLvXd5_.css",
-      "bet.sorte365.fun/"
-    ],
-    "directories": {
-      "app": "Main application code",
-      "resources": "Views and assets",
-      "routes": "API and web routes",
-      "database": "Migrations and seeders",
-      "public": "Public assets",
-      "storage": "Logs and cache",
-      "config": "Configuration files"
-    }
-  },
-  "testing": {
-    "framework": "PHPUnit",
-    "test_files_present": true,
-    "coverage": "Not calculated",
-    "test_types": ["Unit", "Feature"]
-  },
-  "deployment": {
-    "environment": "Local Development",
-    "server_requirements": {
-      "php": ">=8.1",
-      "mysql": ">=5.7",
-      "nodejs": ">=16",
-      "composer": ">=2.0"
-    },
-    "ports": {
-      "web": 8080,
-      "websocket": 6001
-    }
-  },
-  "potential_issues": [
-    "Hardcoded credentials in some files",
-    "Large backup folder (bet.sorte365.fun - 753MB)",
-    "Mixed authentication systems (Sanctum + JWT)",
-    "Multiple payment gateway integrations",
-    "Complex affiliate commission calculations"
-  ]
+  }
 }

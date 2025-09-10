@@ -1,0 +1,9 @@
+RELATÓRIO DE MIGRAÇÃO - 09/09/2025 21:52:54
+==================================================
+Usuários migrados: 10
+Duplicados ignorados: 0
+Erros: 0
+Wallets criadas: 2
+Total Saldo Saque: R$ 0,04
+Total Saldo Bônus: R$ 0,00
+==================================================

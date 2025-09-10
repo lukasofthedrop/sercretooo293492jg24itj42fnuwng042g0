@@ -1,49 +1,62 @@
-# ✅ GARANTIA DE TRANSFERÊNCIA - LUCRATIVABET
+# 🛡️ GARANTIA DE TRANSFERÊNCIA WINDOWS - LUCRATIVABET
 
-## 🎯 STATUS ATUAL: SISTEMA 100% ÍNTEGRO
+## 🚨🚨🚨 ATENÇÃO CRÍTICA PARA WINDOWS 🚨🚨🚨
 
-Teste executado em: 2025-09-09
-Resultado: **TODOS OS ARQUIVOS CRÍTICOS PRESENTES**
+### ⛔ PASTAS QUE DEVEM SER DELETADAS NO WINDOWS:
+```
+❌ bet.sorte365.fun/    <- SISTEMA ANTIGO QUEBRADO - DELETE!
+❌ _backups/            <- BACKUPS PERIGOSOS - DELETE!
+❌ dev-backup/          <- LIXO ANTIGO - DELETE!
+❌ _scripts/            <- SCRIPTS INCOMPATÍVEIS - DELETE!
+❌ _docs/               <- DOCS ERRADAS - DELETE!
+❌ _temp/               <- TEMPORÁRIOS - DELETE!
+```
+
+### ✅ EXECUTE PRIMEIRO: `DELETE-DANGEROUS-FOLDERS.bat`
 
 ---
 
-## 📦 COMO TRANSFERIR COM SUCESSO
+## 📦 COMO TRANSFERIR PARA WINDOWS COM SUCESSO
 
-### PASSO 1: TESTAR INTEGRIDADE
+### PASSO 1: NO MAC/LINUX (PREPARAR)
 ```bash
-./TESTAR-INTEGRIDADE.sh
-# DEVE mostrar: ✅ PERFEITO!
+# Criar arquivo ZIP sem as pastas perigosas
+zip -r lucrativabet-windows.zip lucrativabet/ \
+  -x "lucrativabet/bet.sorte365.fun/*" \
+  -x "lucrativabet/_backups/*" \
+  -x "lucrativabet/dev-backup/*" \
+  -x "lucrativabet/_scripts/*" \
+  -x "lucrativabet/_docs/*" \
+  -x "lucrativabet/_temp/*" \
+  -x "lucrativabet/*.sh" \
+  -x "lucrativabet/node_modules/*" \
+  -x "lucrativabet/vendor/*"
 ```
 
-### PASSO 2: COMPACTAR CORRETAMENTE
-```bash
-# Da pasta PAI (não de dentro do projeto)
-tar -czf lucrativabet-completo.tar.gz \
-  --exclude='node_modules' \
-  --exclude='vendor' \
-  --exclude='.git' \
-  --exclude='storage/logs/*' \
-  lucrativabet/
-
-# Verificar tamanho (deve ter ~800MB)
-ls -lah lucrativabet-completo.tar.gz
-```
-
-### PASSO 3: TRANSFERIR
+### PASSO 2: TRANSFERIR
 - Via USB, Google Drive, WeTransfer, etc
-- **IMPORTANTE**: Arquivo tem ~800MB por causa da pasta bet.sorte365.fun
+- Arquivo terá ~50MB (sem as pastas perigosas)
 
-### PASSO 4: NO NOVO PC
-```bash
-# Descompactar
-tar -xzf lucrativabet-completo.tar.gz
+### PASSO 3: NO WINDOWS
+```powershell
+# 1. Descompactar o ZIP
+# 2. Abrir PowerShell como Admin
 cd lucrativabet
 
-# PRIMEIRO: Testar integridade
-./TESTAR-INTEGRIDADE.sh
+# 3. EXECUTAR LIMPEZA (caso ainda existam pastas perigosas)
+.\DELETE-DANGEROUS-FOLDERS.bat
 
-# Se OK, executar setup
-bash _scripts/SETUP-AUTOMATICO.sh
+# 4. Corrigir .env
+# Mudar APP_URL de 8080 para 8000
+
+# 5. Instalar dependências
+composer install
+npm install
+php artisan key:generate
+php artisan migrate
+
+# 6. Rodar sistema
+php artisan serve --port=8000
 ```
 
 ---

@@ -1,3 +1,4 @@
+
 # 🚨 ATENÇÃO TOTAL - SISTEMA 100% FUNCIONAL 🚨
 
 ## ⚠️ PARA QUALQUER IA QUE ABRIR ESTE PROJETO ⚠️
@@ -26,8 +27,8 @@
   "url_cassino": "http://localhost:8000",
   "url_admin": "http://localhost:8000/admin",
   "credenciais_admin": {
-    "email": "admin@lucrativabet.com",
-    "senha": "password123"
+    "email": "lucrativa@bet.com",
+    "senha": "foco123@"
   },
   "status_sistema": "100% FUNCIONAL",
   "data_validacao": "09/09/2025",
@@ -85,7 +86,7 @@ php artisan serve --port=8000
 ```
 
 ### 🔑 **CREDENCIAIS DE ACESSO**
-- **Admin**: admin@lucrativabet.com / password123
+- **Admin**: lucrativa@bet.com / foco123@
 - **Sistema**: 100% configurado e funcional
 
 ---
