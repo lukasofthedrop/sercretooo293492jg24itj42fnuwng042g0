@@ -1,6 +1,19 @@
 # Build stage para Composer
-FROM composer:2.6 AS composer-build
+FROM php:8.2-fpm-alpine AS composer-build
 WORKDIR /app
+
+# Instalar dependências necessárias para PHP intl
+RUN apk update && apk add --no-cache \
+    icu-dev \
+    icu-libs
+
+# Instalar extensão intl
+RUN docker-php-ext-configure intl && docker-php-ext-install intl
+
+# Instalar Composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+
+# Instalar dependências do composer
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
