@@ -2,13 +2,21 @@
 FROM php:8.2-fpm-alpine AS composer-build
 WORKDIR /app
 
-# Instalar dependências necessárias para PHP intl
+# Instalar dependências necessárias para todas as extensões PHP
 RUN apk update && apk add --no-cache \
     icu-dev \
-    icu-libs
+    icu-libs \
+    oniguruma-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    libzip-dev \
+    postgresql-dev
 
-# Instalar extensão intl
-RUN docker-php-ext-configure intl && docker-php-ext-install intl
+# Instalar todas as extensões PHP necessárias
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip opcache intl
 
 # Instalar Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
