@@ -1,3 +1,4 @@
+# Deploy forçado manualmente - 2025-09-11 20:00
 databases:
   - name: lucrativabet-db
     plan: free
