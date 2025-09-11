@@ -20,25 +20,7 @@ Route::get('/', function () {
 });
 
 // Health Check para Render
-Route::get('/health', function () {
-    try {
-        // Verifica conexão com banco de dados
-        \DB::connection()->getPdo();
-        $dbStatus = 'connected';
-    } catch (\Exception $e) {
-        $dbStatus = 'disconnected';
-    }
-    
-    return response()->json([
-        'status' => 'healthy',
-        'timestamp' => now()->toIso8601String(),
-        'version' => config('app.version', '1.0.0'),
-        'environment' => app()->environment(),
-        'database' => $dbStatus,
-        'cache' => \Cache::has('health_check') ? 'working' : 'unknown',
-        'uptime' => round((microtime(true) - LARAVEL_START), 2) . ' seconds'
-    ]);
-});
+Route::get('/health', \App\Http\Controllers\Api\HealthController::class);
 
 /*
 |--------------------------------------------------------------------------
