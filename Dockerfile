@@ -95,11 +95,11 @@ RUN echo '#!/bin/sh' > /start.sh && \
     echo '# Aguardar banco de dados' >> /start.sh && \
     echo 'if [ "$DATABASE_URL" ]; then' >> /start.sh && \
     echo '  echo "Aguardando banco de dados..."' >> /start.sh && \
-    echo '  sleep 5' >> /start.sh && \
+    echo '  sleep 10' >> /start.sh && \
     echo 'fi' >> /start.sh && \
     echo '' >> /start.sh && \
-    echo '# Executar migrações' >> /start.sh && \
-    echo 'php artisan migrate --force' >> /start.sh && \
+    echo '# Executar migrações (apenas se o banco estiver disponível)' >> /start.sh && \
+    echo 'php artisan migrate --force || true' >> /start.sh && \
     echo '' >> /start.sh && \
     echo '# Otimizar aplicação' >> /start.sh && \
     echo 'php artisan config:cache' >> /start.sh && \
