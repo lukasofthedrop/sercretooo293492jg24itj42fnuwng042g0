@@ -30,11 +30,14 @@ RUN apk update && apk add --no-cache \
     libzip-dev \
     postgresql-dev \
     mysql-client \
-    postgresql-client
+    postgresql-client \
+    icu-dev \
+    icu-libs
 
 # Instalar extensões PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip opcache
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip opcache intl
 
 # Configurar PHP
 RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
