@@ -1,0 +1,154 @@
+databases:
+  - name: lucrativabet-db
+    plan: free
+    databaseName: lucrativabet
+    user: lucrativabet
+    ipAllowList: []
+
+services:
+  - type: web
+    name: lucrativabet
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: APP_NAME
+        value: "Lucrativa Bet"
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        fromService:
+          type: web
+          name: lucrativabet
+          property: host
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error
+      
+      # Database
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: lucrativabet-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: lucrativabet-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: lucrativabet-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: lucrativabet-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: lucrativabet-db
+          property: password
+      
+      # Cache & Session
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: FILESYSTEM_DISK
+        value: local
+      
+      # PlayFiver API
+      - key: PLAYFIVER_URL
+        value: https://api.playfivers.com
+      - key: PLAYFIVER_CODE
+        value: sorte365bet
+      - key: PLAYFIVER_TOKEN
+        value: a9aa0e61-9179-466a-8d7b-e22e7b473b8a
+      - key: PLAYFIVER_SECRET
+        value: f41adb6a-e15b-46b4-ad5a-1fc49f4745df
+      
+      # Backup Agent
+      - key: PLAYFIVER_BACKUP_CODE
+        value: lucrativabt
+      - key: PLAYFIVER_BACKUP_TOKEN
+        value: 80609b36-a25c-4175-92c5-c9a6f1e1b06e
+      - key: PLAYFIVER_BACKUP_SECRET
+        value: 08cfba85-7652-4a00-903f-7ea649620eb2
+      
+      # Security
+      - key: TOKEN_DE_2FA
+        value: 6d4b4e8e5dda575ae6679a153fce302831fd5001f58e21ba3587c96d00baa2826fa312b80425b90b02f3b7d5612d541d4dda6e5253be5565d011ea28a2cdfc5b
+      - key: FORCE_HTTPS
+        value: true
+      - key: TRUSTED_PROXIES
+        value: "*"
+      
+      # Mail (configurar depois se necessário)
+      - key: MAIL_MAILER
+        value: log
+      - key: MAIL_FROM_ADDRESS
+        value: hello@lucrativa.bet
+      - key: MAIL_FROM_NAME
+        value: "Lucrativa Bet"
+      
+      # Storage
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_DEFAULT_REGION
+        value: us-east-1
+      - key: AWS_BUCKET
+        sync: false
+      
+      # Broadcasting
+      - key: BROADCAST_DRIVER
+        value: log
+      - key: PUSHER_APP_ID
+        sync: false
+      - key: PUSHER_APP_KEY
+        sync: false
+      - key: PUSHER_APP_SECRET
+        sync: false
+      - key: PUSHER_HOST
+        sync: false
+      - key: PUSHER_PORT
+        value: 443
+      - key: PUSHER_SCHEME
+        value: https
+      - key: PUSHER_APP_CLUSTER
+        value: mt1
+      
+      # Vite
+      - key: VITE_APP_NAME
+        value: "Lucrativa Bet"
+      - key: VITE_PUSHER_APP_KEY
+        sync: false
+      - key: VITE_PUSHER_HOST
+        sync: false
+      - key: VITE_PUSHER_PORT
+        value: 443
+      - key: VITE_PUSHER_SCHEME
+        value: https
+      - key: VITE_PUSHER_APP_CLUSTER
+        value: mt1
+      
+      # Filament
+      - key: FILAMENT_DATABASE_NOTIFICATIONS_ENABLED
+        value: true
+      - key: FILAMENT_BROADCASTING_ECHO
+        value: false
+      - key: FILAMENT_BROADCASTING_REVERB
+        value: false

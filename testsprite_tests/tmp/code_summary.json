@@ -1,0 +1,101 @@
+{
+  "tech_stack": [
+    "PHP 8.2",
+    "Laravel 10.48.2",
+    "MySQL",
+    "Redis",
+    "Filament v3",
+    "Livewire",
+    "Alpine.js",
+    "Tailwind CSS",
+    "Vite",
+    "PlayFivers API"
+  ],
+  "features": [
+    {
+      "name": "Authentication API",
+      "description": "Sistema de autenticação com login, registro, 2FA e social auth",
+      "files": [
+        "app/Http/Controllers/Api/Auth/AuthController.php",
+        "app/Http/Controllers/Auth/SocialAuthController.php",
+        "app/Http/Controllers/TwoFactorController.php"
+      ]
+    },
+    {
+      "name": "Games Management API",
+      "description": "Gerenciamento de jogos, provedores e categorias",
+      "files": [
+        "app/Http/Controllers/Api/Games/GameController.php",
+        "app/Http/Controllers/Api/Games/ProviderController.php",
+        "app/Http/Controllers/Api/Search/SearchGameController.php"
+      ]
+    },
+    {
+      "name": "Wallet Transactions API",
+      "description": "Sistema de carteira, depósitos e saques",
+      "files": [
+        "app/Http/Controllers/Api/Wallet/DepositController.php",
+        "app/Http/Controllers/Api/Wallet/WithdrawalController.php",
+        "app/Http/Controllers/SystemWalletController.php"
+      ]
+    },
+    {
+      "name": "Affiliate System API",
+      "description": "Sistema completo de afiliados com comissões e saques",
+      "files": [
+        "app/Http/Controllers/Api/Profile/AffiliateController.php",
+        "app/Http/Controllers/AffiliateWithdrawalController.php"
+      ]
+    },
+    {
+      "name": "Bonus Promotions API",
+      "description": "Sistema de bônus, missões e promoções",
+      "files": [
+        "app/Http/Controllers/Api/Settings/BonusController.php",
+        "app/Http/Controllers/Api/DailyBonusController.php",
+        "app/Http/Controllers/MissionController.php"
+      ]
+    },
+    {
+      "name": "Payment Gateway API",
+      "description": "Integração com gateways de pagamento PIX, Stripe, AureoLink",
+      "files": [
+        "app/Http/Controllers/Api/Gateways/StripeController.php",
+        "app/Http/Controllers/Api/Gateways/SuitpayController.php"
+      ]
+    },
+    {
+      "name": "PlayFivers Integration API",
+      "description": "Integração com provedores de jogos PlayFivers",
+      "files": [
+        "app/Http/Controllers/Api/Games/PlayFiversController.php",
+        "app/Services/PlayFiverAgentManager.php"
+      ]
+    },
+    {
+      "name": "Admin Dashboard API",
+      "description": "APIs para métricas e gerenciamento do dashboard admin",
+      "files": [
+        "app/Http/Controllers/Api/DashboardMetricsController.php",
+        "app/Filament/Pages/DashboardAdmin.php"
+      ]
+    },
+    {
+      "name": "User Profile API",
+      "description": "Gerenciamento de perfil de usuário e preferências",
+      "files": [
+        "app/Http/Controllers/Api/Profile/ProfileController.php",
+        "app/Http/Controllers/Api/Profile/LikeController.php"
+      ]
+    },
+    {
+      "name": "Settings Configuration API",
+      "description": "APIs de configuração do sistema",
+      "files": [
+        "app/Http/Controllers/Api/Settings/SettingController.php",
+        "app/Http/Controllers/Api/Settings/CurrencyController.php",
+        "app/Http/Controllers/Api/Settings/BannerController.php"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+# Laravel Framework
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
+# Environment Files (SENSITIVE - Never commit these)
+.env
+.env.backup
+.env.production
+.env.local
+.env.testing
+.env.OLD
+.env.bak
+.env.*
+
+# IDE Files
+/.fleet
+/.idea
+/.vscode
+
+# Sistema 100% funcional - Arquivos de proteção
+# Estes arquivos devem ser commitados para proteger o sistema:
+# README.md (avisos para IAs)
+# CLAUDE.md (documentação técnica)
+# STATUS-ATUAL.md (status atual do sistema)
+# IA-INSTRUCTIONS.md (protocolo para IAs)
+# _*/WARNING*.md (avisos em pastas críticas)
+
+# Logs grandes (manter apenas essenciais)
+/storage/logs/*.log.* 
+/storage/logs/laravel-*.log
+
+# Backups sensíveis (já estão nas pastas com warnings)
+# _backups/ (mantém mas com warnings)
+# bet.sorte365.fun/ (mantém mas com warnings específicos)
+
+# Arquivos de sistema que podem conter dados sensíveis
+.server.pid
+.workers.pid
+*.dump
+*.sql.bak
+composer.lock.bak
+
+# Playwright screenshots (podem conter dados sensíveis)
+.playwright-mcp/*.png
+/screenshots/
+
+# Temporários e testes
+/tmp/
+/temp/
+/test-output/
+MASTER-REPORT-*.txt
+
+# Ignore large backup files
+_backups/*.tar.gz
+_backups/*.zip
+*.tar.gz
+*.zip
+backups/
+

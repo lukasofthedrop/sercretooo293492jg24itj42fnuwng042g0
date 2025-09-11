@@ -1,0 +1,10 @@
+{
+    "date": "2025-09-11 15:13:17",
+    "issues": [],
+    "warnings": [
+        "BAIXO: Leitura de arquivos (verificar URLs) - file_get_contents() em app\/Http\/Controllers\/Api\/Gateways\/StripeController.php:77",
+        "BAIXO: Leitura de arquivos (verificar URLs) - file_get_contents() em app\/Console\/Commands\/MigrateUsers.php:165",
+        "CSP: 'unsafe-inline' permitido (considerar remover)"
+    ],
+    "total_files_scanned": 553
+}
