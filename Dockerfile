@@ -92,16 +92,47 @@ COPY supervisord-render.conf /etc/supervisor/conf.d/supervisord.conf
 RUN echo '#!/bin/sh' > /start.sh && \
     echo 'set -e' >> /start.sh && \
     echo '' >> /start.sh && \
-    echo '# Usar arquivo .env correto para produção' >> /start.sh && \
-    echo 'if [ -f .env.production ]; then' >> /start.sh && \
-    echo '  echo "Usando .env.production para configuração de produção..."' >> /start.sh && \
-    echo '  cp .env.production .env' >> /start.sh && \
-    echo 'fi' >> /start.sh && \
+    echo '# Criar .env dinâmico com variáveis do Render' >> /start.sh && \
+    echo 'echo "APP_NAME=\"Lucrativa Bet\"" > .env' >> /start.sh && \
+    echo 'echo "APP_ENV=production" >> .env' >> /start.sh && \
+    echo 'echo "APP_KEY=base64:jP1f2K0S7Xe5JkyxyP8EptDNe8w77mGYOWcEoZyH9FU=" >> .env' >> /start.sh && \
+    echo 'echo "APP_DEBUG=false" >> .env' >> /start.sh && \
+    echo 'echo "APP_DEMO=false" >> .env' >> /start.sh && \
+    echo 'echo "APP_URL=${APP_URL:-https://lucrativabet.onrender.com}" >> .env' >> /start.sh && \
+    echo 'echo "VITE_BASE_URL=/" >> .env' >> /start.sh && \
+    echo 'echo "FILAMENT_BASE_URL=admin" >> .env' >> /start.sh && \
+    echo '' >> /start.sh && \
+    echo '# Configuração do banco de dados Render' >> /start.sh && \
+    echo 'echo "DB_CONNECTION=pgsql" >> .env' >> /start.sh && \
+    echo 'echo "DB_HOST=${DB_HOST}" >> .env' >> /start.sh && \
+    echo 'echo "DB_PORT=${DB_PORT}" >> .env' >> /start.sh && \
+    echo 'echo "DB_DATABASE=${DB_DATABASE}" >> .env' >> /start.sh && \
+    echo 'echo "DB_USERNAME=${DB_USERNAME}" >> .env' >> /start.sh && \
+    echo 'echo "DB_PASSWORD=${DB_PASSWORD}" >> .env' >> /start.sh && \
+    echo '' >> /start.sh && \
+    echo '# Configurações adicionais' >> /start.sh && \
+    echo 'echo "LOG_CHANNEL=stack" >> .env' >> /start.sh && \
+    echo 'echo "LOG_LEVEL=error" >> .env' >> /start.sh && \
+    echo 'echo "CACHE_DRIVER=file" >> .env' >> /start.sh && \
+    echo 'echo "SESSION_DRIVER=file" >> .env' >> .start.sh && \
+    echo 'echo "QUEUE_CONNECTION=database" >> .env' >> /start.sh && \
+    echo 'echo "FILESYSTEM_DISK=local" >> .env' >> .start.sh && \
+    echo 'echo "FORCE_HTTPS=true" >> .env' >> .start.sh && \
+    echo 'echo "TRUSTED_PROXIES=*" >> .env' >> .start.sh && \
+    echo '' >> /start.sh && \
+    echo '# Configurações do PlayFiver' >> /start.sh && \
+    echo 'echo "PLAYFIVER_URL=https://api.playfivers.com" >> .env' >> .start.sh && \
+    echo 'echo "PLAYFIVER_CODE=sorte365bet" >> .env' >> .start.sh && \
+    echo 'echo "PLAYFIVER_TOKEN=a9aa0e61-9179-466a-8d7b-e22e7b473b8a" >> .env' >> .start.sh && \
+    echo 'echo "PLAYFIVER_SECRET=f41adb6a-e15b-46b4-ad5a-1fc49f4745df" >> .env' >> .start.sh && \
+    echo '' >> /start.sh && \
+    echo 'echo "Ambiente configurado com variáveis do Render:" >> /start.sh && \
+    echo 'cat .env | grep DB_' >> /start.sh && \
     echo '' >> /start.sh && \
     echo '# Aguardar banco de dados' >> /start.sh && \
-    echo 'if [ "$DATABASE_URL" ]; then' >> /start.sh && \
-    echo '  echo "Aguardando banco de dados..."' >> /start.sh && \
-    echo '  sleep 10' >> /start.sh && \
+    echo 'if [ "$DB_HOST" ]; then' >> /start.sh && \
+    echo '  echo "Aguardando banco de dados em $DB_HOST:$DB_PORT..."' >> /start.sh && \
+    echo '  sleep 15' >> /start.sh && \
     echo 'fi' >> /start.sh && \
     echo '' >> /start.sh && \
     echo '# Executar migrações (apenas se o banco estiver disponível)' >> /start.sh && \
@@ -110,8 +141,8 @@ RUN echo '#!/bin/sh' > /start.sh && \
     echo '# Otimizar aplicação' >> /start.sh && \
     echo 'php artisan config:cache' >> /start.sh && \
     echo 'php artisan route:cache' >> /start.sh && \
-    echo 'php artisan view:cache' >> /start.sh && \
-    echo 'php artisan event:cache' >> /start.sh && \
+    echo 'php artisan view:cache' >> .start.sh && \
+    echo 'php artisan event:cache' >> .start.sh && \
     echo '' >> /start.sh && \
     echo '# Criar link simbólico para storage' >> /start.sh && \
     echo 'php artisan storage:link || true' >> /start.sh && \
