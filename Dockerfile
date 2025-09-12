@@ -92,6 +92,12 @@ COPY supervisord-render.conf /etc/supervisor/conf.d/supervisord.conf
 RUN echo '#!/bin/sh' > /start.sh && \
     echo 'set -e' >> /start.sh && \
     echo '' >> /start.sh && \
+    echo '# Usar arquivo .env correto para produção' >> /start.sh && \
+    echo 'if [ -f .env.production ]; then' >> /start.sh && \
+    echo '  echo "Usando .env.production para configuração de produção..."' >> /start.sh && \
+    echo '  cp .env.production .env' >> /start.sh && \
+    echo 'fi' >> /start.sh && \
+    echo '' >> /start.sh && \
     echo '# Aguardar banco de dados' >> /start.sh && \
     echo 'if [ "$DATABASE_URL" ]; then' >> /start.sh && \
     echo '  echo "Aguardando banco de dados..."' >> /start.sh && \
