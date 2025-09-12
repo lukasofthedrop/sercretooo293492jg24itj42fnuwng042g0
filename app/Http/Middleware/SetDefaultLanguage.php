@@ -15,9 +15,10 @@ class SetDefaultLanguage
      */
     public function handle($request, Closure $next)
     {
-        if (auth('api')->check()) {
-            app()->setLocale(auth('api')->user()->language);
-        }
+        // Temporarily disabled JWT check
+        // if (auth('api')->check()) {
+        //     app()->setLocale(auth('api')->user()->language);
+        // }
 
         return $next($request);
     }

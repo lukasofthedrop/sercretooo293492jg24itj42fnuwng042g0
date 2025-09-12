@@ -15,15 +15,15 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         // \App\Http\Middleware\TrustHosts::class,
-        \App\Http\Middleware\BlockSensitiveFiles::class, // Bloquear arquivos sensíveis
+        // \App\Http\Middleware\BlockSensitiveFiles::class, // Bloquear arquivos sensíveis
         \App\Http\Middleware\TrustProxies::class,
-        \App\Http\Middleware\TrustVercelProxies::class, // Vercel proxies
+        // \App\Http\Middleware\TrustVercelProxies::class, // Vercel proxies
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Http\Middleware\SetDefaultLanguage::class,
+        // \App\Http\Middleware\SetDefaultLanguage::class,
     ];
 
     /**
@@ -33,14 +33,14 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\SecurityHeaders::class, // Headers de segurança
+            // \App\Http\Middleware\SecurityHeaders::class, // Headers de segurança
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\TwoFactorMiddleware::class, // 2FA para admins
+            // \App\Http\Middleware\TwoFactorMiddleware::class, // 2FA para admins
         ],
 
         'api' => [

@@ -24,9 +24,13 @@ class Core
     public static function GetDefaultGateway()
     {
         // Verificar se AureoLink está ativo
-        $aureolinkConfig = \DB::table('gateway_aureolink_config')->first();
-        if ($aureolinkConfig && $aureolinkConfig->is_enabled) {
-            return 'aureolink';
+        try {
+            $aureolinkConfig = \DB::table('gateway_aureolink_config')->first();
+            if ($aureolinkConfig && $aureolinkConfig->is_enabled) {
+                return 'aureolink';
+            }
+        } catch (\Exception $e) {
+            // Tabela não existe, ignorar
         }
 
         // Caso contrário, usar o gateway padrão das configurações
