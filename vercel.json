@@ -1,9 +1,7 @@
 {
-  "framework": "laravel",
-  "build": {
-    "env": {
-      "APP_ENV": "production",
-      "APP_DEBUG": "false"
+  "functions": {
+    "app/**/*.php": {
+      "runtime": "vercel-php@0.7.1"
     }
   },
   "env": {
@@ -21,15 +19,6 @@
     "PLAYFIVER_TOKEN": "a9aa0e61-9179-466a-8d7b-e22e7b473b8a",
     "PLAYFIVER_SECRET": "f41adb6a-e15b-46b4-ad5a-1fc49f4745df"
   },
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "npm run build"
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",

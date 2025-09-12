@@ -68,3 +68,4 @@ _backups/*.zip
 *.zip
 backups/
 
+.vercel
