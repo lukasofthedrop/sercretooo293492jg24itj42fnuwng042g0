@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: lucrativabet-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lucrativabet
+      POSTGRES_USER: lucrativabet
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - lucrativabet-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: lucrativabet-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - lucrativabet-network
+
+  # Laravel Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lucrativabet-app
+    restart: unless-stopped
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=https://lucrativa.bet
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=lucrativabet
+      - DB_USERNAME=lucrativabet
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+      - BROADCAST_DRIVER=log
+      - MAIL_MAILER=log
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - lucrativabet-network
+    expose:
+      - "9000"
+
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: lucrativabet-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    networks:
+      - lucrativabet-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  lucrativabet-network:
+    driver: bridge

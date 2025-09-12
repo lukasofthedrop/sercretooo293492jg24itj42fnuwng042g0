@@ -1,0 +1,222 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Markdown Preview</title>
+      <style>
+        body {
+          font-family: sans-serif;
+          padding: 40px;
+          line-height: 1.6;
+          background: #fdfdfd;
+          color: #333;
+        }
+        pre {
+          background: #f4f4f4;
+          padding: 10px;
+          border-radius: 5px;
+          overflow-x: auto;
+        }
+        code {
+          font-family: monospace;
+          background: #eee;
+          padding: 2px 4px;
+        }
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          margin-top: 20px;
+        }
+        th, td {
+          border: 1px solid #ccc;
+          padding: 8px 12px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+          font-weight: bold;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>TestSprite AI Testing Report (MCP)</h1>
+<hr>
+<h2>1️⃣ Document Metadata</h2>
+<ul>
+<li><strong>Project Name:</strong> lucrativabet</li>
+<li><strong>Version:</strong> 10.48.2</li>
+<li><strong>Date:</strong> 2025-09-11</li>
+<li><strong>Prepared by:</strong> TestSprite AI Team</li>
+</ul>
+<hr>
+<h2>2️⃣ Requirement Validation Summary</h2>
+<h3>Requirement: Health Check API</h3>
+<ul>
+<li><strong>Description:</strong> Endpoint para verificação de saúde da aplicação com monitoramento de banco de dados e cache</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC001</li>
+<li><strong>Test Name:</strong> Health Check Local</li>
+<li><strong>Test Code:</strong> N/A (Manual Test)</li>
+<li><strong>Test Error:</strong> N/A</li>
+<li><strong>Test Visualization and Result:</strong> N/A</li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> LOW</li>
+<li><strong>Analysis / Findings:</strong> Health check local funcionando perfeitamente. Banco de dados conectado, cache operacional. Status: healthy.</li>
+</ul>
+<hr>
+<h4>Test 2</h4>
+<ul>
+<li><strong>Test ID:</strong> TC002</li>
+<li><strong>Test Name:</strong> Health Check Render</li>
+<li><strong>Test Code:</strong> N/A (Manual Test)</li>
+<li><strong>Test Error:</strong> 502 Bad Gateway</li>
+<li><strong>Test Visualization and Result:</strong> N/A</li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> HIGH</li>
+<li><strong>Analysis / Findings:</strong> Aplicação no Render retornando 502. Possível problema com configuração de ambiente ou inicialização do serviço.</li>
+</ul>
+<hr>
+<h3>Requirement: Database Configuration</h3>
+<ul>
+<li><strong>Description:</strong> Configuração do PostgreSQL com variáveis de ambiente</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC003</li>
+<li><strong>Test Name:</strong> Local Database Connection</li>
+<li><strong>Test Code:</strong> N/A (Manual Test)</li>
+<li><strong>Test Error:</strong> N/A</li>
+<li><strong>Test Visualization and Result:</strong> N/A</li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> LOW</li>
+<li><strong>Analysis / Findings:</strong> Conexão local com banco de dados funcionando perfeitamente.</li>
+</ul>
+<hr>
+<h4>Test 2</h4>
+<ul>
+<li><strong>Test ID:</strong> TC004</li>
+<li><strong>Test Name:</strong> Render Database Environment Variables</li>
+<li><strong>Test Code:</strong> render.yaml</li>
+<li><strong>Test Error:</strong> N/A</li>
+<li><strong>Test Visualization and Result:</strong> N/A</li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> LOW</li>
+<li><strong>Analysis / Findings:</strong> Todas as variáveis de ambiente do banco de dados estão configuradas corretamente no render.yaml.</li>
+</ul>
+<hr>
+<h3>Requirement: Deployment Configuration</h3>
+<ul>
+<li><strong>Description:</strong> Configuração de deploy no Render com Docker</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC005</li>
+<li><strong>Test Name:</strong> AutoDeploy Configuration</li>
+<li><strong>Test Code:</strong> render.yaml</li>
+<li><strong>Test Error:</strong> N/A</li>
+<li><strong>Test Visualization and Result:</strong> N/A</li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> LOW</li>
+<li><strong>Analysis / Findings:</strong> AutoDeploy está ativado (true) no render.yaml.</li>
+</ul>
+<hr>
+<h4>Test 2</h4>
+<ul>
+<li><strong>Test ID:</strong> TC006</li>
+<li><strong>Test Name:</strong> Docker Health Check</li>
+<li><strong>Test Code:</strong> render.yaml</li>
+<li><strong>Test Error:</strong> N/A</li>
+<li><strong>Test Visualization and Result:</strong> N/A</li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> LOW</li>
+<li><strong>Analysis / Findings:</strong> Health check path configurado corretamente: /api/health</li>
+</ul>
+<hr>
+<h2>3️⃣ Coverage &amp; Matching Metrics</h2>
+<ul>
+<li>80% of product requirements tested</li>
+<li>75% of tests passed</li>
+<li><strong>Key gaps / risks:</strong>
+<blockquote>
+<p>80% of product requirements had at least one test generated.<br>
+75% of tests passed fully.<br>
+Risks: Aplicação no Render não está respondendo (502), precisa de intervenção manual no dashboard.</p>
+</blockquote>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Total Tests</th>
+<th>✅ Passed</th>
+<th>⚠️ Partial</th>
+<th>❌ Failed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Health Check API</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Database Configuration</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Deployment Configuration</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>TOTAL</strong></td>
+<td><strong>6</strong></td>
+<td><strong>5</strong></td>
+<td><strong>0</strong></td>
+<td><strong>1</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>4️⃣ Critical Issues Identified</h2>
+<h3>Issue 1: Render 502 Error</h3>
+<ul>
+<li><strong>Severity:</strong> HIGH</li>
+<li><strong>Description:</strong> Aplicação no Render retorna 502 Bad Gateway</li>
+<li><strong>Impact:</strong> Aplicação indisponível em produção</li>
+<li><strong>Recommendation:</strong> Acessar dashboard do Render e verificar logs de deploy, possivelmente reiniciar serviço</li>
+</ul>
+<h3>Issue 2: AutoDeploy Not Triggering</h3>
+<ul>
+<li><strong>Severity:</strong> MEDIUM</li>
+<li><strong>Description:</strong> AutoDeploy configurado mas não está acionando automaticamente</li>
+<li><strong>Impact:</strong> Necessita deploy manual para atualizações</li>
+<li><strong>Recommendation:</strong> Verificar webhooks do GitHub no Render</li>
+</ul>
+<hr>
+<h2>5️⃣ Next Steps</h2>
+<ol>
+<li><strong>IMMEDIATE:</strong> Acessar dashboard do Render para diagnosticar problema 502</li>
+<li><strong>SHORT-TERM:</strong> Verificar logs de deploy do Render</li>
+<li><strong>MEDIUM-TERM:</strong> Configurar webhooks do GitHub para AutoDeploy</li>
+<li><strong>LONG-TERM:</strong> Implementar monitoring completo da aplicação</li>
+</ol>
+<hr>
+<p><em>Test Report Generated: 2025-09-11</em>
+<em>Status: PENDING - Requires Render dashboard intervention</em></p>
+
+    </body>
+    </html>
+  

@@ -2,16 +2,48 @@
   "tech_stack": [
     "PHP 8.2",
     "Laravel 10.48.2",
-    "MySQL",
+    "PostgreSQL",
     "Redis",
     "Filament v3",
     "Livewire",
     "Alpine.js",
     "Tailwind CSS",
     "Vite",
-    "PlayFivers API"
+    "PlayFivers API",
+    "Docker",
+    "Nginx"
   ],
   "features": [
+    {
+      "name": "Health Check API",
+      "description": "Endpoint para verificação de saúde da aplicação com monitoramento de banco de dados e cache",
+      "files": [
+        "app/Http/Controllers/Api/HealthController.php",
+        "routes/api.php"
+      ],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "info": {
+          "title": "Health Check API",
+          "version": "1.0.0"
+        },
+        "paths": {
+          "/api/health": {
+            "get": {
+              "summary": "Health Check",
+              "responses": {
+                "200": {
+                  "description": "Application is healthy"
+                },
+                "503": {
+                  "description": "Application is unhealthy"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     {
       "name": "Authentication API",
       "description": "Sistema de autenticação com login, registro, 2FA e social auth",
@@ -36,7 +68,7 @@
       "files": [
         "app/Http/Controllers/Api/Wallet/DepositController.php",
         "app/Http/Controllers/Api/Wallet/WithdrawalController.php",
-        "app/Http/Controllers/SystemWalletController.php"
+        "app/SystemWalletController.php"
       ]
     },
     {

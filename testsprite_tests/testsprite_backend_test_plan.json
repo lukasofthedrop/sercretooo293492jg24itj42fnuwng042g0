@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "authentication api login registration and 2fa",
+    "description": "Test the authentication API endpoints for user login, registration, and two-factor authentication to ensure secure and error-free user access."
+  },
+  {
+    "id": "TC002",
+    "title": "games management api game provider and category handling",
+    "description": "Verify the games management API for correct handling of games, providers, and categories including listing, filtering, and management operations."
+  },
+  {
+    "id": "TC003",
+    "title": "wallet transactions api deposits withdrawals and balance updates",
+    "description": "Test wallet transactions API for deposit, withdrawal, and real-time balance update functionalities ensuring accounting integrity and no duplication."
+  },
+  {
+    "id": "TC004",
+    "title": "affiliate system api commission tracking and withdrawal",
+    "description": "Validate the affiliate system API for accurate commission calculation, tracking, and withdrawal processing with detailed reporting."
+  },
+  {
+    "id": "TC005",
+    "title": "bonus promotions api mission and daily bonus management",
+    "description": "Test the bonus promotions API for managing missions, daily bonuses, and promotions ensuring correct bonus application and tracking."
+  },
+  {
+    "id": "TC006",
+    "title": "payment gateway api pix stripe and aureolink integration",
+    "description": "Verify payment gateway API integration with PIX, Stripe, and AureoLink including transaction processing and webhook event handling."
+  },
+  {
+    "id": "TC007",
+    "title": "playfivers integration api dual agent fallback and token rotation",
+    "description": "Test PlayFivers integration API for dual-agent system functionality including API token rotation, failover, and fallback on service failure or insufficient balance."
+  },
+  {
+    "id": "TC008",
+    "title": "admin dashboard api real time metrics and management",
+    "description": "Validate admin dashboard API for displaying accurate real-time metrics, user and game management reflecting the current database state."
+  },
+  {
+    "id": "TC009",
+    "title": "user profile api preference and like management",
+    "description": "Test user profile API for managing user preferences and likes ensuring data consistency and correct update operations."
+  },
+  {
+    "id": "TC010",
+    "title": "settings configuration api system wide parameters management",
+    "description": "Verify settings configuration API for managing system-wide settings including currency, banners, and other configuration parameters."
+  }
+]

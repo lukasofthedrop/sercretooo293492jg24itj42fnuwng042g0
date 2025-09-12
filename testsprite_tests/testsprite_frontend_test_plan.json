@@ -1,0 +1,728 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Registration with Valid Data",
+    "description": "Verify that a new user can register successfully using valid data and receives a confirmation response.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send registration request with valid username, email, and password."
+      },
+      {
+        "type": "assertion",
+        "description": "System creates a new user account and returns success status."
+      },
+      {
+        "type": "assertion",
+        "description": "User receives an activation email or confirmation for further steps if applicable."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User Registration with Duplicate Email",
+    "description": "Verify the system prevents registration with an email already in use and returns an appropriate error.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send registration request with an email that is already registered."
+      },
+      {
+        "type": "assertion",
+        "description": "System rejects the registration and returns an error indicating email duplication."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Login Success with Correct Credentials",
+    "description": "Verify that a user can successfully login with correct email and password.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login endpoint."
+      },
+      {
+        "type": "action",
+        "description": "Provide valid email and password."
+      },
+      {
+        "type": "action",
+        "description": "Submit login request."
+      },
+      {
+        "type": "assertion",
+        "description": "System authenticates user and returns valid auth token/session."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Login Failure with Incorrect Credentials",
+    "description": "Verify login fails with incorrect email or password and returns appropriate error message.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login endpoint."
+      },
+      {
+        "type": "action",
+        "description": "Provide invalid email or password."
+      },
+      {
+        "type": "action",
+        "description": "Submit login request."
+      },
+      {
+        "type": "assertion",
+        "description": "System rejects login and returns unauthorized error."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Enable Two-Factor Authentication (2FA)",
+    "description": "Verify the user can enable 2FA after login and the system requires 2FA token for further authentication.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login with valid credentials."
+      },
+      {
+        "type": "action",
+        "description": "Enable 2FA in user profile settings."
+      },
+      {
+        "type": "assertion",
+        "description": "System activates 2FA and issues provisioning details."
+      },
+      {
+        "type": "action",
+        "description": "Logout and login again."
+      },
+      {
+        "type": "action",
+        "description": "Input valid 2FA token after credentials submission."
+      },
+      {
+        "type": "assertion",
+        "description": "System allows access only after validating 2FA token."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Login via Supported Social Auth Providers",
+    "description": "Verify that users can login via supported social login methods and are correctly authenticated.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to social login endpoint."
+      },
+      {
+        "type": "action",
+        "description": "Initiate login using a supported social provider."
+      },
+      {
+        "type": "assertion",
+        "description": "User is redirected to social provider and completes auth."
+      },
+      {
+        "type": "assertion",
+        "description": "System accepts social auth callback and authenticates user."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Game Listing with Provider and Category Filters",
+    "description": "Verify the games retrieval API returns correct game list applying provider and category filters.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Call the games API with specific game provider filter."
+      },
+      {
+        "type": "assertion",
+        "description": "Returned games are only those from specified provider."
+      },
+      {
+        "type": "action",
+        "description": "Call the games API applying category filter."
+      },
+      {
+        "type": "assertion",
+        "description": "Returned games belong only to the specified category."
+      },
+      {
+        "type": "action",
+        "description": "Call games API without filters."
+      },
+      {
+        "type": "assertion",
+        "description": "Returned games include all providers and categories."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Deposit Funds via PIX Gateway Success",
+    "description": "Verify a user can successfully deposit funds using PIX payment gateway and wallet balance updates accordingly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Initiate a deposit using PIX gateway with valid amount."
+      },
+      {
+        "type": "assertion",
+        "description": "System processes the payment and creates a pending transaction."
+      },
+      {
+        "type": "action",
+        "description": "Simulate successful PIX payment confirmation via webhook."
+      },
+      {
+        "type": "assertion",
+        "description": "System updates deposit status to successful."
+      },
+      {
+        "type": "assertion",
+        "description": "User wallet balance reflects the deposited amount in real-time."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Deposit Failure with Invalid Stripe Token",
+    "description": "Validate that deposit attempts with invalid or expired Stripe payment token are rejected with error.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt deposit with invalid Stripe payment token."
+      },
+      {
+        "type": "assertion",
+        "description": "Stripe gateway rejects payment and system returns error to user."
+      },
+      {
+        "type": "assertion",
+        "description": "User wallet balance remains unchanged."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "User Betting Flow and Wallet Update",
+    "description": "Verify the user can place bets on PlayFivers games and wallet balance updates accordingly for bets and winnings.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "User with sufficient balance initiates a bet on an available PlayFivers game."
+      },
+      {
+        "type": "assertion",
+        "description": "System sends bet request to PlayFivers via primary agent."
+      },
+      {
+        "type": "assertion",
+        "description": "If primary agent fails, system switches to secondary agent automatically."
+      },
+      {
+        "type": "action",
+        "description": "System receives bet result from PlayFivers asynchronously."
+      },
+      {
+        "type": "assertion",
+        "description": "User wallet balance decreases by bet amount and is credited by any winnings in real-time."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Withdrawal Request with Sufficient Balance",
+    "description": "Verify that user can successfully request withdrawal and system processes it with updated wallet balance.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "User with sufficient wallet balance submits withdrawal request."
+      },
+      {
+        "type": "assertion",
+        "description": "System verifies balance and creates withdrawal transaction marked pending."
+      },
+      {
+        "type": "action",
+        "description": "System processes withdrawal and updates the status to successful."
+      },
+      {
+        "type": "assertion",
+        "description": "User wallet balance is decreased by withdrawal amount accordingly."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Withdrawal Request with Insufficient Balance",
+    "description": "Verify system rejects withdrawal requests when user does not have enough balance and returns relevant error.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "User submits withdrawal request for amount greater than wallet balance."
+      },
+      {
+        "type": "assertion",
+        "description": "System rejects the withdrawal with an insufficient funds error message."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Affiliate Commission Calculation and Tracking",
+    "description": "Verify that affiliate commissions are calculated accurately from user bets and tracked in the system.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Associate user activity with an affiliate."
+      },
+      {
+        "type": "action",
+        "description": "Simulate bets and wins by the referred user."
+      },
+      {
+        "type": "assertion",
+        "description": "System calculates commissions per affiliate rules."
+      },
+      {
+        "type": "assertion",
+        "description": "Affiliate can view accurate commission reports."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Affiliate Withdrawal Request and Approval",
+    "description": "Verify an affiliate user can request commission withdrawal which is tracked and updated properly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Affiliate user submits commission withdrawal request with sufficient commission balance."
+      },
+      {
+        "type": "assertion",
+        "description": "System creates withdrawal request and marks it for processing."
+      },
+      {
+        "type": "action",
+        "description": "Process affiliate withdrawal and update status to successful."
+      },
+      {
+        "type": "assertion",
+        "description": "Affiliate commission balance is updated accordingly."
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Bonus Awarding and Mission Completion",
+    "description": "Verify that bonus missions and daily bonuses are awarded correctly after user actions meeting criteria.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "User completes defined mission action or logs in daily."
+      },
+      {
+        "type": "assertion",
+        "description": "System grants the respective bonus to user wallet."
+      },
+      {
+        "type": "assertion",
+        "description": "Bonus status and history are recorded properly."
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "PlayFivers Dual-Agent API Failover",
+    "description": "Validate automatic fallback from primary PlayFivers agent to secondary agent upon API failure or insufficient token balance.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Primary agent token is exhausted or API endpoint is down."
+      },
+      {
+        "type": "action",
+        "description": "Send a game request through PlayFivers integration."
+      },
+      {
+        "type": "assertion",
+        "description": "System switches automatically to secondary agent and processes the request."
+      },
+      {
+        "type": "assertion",
+        "description": "System logs agent switching event."
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Admin Dashboard Real-Time Metrics Accuracy",
+    "description": "Verify admin dashboard displays real-time user, game, and wallet metrics accurately reflecting database data.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log into admin dashboard."
+      },
+      {
+        "type": "assertion",
+        "description": "Dashboard presents accurate current user counts, active games, and transaction summaries."
+      },
+      {
+        "type": "action",
+        "description": "Trigger wallet deposit and withdraw events."
+      },
+      {
+        "type": "assertion",
+        "description": "Dashboard metrics update in real-time to reflect these transactions."
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Security Middleware Prevents SQL Injection",
+    "description": "Verify that system security middleware blocks injected SQL code from all user inputs and logs attempts.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit input payloads containing SQL injection patterns to various API endpoints."
+      },
+      {
+        "type": "assertion",
+        "description": "System rejects malicious inputs and returns validation or security errors."
+      },
+      {
+        "type": "assertion",
+        "description": "Attempt is logged properly in audit trail without exposing sensitive data."
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "System Backup Creation Without Unsafe PHP Functions",
+    "description": "Verify automated backup scripts generate consistent backups securely without using unsafe PHP functions.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Trigger backup command or scheduled backup task."
+      },
+      {
+        "type": "assertion",
+        "description": "Backup files are created successfully and are consistent."
+      },
+      {
+        "type": "assertion",
+        "description": "Review backup scripts to verify no use of unsafe or deprecated PHP functions."
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "User Migration and Authentication Post-Migration",
+    "description": "Verify all users migrated from CSV can authenticate using default passwords with forced reset prompt on first login and have correct wallet balances.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt login for migrated user using provided default password."
+      },
+      {
+        "type": "assertion",
+        "description": "System allows login and prompts for password reset immediately."
+      },
+      {
+        "type": "assertion",
+        "description": "User wallet balance is correctly migrated and reflects expected value."
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Webhook Handling for Payment Gateways",
+    "description": "Verify webhook endpoints handle asynchronous payment gateway notifications securely and update system state accordingly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate webhook call from Stripe, PIX, and AureoLink with valid payloads."
+      },
+      {
+        "type": "assertion",
+        "description": "System authenticates webhook origin and updates transaction status accordingly."
+      },
+      {
+        "type": "action",
+        "description": "Simulate webhook calls with tampered or invalid payloads."
+      },
+      {
+        "type": "assertion",
+        "description": "System rejects invalid webhook requests and logs security warnings."
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "System Security Against XSS Attacks",
+    "description": "Verify that security middleware and input validation prevent cross-site scripting attacks in all user inputs and API endpoints.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit inputs containing common XSS payloads in user profile, comments, and other input fields."
+      },
+      {
+        "type": "assertion",
+        "description": "System sanitizes input and disallows execution of script tags or malicious payloads."
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "System Security Against Path Traversal",
+    "description": "Verify that requests attempting path traversal attacks are blocked by security middleware.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send API requests containing path traversal patterns in file access or URL parameters."
+      },
+      {
+        "type": "assertion",
+        "description": "System rejects requests and logs suspicious activity."
+      }
+    ]
+  },
+  {
+    "id": "TC024",
+    "title": "Profile Preferences and Like Management",
+    "description": "Verify user can update profile preferences and like/unlike games via User Profile API.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "User updates profile preferences via API."
+      },
+      {
+        "type": "assertion",
+        "description": "System saves preferences and returns success."
+      },
+      {
+        "type": "action",
+        "description": "User likes a game through the like management API."
+      },
+      {
+        "type": "assertion",
+        "description": "System records the like and updates relevant counters."
+      },
+      {
+        "type": "action",
+        "description": "User unlikes the game."
+      },
+      {
+        "type": "assertion",
+        "description": "System removes the like and confirms update."
+      }
+    ]
+  },
+  {
+    "id": "TC025",
+    "title": "System-Wide Settings Modification",
+    "description": "Verify admin can update global system configurations, currency settings, and banners through Settings Configuration API.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Admin sends requests to update system-wide settings."
+      },
+      {
+        "type": "assertion",
+        "description": "Settings are updated correctly and persist."
+      },
+      {
+        "type": "action",
+        "description": "Admin modifies currency or banner settings."
+      },
+      {
+        "type": "assertion",
+        "description": "Changes reflect in relevant frontend and backend sections."
+      }
+    ]
+  },
+  {
+    "id": "TC026",
+    "title": "Automated Commands for Simulated Deposits and Bets",
+    "description": "Verify that automated system commands can simulate deposits, bets, and withdrawals to facilitate testing scenarios.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Execute automated command to simulate user wallet deposit."
+      },
+      {
+        "type": "assertion",
+        "description": "Deposit is reflected in user wallet and transaction logs."
+      },
+      {
+        "type": "action",
+        "description": "Execute command to simulate bulk bets."
+      },
+      {
+        "type": "assertion",
+        "description": "Bets are processed and wallet balances update accordingly."
+      }
+    ]
+  },
+  {
+    "id": "TC027",
+    "title": "JWT Token Expiry and Refresh Flow",
+    "description": "Verify that user tokens expire as configured and token refresh API issues new tokens properly.",
+    "category": "security",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Authenticate user and obtain JWT token."
+      },
+      {
+        "type": "action",
+        "description": "Simulate token expiry by waiting or adjusting system clock."
+      },
+      {
+        "type": "action",
+        "description": "Attempt API call with expired token."
+      },
+      {
+        "type": "assertion",
+        "description": "System rejects request due to token expiry."
+      },
+      {
+        "type": "action",
+        "description": "Call token refresh endpoint with valid refresh token."
+      },
+      {
+        "type": "assertion",
+        "description": "New valid JWT token is issued."
+      }
+    ]
+  },
+  {
+    "id": "TC028",
+    "title": "Admin Password and User Password Reset Post-Migration",
+    "description": "Verify default admin password is foco123@ and default user password is trocar@123 after migration, and users are forced to reset password on first login.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt login as admin with default password foco123@."
+      },
+      {
+        "type": "assertion",
+        "description": "Login succeeds."
+      },
+      {
+        "type": "action",
+        "description": "Attempt login as migrated user with default password trocar@123."
+      },
+      {
+        "type": "assertion",
+        "description": "Login succeeds and system requires password change."
+      }
+    ]
+  },
+  {
+    "id": "TC029",
+    "title": "Cache Usage with Redis for Session and Queue",
+    "description": "Verify system correctly stores and retrieves sessions and cache data using Redis driver and queues operate properly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and perform actions generating session data."
+      },
+      {
+        "type": "assertion",
+        "description": "Session data is persisted and retrievable via Redis."
+      },
+      {
+        "type": "action",
+        "description": "Trigger queued jobs via system commands or user actions."
+      },
+      {
+        "type": "assertion",
+        "description": "Jobs are processed successfully and reflect in system state."
+      }
+    ]
+  },
+  {
+    "id": "TC030",
+    "title": "Asset Integrity Check for Casino JS/CSS",
+    "description": "Verify that casino frontend JS and CSS asset files exist, are intact, and match expected hash and size values.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Compare casino frontend asset file hashes and sizes against expected values."
+      },
+      {
+        "type": "assertion",
+        "description": "All critical assets match expected integrity criteria."
+      }
+    ]
+  }
+]

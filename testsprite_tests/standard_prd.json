@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "project": "LucrativaBet Online Casino System",
+    "date": "2025-09-11",
+    "prepared_by": "Cirurgião Dev"
+  },
+  "product_overview": "LucrativaBet is a comprehensive online casino system built on Laravel 10.48.2 with PHP 8.2, integrating a full stack of features including user authentication, games management, wallet transactions, affiliate systems, bonus promotions, payment gateways, and PlayFivers game provider API integration. The system offers an admin dashboard via Filament v3 and includes safeguards like 2FA, security middleware, and optimized performance for a seamless gambling experience.",
+  "core_goals": [
+    "Provide a fully operational and secure online casino platform",
+    "Enable seamless and secure user authentication with multi-factor support",
+    "Integrate multiple game providers with management and live data",
+    "Support wallet operations including deposits, withdrawals, bonuses, and real-time balance updates",
+    "Implement a robust affiliate system with commission tracking and withdrawals",
+    "Integrate real payment gateways for PIX, Stripe, and AureoLink",
+    "Ensure system security with best practices and middleware protections",
+    "Offer a user-friendly admin dashboard for management and reporting",
+    "Support scalability and high performance for large user bases",
+    "Facilitate smooth user migration and data integrity"
+  ],
+  "key_features": [
+    "Authentication API with login, registration, 2FA, and social login",
+    "Games Management API managing games, providers, and categories",
+    "Wallet Transactions API supporting deposits, withdrawals, and balance management",
+    "Full-featured Affiliate System API with commission and withdrawal handling",
+    "Bonus Promotions API including mission and daily bonuses",
+    "Payment Gateway integrations covering PIX, Stripe, and AureoLink with webhook support",
+    "PlayFivers Integration via multi-agent system with fallback and health checks",
+    "Admin Dashboard API displaying metrics and user/game management",
+    "User Profile API with preference and like management",
+    "System-wide Settings Configuration API",
+    "Automated system commands for simulating deposits, bets, withdrawals, and bulk test data generation",
+    "Security middleware protecting against SQL Injection, XSS, and path traversal attacks",
+    "Robust logging and audit trail with spatie/laravel-activitylog",
+    "Automated backup system with secure process handling",
+    "Dual-agent PlayFivers system managing API token rotation and failover",
+    "Optimized caching using Redis for session, cache, and queue drivers"
+  ],
+  "user_flow_summary": [
+    "User registers via Authentication API and optionally enables 2FA",
+    "User accesses frontend casino interface to browse games, filtered by providers and categories",
+    "User deposits funds into their wallet via Payment Gateway APIs (PIX, Stripe, AureoLink)",
+    "User places bets on available casino games through integrated PlayFivers providers",
+    "Wallet balance is updated in real-time reflecting deposits, bets, wins, bonuses, and withdrawals",
+    "User can request withdrawal processed securely with KYC checks removed as per requirements",
+    "Affiliate users can track commissions and perform withdrawal requests through Affiliate System",
+    "Admins monitor system health, player statistics, wallet balances, and transactions via Admin Dashboard",
+    "Admin configures settings, bonuses, game providers, and system-wide parameters via Settings API",
+    "Automated and manual commands facilitate testing scenarios and agent switching in case of service failure",
+    "Webhook endpoints handle asynchronous events securely from payment gateways and game providers"
+  ],
+  "validation_criteria": [
+    "System must handle at least 10,000 concurrent users with acceptable performance",
+    "All authentication flows including login, registration, 2FA, and social auth must work without errors",
+    "PlayFivers API integration must use dual-agent fallback with automatic switching on failure or insufficient balance",
+    "Wallet transactions must maintain accounting integrity with no duplication or missing records",
+    "Affiliate system must correctly compute commissions and allow withdrawal with detailed reporting",
+    "Payment gateways must process real transactions in production and handle webhooks reliably",
+    "Admin dashboard must display accurate real-time metrics reflecting database state",
+    "Security middleware must prevent SQL Injection, XSS, and path traversal attacks effectively",
+    "Automated backup scripts must create consistent backups without using unsafe PHP functions",
+    "All migrated users (14,789) from CSV must authenticate with provided default passwords and retain wallet balances",
+    "Deployment processes on platforms like Railway and Render must be fully operational with environment variables correctly configured",
+    "All critical files like casino JS/CSS assets must be intact and match required hash and sizes",
+    "System must default to `foco123@` for admin passwords and `trocar@123` for users post-migration with forced password reset on first login",
+    "Logs should be clean of sensitive data and errors after fixes, and monitoring should detect anomalies quickly"
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "PHP 8.2",
+      "Laravel 10.48.2",
+      "MySQL",
+      "Redis",
+      "Filament v3",
+      "Livewire",
+      "Alpine.js",
+      "Tailwind CSS",
+      "Vite",
+      "PlayFivers API"
+    ],
+    "features": [
+      {
+        "name": "Authentication API",
+        "description": "Sistema de autenticação com login, registro, 2FA e social auth",
+        "files": [
+          "app/Http/Controllers/Api/Auth/AuthController.php",
+          "app/Http/Controllers/Auth/SocialAuthController.php",
+          "app/Http/Controllers/TwoFactorController.php"
+        ]
+      },
+      {
+        "name": "Games Management API",
+        "description": "Gerenciamento de jogos, provedores e categorias",
+        "files": [
+          "app/Http/Controllers/Api/Games/GameController.php",
+          "app/Http/Controllers/Api/Games/ProviderController.php",
+          "app/Http/Controllers/Api/Search/SearchGameController.php"
+        ]
+      },
+      {
+        "name": "Wallet Transactions API",
+        "description": "Sistema de carteira, depósitos e saques",
+        "files": [
+          "app/Http/Controllers/Api/Wallet/DepositController.php",
+          "app/Http/Controllers/Api/Wallet/WithdrawalController.php",
+          "app/Http/Controllers/SystemWalletController.php"
+        ]
+      },
+      {
+        "name": "Affiliate System API",
+        "description": "Sistema completo de afiliados com comissões e saques",
+        "files": [
+          "app/Http/Controllers/Api/Profile/AffiliateController.php",
+          "app/Http/Controllers/AffiliateWithdrawalController.php"
+        ]
+      },
+      {
+        "name": "Bonus Promotions API",
+        "description": "Sistema de bônus, missões e promoções",
+        "files": [
+          "app/Http/Controllers/Api/Settings/BonusController.php",
+          "app/Http/Controllers/Api/DailyBonusController.php",
+          "app/Http/Controllers/MissionController.php"
+        ]
+      },
+      {
+        "name": "Payment Gateway API",
+        "description": "Integração com gateways de pagamento PIX, Stripe, AureoLink",
+        "files": [
+          "app/Http/Controllers/Api/Gateways/StripeController.php",
+          "app/Http/Controllers/Api/Gateways/SuitpayController.php"
+        ]
+      },
+      {
+        "name": "PlayFivers Integration API",
+        "description": "Integração com provedores de jogos PlayFivers",
+        "files": [
+          "app/Http/Controllers/Api/Games/PlayFiversController.php",
+          "app/Services/PlayFiverAgentManager.php"
+        ]
+      },
+      {
+        "name": "Admin Dashboard API",
+        "description": "APIs para métricas e gerenciamento do dashboard admin",
+        "files": [
+          "app/Http/Controllers/Api/DashboardMetricsController.php",
+          "app/Filament/Pages/DashboardAdmin.php"
+        ]
+      },
+      {
+        "name": "User Profile API",
+        "description": "Gerenciamento de perfil de usuário e preferências",
+        "files": [
+          "app/Http/Controllers/Api/Profile/ProfileController.php",
+          "app/Http/Controllers/Api/Profile/LikeController.php"
+        ]
+      },
+      {
+        "name": "Settings Configuration API",
+        "description": "APIs de configuração do sistema",
+        "files": [
+          "app/Http/Controllers/Api/Settings/SettingController.php",
+          "app/Http/Controllers/Api/Settings/CurrencyController.php",
+          "app/Http/Controllers/Api/Settings/BannerController.php"
+        ]
+      }
+    ]
+  }
+}

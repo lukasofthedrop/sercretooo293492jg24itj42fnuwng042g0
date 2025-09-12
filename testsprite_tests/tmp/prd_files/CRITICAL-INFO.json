@@ -1,0 +1,155 @@
+{
+  "project": {
+    "name": "LucrativaBet",
+    "type": "Sistema de Cassino Online",
+    "status": "100% Funcional",
+    "warning": "NÃO CRIAR NADA NOVO - Sistema já está pronto"
+  },
+  
+  "server": {
+    "port": 8080,
+    "command": "php artisan serve --port=8080",
+    "url_main": "http://127.0.0.1:8080",
+    "url_admin": "http://127.0.0.1:8080/admin",
+    "never_use_ports": [1234, 8000, 8001, 3000]
+  },
+  
+  "credentials": {
+    "admin": {
+      "email": "lucrativa@bet.com",
+      "password": "foco123@",
+      "role": "admin"
+    },
+    "affiliate_test": {
+      "email": "afiliado@teste.com",
+      "password": "password",
+      "role": "affiliate"
+    }
+  },
+  
+  "database": {
+    "connection": "mysql",
+    "name": "lucrativabet",
+    "backup_file": "lucrativa.sql",
+    "fallback": "sqlite",
+    "migrations": "database/migrations/",
+    "tables_count": 70
+  },
+  
+  "critical_files": {
+    "casino_javascript": {
+      "path": "public/build/assets/app-CRDk2_8R.js",
+      "size_bytes": 1748153,
+      "size_mb": "1.7MB",
+      "hash": "CRDk2_8R",
+      "description": "Arquivo principal do cassino - NUNCA modificar"
+    },
+    "casino_css": {
+      "path": "public/build/assets/app-BiLvXd5_.css",
+      "size_bytes": 248077,
+      "size_kb": "242KB",
+      "hash": "BiLvXd5_",
+      "description": "CSS do cassino"
+    },
+    "backup_location": {
+      "path": "bet.sorte365.fun/public/build/assets/",
+      "warning": "NUNCA DELETAR - É o backup quando npm run build quebra"
+    }
+  },
+  
+  "wrong_files_to_delete": [
+    "app-e613bb2d.js",
+    "app-21d810a1.css",
+    "app-dbd37252.js",
+    "app-9081ca0e.css"
+  ],
+  
+  "environment": {
+    "APP_URL": "http://127.0.0.1:8080",
+    "APP_ENV": "local",
+    "APP_DEBUG": "true",
+    "DB_CONNECTION": "mysql",
+    "DB_DATABASE": "lucrativabet"
+  },
+  
+  "scripts": {
+    "setup": "_scripts/SETUP-AUTOMATICO.sh",
+    "fix_casino": "_scripts/fix-casino-files.sh",
+    "quick_github": "_scripts/quick-github-setup.sh"
+  },
+  
+  "common_errors": {
+    "white_screen": {
+      "cause": "Arquivos do cassino errados ou ausentes",
+      "solution": "bash _scripts/fix-casino-files.sh"
+    },
+    "login_failed": {
+      "cause": "Senha incorreta ou hash duplo",
+      "solution": "php artisan tinker -> reset password"
+    },
+    "images_not_showing": {
+      "cause": "APP_URL com porta errada",
+      "solution": "Corrigir APP_URL para http://127.0.0.1:8080"
+    },
+    "npm_run_build_breaks": {
+      "cause": "npm run build sobrescreve arquivos do cassino",
+      "solution": "NUNCA usar npm run build - use fix-casino-files.sh"
+    }
+  },
+  
+  "rules": {
+    "never": [
+      "Deletar pasta bet.sorte365.fun/",
+      "Executar npm run build",
+      "Usar porta diferente de 8080",
+      "Mudar APP_URL para outra porta",
+      "Criar novos arquivos de build",
+      "Modificar app-CRDk2_8R.js"
+    ],
+    "always": [
+      "Usar porta 8080",
+      "Manter APP_URL=http://127.0.0.1:8080",
+      "Executar fix-casino-files.sh se quebrar",
+      "Verificar tamanho do app-CRDk2_8R.js (1.7MB)",
+      "Ler README.md primeiro",
+      "Limpar cache após mudanças"
+    ]
+  },
+  
+  "tech_stack": {
+    "backend": "Laravel 10.48.2",
+    "admin_panel": "Filament v3",
+    "php_version": "8.2+",
+    "database": "MySQL 8.0 / SQLite",
+    "frontend": "JavaScript puro compilado (não é Vue/React)",
+    "css_framework": "Tailwind CSS",
+    "build_tool": "Vite (mas NUNCA usar)"
+  },
+  
+  "project_structure": {
+    "_docs": "Documentação",
+    "_scripts": "Scripts importantes",
+    "_temp": "Arquivos temporários",
+    "app": "Core Laravel",
+    "bet.sorte365.fun": "BACKUP CRÍTICO - NUNCA DELETAR",
+    "database": "Migrations e seeds",
+    "public": "Assets públicos",
+    "resources": "Views e recursos",
+    "routes": "Rotas do sistema",
+    "storage": "Storage e logs",
+    "vendor": "Dependências PHP"
+  },
+  
+  "quick_test": {
+    "step1": "php artisan serve --port=8080",
+    "step2": "Abrir http://127.0.0.1:8080",
+    "step3": "Ver cassino funcionando",
+    "step4": "Abrir http://127.0.0.1:8080/admin",
+    "step5": "Login com lucrativa@bet.com / foco123@"
+  },
+  
+  "last_update": "2025-09-09",
+  "maintained_by": "Cirurgião Dev",
+  "version": "1.0.0",
+  "ai_protocol": "PROTOCOLO-IA.md"
+}
