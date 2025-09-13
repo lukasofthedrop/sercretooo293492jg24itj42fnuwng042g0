@@ -1,12 +1,21 @@
-const { chromium } = require('playwright');
+import { chromium } from 'playwright';
 
 (async () => {
     console.log('🚀 Iniciando automação de deploy no Render...');
     
-    // Iniciar navegador
+    // Iniciar navegador com configurações adicionais
     const browser = await chromium.launch({ 
         headless: false, // Mudar para true se quiser modo headless
-        slowMo: 1000 // Reduzir velocidade para visualização
+        slowMo: 1000, // Reduzir velocidade para visualização
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-gpu'
+        ]
     });
     
     const context = await browser.newContext({
@@ -17,7 +26,31 @@ const { chromium } = require('playwright');
     
     try {
         console.log('📂 Navegando para dashboard do Render...');
-        await page.goto('https://dashboard.render.com');
+        
+        // Tentar navegar com retry
+        let navigationSuccess = false;
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        while (!navigationSuccess && attempts < maxAttempts) {
+            attempts++;
+            try {
+                await page.goto('https://dashboard.render.com', { 
+                    waitUntil: 'networkidle',
+                    timeout: 30000 
+                });
+                navigationSuccess = true;
+                console.log('✅ Navegação bem-sucedida!');
+            } catch (navError) {
+                console.log(`⚠️ Tentativa ${attempts} falhou: ${navError.message}`);
+                if (attempts < maxAttempts) {
+                    console.log('🔄 Tentando novamente em 5 segundos...');
+                    await page.waitForTimeout(5000);
+                } else {
+                    throw navError;
+                }
+            }
+        }
         
         // Esperar carregar a página
         await page.waitForLoadState('networkidle');
