@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use AymanAlhattami\FilamentPageWithSidebar\FilamentPageSidebar;
 use AymanAlhattami\FilamentPageWithSidebar\PageNavigationItem;
 use Filament\Notifications\Notification;
+use Filament\Support\Exceptions\Halt;
 
 
 
@@ -141,19 +142,19 @@ class UserResource extends Resource
                             ->label('STATUS   /////////   SE VOCÊ DESATIVAR O USUÁRIO, ELE NÃO PODERÁ MAIS ACESSAR A PLATAFORMA.')
                             ->columnSpanFull(),
                     ]),
-                // VALIDAÇÃO 2FA TEMPORARIAMENTE DESABILITADA PARA TESTES
-                // Forms\Components\Section::make('Confirmação de Alteração')
-                //     ->schema([
-                //         Forms\Components\TextInput::make('admin_password')
-                //         ->label('Senha de 2FA de Confirmação')
-                //         ->placeholder('Digite a senha de confirmação')
-                //         ->password()
-                //         ->required()
-                //         ->rules([
-                //             'in:' . env('TOKEN_DE_2FA'),
-                //         ])
-                //         ->dehydrateStateUsing(fn($state) => null),
-                //     ]),
+                Forms\Components\Section::make('Confirmação de Alteração')
+                    ->schema([
+                        Forms\Components\TextInput::make('admin_password')
+                            ->label('Senha de 2FA de Confirmação')
+                            ->placeholder('Digite a senha de confirmação')
+                            ->password()
+                            ->required()
+                            ->rules([
+                                'in:' . env('TOKEN_DE_2FA'),
+                            ])
+                            ->dehydrated(false)
+                            ->helperText('Digite a senha de 2FA configurada nas variáveis de ambiente para autorizar a alteração.'),
+                    ])->visible(fn () => auth()->user()?->hasRole('admin')),
             ]);
     }
     
@@ -221,26 +222,26 @@ class UserResource extends Resource
                     ->label('VER INFORMAÇÕES')
                     ->icon('heroicon-o-eye')
                     ->color('gray')
-                    // TEMPORARIAMENTE DESABILITADO PARA TESTES
-                    // ->form([
-                    //     Forms\Components\TextInput::make('senha')
-                    //         ->label('Digite a senha de 2fa')
-                    //         ->password()
-                    //         ->required(),
-                    // ])
-                    // ->requiresConfirmation()
-                    // ->modalHeading('Ver informações do usuário')
-                    // ->modalButton('Continuar')
+                    ->form([
+                        Forms\Components\TextInput::make('senha')
+                            ->label('Digite a senha de 2FA')
+                            ->password()
+                            ->required(),
+                    ])
+                    ->requiresConfirmation()
+                    ->modalHeading('Ver informações do usuário')
+                    ->modalButton('Continuar')
                     ->action(function (User $user, array $data) {
-                        // VERIFICAÇÃO 2FA DESABILITADA TEMPORARIAMENTE
-                        // if ($data['senha'] !== env('TOKEN_DE_2FA')) {
-                        //     Notification::make()
-                        //         ->title('Senha incorreta')
-                        //         ->danger()
-                        //         ->body('A senha informada está incorreta.')
-                        //         ->send();
-                        //     return;
-                        // }
+                        if (!hash_equals((string) env('TOKEN_DE_2FA'), (string) ($data['senha'] ?? ''))) {
+                            Notification::make()
+                                ->title('Senha incorreta')
+                                ->danger()
+                                ->body('A senha informada está incorreta.')
+                                ->send();
+
+                            throw new Halt();
+                        }
+
                         return redirect()->to(
                             route('filament.admin.resources.users.detail', ['record' => $user->id])
                         );
@@ -251,26 +252,26 @@ class UserResource extends Resource
                     Tables\Actions\Action::make('view')
                         ->label('Visualizar')
                         ->icon('heroicon-o-eye')
-                        // TEMPORARIAMENTE DESABILITADO PARA TESTES
-                        // ->form([
-                        //     Forms\Components\TextInput::make('senha')
-                        //         ->label('Digite a senha a senha de 2fa')
-                        //         ->password()
-                        //         ->required(),
-                        // ])
-                        // ->requiresConfirmation()
-                        // ->modalHeading('Visualizar usuário')
-                        // ->modalButton('Continuar')
+                        ->form([
+                            Forms\Components\TextInput::make('senha')
+                                ->label('Digite a senha de 2FA')
+                                ->password()
+                                ->required(),
+                        ])
+                        ->requiresConfirmation()
+                        ->modalHeading('Visualizar usuário')
+                        ->modalButton('Continuar')
                         ->action(function (User $user, array $data) {
-                            // VERIFICAÇÃO 2FA DESABILITADA TEMPORARIAMENTE
-                            // if ($data['senha'] !== env('TOKEN_DE_2FA')) {
-                            //     Notification::make()
-                            //         ->title('Senha incorreta')
-                            //         ->danger()
-                            //         ->body('A senha informada está incorreta.')
-                            //         ->send();
-                            //     return;
-                            // }
+                            if (!hash_equals((string) env('TOKEN_DE_2FA'), (string) ($data['senha'] ?? ''))) {
+                                Notification::make()
+                                    ->title('Senha incorreta')
+                                    ->danger()
+                                    ->body('A senha informada está incorreta.')
+                                    ->send();
+
+                                throw new Halt();
+                            }
+
                             return redirect()->to(
                                 route('filament.admin.resources.users.view', ['record' => $user->id])
                             );
@@ -279,26 +280,26 @@ class UserResource extends Resource
                     Tables\Actions\Action::make('edit')
                         ->label('Editar')
                         ->icon('heroicon-o-pencil-square')
-                        // TEMPORARIAMENTE DESABILITADO PARA TESTES
-                        // ->form([
-                        //     Forms\Components\TextInput::make('senha')
-                        //         ->label('Digite a senha a senha de 2fa')
-                        //         ->password()
-                        //         ->required(),
-                        // ])
-                        // ->requiresConfirmation()
-                        // ->modalHeading('Editar usuário')
-                        // ->modalButton('Continuar')
+                        ->form([
+                            Forms\Components\TextInput::make('senha')
+                                ->label('Digite a senha de 2FA')
+                                ->password()
+                                ->required(),
+                        ])
+                        ->requiresConfirmation()
+                        ->modalHeading('Editar usuário')
+                        ->modalButton('Continuar')
                         ->action(function (User $user, array $data) {
-                            // VERIFICAÇÃO 2FA DESABILITADA TEMPORARIAMENTE
-                            // if ($data['senha'] !== env('TOKEN_DE_2FA')) {
-                            //     Notification::make()
-                            //         ->title('Senha incorreta')
-                            //         ->danger()
-                            //         ->body('A senha informada está incorreta.')
-                            //         ->send();
-                            //     return;
-                            // }
+                            if (!hash_equals((string) env('TOKEN_DE_2FA'), (string) ($data['senha'] ?? ''))) {
+                                Notification::make()
+                                    ->title('Senha incorreta')
+                                    ->danger()
+                                    ->body('A senha informada está incorreta.')
+                                    ->send();
+
+                                throw new Halt();
+                            }
+
                             return redirect()->to(
                                 route('filament.admin.resources.users.edit', ['record' => $user->id])
                             );

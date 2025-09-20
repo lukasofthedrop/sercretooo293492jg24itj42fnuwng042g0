@@ -18,7 +18,13 @@ class MyPayments extends Page
     public static function canAccess(): bool
     {
         $user = auth()->user();
-        return $user && !$user->hasRole('admin');
+
+        if (!$user) {
+            return false;
+        }
+
+        // Permite acesso para administradores e afiliados com código gerado
+        return $user->hasRole('admin') || (bool) $user->inviter_code;
     }
     
     protected function getViewData(): array
@@ -61,14 +67,18 @@ class MyPayments extends Page
         $totalRejeitado = $payments->where('status', 'rejected')->sum('amount');
         
         // Buscar saldo disponível para saque
-        $disponivel = DB::table('orders')
-            ->join('users as referred', 'orders.user_id', '=', 'referred.id')
-            ->where('referred.inviter', $user->inviter_code)
-            ->where('orders.status', 1)
-            ->sum(DB::raw('orders.amount * 0.40')); // 40% display
+        $disponivel = 0;
+
+        if ($user->inviter_code) {
+            $disponivel = DB::table('orders')
+                ->join('users as referred', 'orders.user_id', '=', 'referred.id')
+                ->where('referred.inviter', $user->inviter_code)
+                ->where('orders.status', 1)
+                ->sum(DB::raw('orders.amount * 0.40')); // 40% display
+        }
         
         $totalSacado = $payments->where('status', 'paid')->sum('amount');
-        $saldoDisponivel = $disponivel - $totalSacado;
+        $saldoDisponivel = max(0, $disponivel - $totalSacado);
         
         return [
             'payments' => $payments,
@@ -78,7 +88,7 @@ class MyPayments extends Page
             'totalRejeitado' => $totalRejeitado,
             'saldoDisponivel' => $saldoDisponivel,
             'userName' => $user->name,
-            'userCode' => $user->inviter_code
+            'userCode' => $user->inviter_code ?: ($user->hasRole('admin') ? 'ADMIN' : null),
         ];
     }
 }

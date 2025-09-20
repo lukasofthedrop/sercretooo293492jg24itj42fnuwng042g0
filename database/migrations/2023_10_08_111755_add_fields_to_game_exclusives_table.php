@@ -11,11 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('game_exclusives')) {
+            return;
+        }
+
         Schema::table('game_exclusives', function (Blueprint $table) {
-            $table->text('loseResults');
-            $table->text('demoWinResults');
-            $table->text('winResults');
-            $table->text('iconsJson');
+            $table->text('loseResults')->nullable();
+            $table->text('demoWinResults')->nullable();
+            $table->text('winResults')->nullable();
+            $table->text('iconsJson')->nullable();
         });
     }
 
@@ -24,11 +28,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('game_exclusives')) {
+            return;
+        }
+
         Schema::table('game_exclusives', function (Blueprint $table) {
-            $table->dropColumn('loseResults');
-            $table->dropColumn('demoWinResults');
-            $table->dropColumn('winResults');
-            $table->dropColumn('iconsJson');
+            $table->dropColumn(['loseResults', 'demoWinResults', 'winResults', 'iconsJson']);
         });
     }
 };

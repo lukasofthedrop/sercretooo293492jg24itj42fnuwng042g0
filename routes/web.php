@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\LicenseKeyController;
 use App\Http\Controllers\Api\Profile\AffiliateController;
@@ -14,12 +15,24 @@ use App\Http\Controllers\Api\Profile\AffiliateController;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-
-
-
-Route::get('loadinggame', function () {});
-Route::get('/withdrawal/{id}', [WalletController::class, 'withdrawalFromModal'])->name('withdrawal');
 */
+
+Route::get('/', function () {
+    return view('layouts.app');
+})->name('home');
+
+Route::get('/storage/{path}', function (string $path) {
+    $disk = Storage::disk('public');
+
+    if (! $disk->exists($path)) {
+        abort(404);
+    }
+
+    $targetUrl = $disk->url($path);
+
+    return redirect()->away($targetUrl, 302);
+})->where('path', '.*');
+
 /*
 |--------------------------------------------------------------------------
 | Web LIMPAR CACHE

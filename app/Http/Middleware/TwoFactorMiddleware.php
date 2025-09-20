@@ -31,23 +31,23 @@ class TwoFactorMiddleware
             return $next($request);
         }
         
-        // 2FA TEMPORARIAMENTE DESABILITADO PARA DEMO
-        // TODO: Reativar após demonstração completa
-        /*
         if ($user->hasRole('admin')) {
-            // Se não tem 2FA configurado
-            if (!$user->two_factor_secret) {
-                return redirect()->route('2fa.setup')
-                    ->with('error', '2FA é obrigatório para administradores. Configure agora.');
+            if (!$user->two_factor_secret || !$user->two_factor_confirmed_at) {
+                if (!$is2FARoute) {
+                    return redirect()->route('2fa.setup')
+                        ->with('error', '2FA é obrigatório para administradores. Configure agora.');
+                }
+
+                return $next($request);
             }
-            
-            // Se não confirmou 2FA nesta sessão
+
             if (!session('2fa_verified')) {
-                return redirect()->route('2fa.verify')
-                    ->with('info', 'Por favor, insira seu código 2FA.');
+                if (!$is2FARoute) {
+                    return redirect()->route('2fa.verify')
+                        ->with('info', 'Por favor, insira seu código 2FA.');
+                }
             }
         }
-        */
         
         return $next($request);
     }

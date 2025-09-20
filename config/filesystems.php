@@ -1,5 +1,28 @@
 <?php
 
+$hasS3Credentials = env('AWS_BUCKET') && env('AWS_ACCESS_KEY_ID') && env('AWS_SECRET_ACCESS_KEY');
+
+$publicDisk = $hasS3Credentials
+    ? [
+        'driver' => 's3',
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'auto'),
+        'bucket' => env('AWS_BUCKET'),
+        'url' => rtrim(env('CDN_URL', env('AWS_URL', '')), '/'),
+        'endpoint' => env('AWS_ENDPOINT'),
+        'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
+        'visibility' => 'public',
+        'throw' => false,
+    ]
+    : [
+        'driver' => 'local',
+        'root' => storage_path('app/public'),
+        'url' => env('APP_URL') ? rtrim(env('APP_URL'), '/') . '/storage' : '/storage',
+        'visibility' => 'public',
+        'throw' => false,
+    ];
+
 return [
 
     /*
@@ -13,7 +36,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', $hasS3Credentials ? 'public' : 'public_local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,20 +59,15 @@ return [
             'throw' => false,
         ],
 
-        'public' => [
-            'driver' => 'local',
-            'root' => public_path().'/storage',
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-        ],
+        'public' => $publicDisk,
 
-//        'public' => [
-//            'driver' => 'local',
-//            'root' => storage_path('app/public'),
-//            'url' => env('APP_URL').'/storage',
-//            'visibility' => 'public',
-//            'throw' => false,
-//        ],
+        'public_local' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'url' => env('APP_URL') ? rtrim(env('APP_URL'), '/') . '/storage' : '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

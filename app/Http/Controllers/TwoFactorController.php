@@ -70,7 +70,10 @@ class TwoFactorController extends Controller
         $user->two_factor_confirmed_at = now();
         $user->save();
 
-        return redirect()->route('dashboard')->with('success', '2FA ativado com sucesso! Guarde seus códigos de recuperação em local seguro.');
+        session(['2fa_verified' => true]);
+
+        return redirect()->route('filament.admin.pages.dashboard')
+            ->with('success', '2FA ativado com sucesso! Guarde seus códigos de recuperação em local seguro.');
     }
 
     /**
@@ -88,7 +91,10 @@ class TwoFactorController extends Controller
         $user->two_factor_confirmed_at = null;
         $user->save();
 
-        return redirect()->route('dashboard')->with('success', '2FA desativado com sucesso.');
+        session()->forget('2fa_verified');
+
+        return redirect()->route('filament.admin.pages.dashboard')
+            ->with('success', '2FA desativado com sucesso.');
     }
 
     /**
@@ -115,14 +121,14 @@ class TwoFactorController extends Controller
             // Tentar código de recuperação
             if ($this->tryRecoveryCode($request->code)) {
                 session(['2fa_verified' => true]);
-                return redirect()->intended('dashboard');
+                return redirect()->intended(route('filament.admin.pages.dashboard'));
             }
 
             return back()->withErrors(['code' => 'Código inválido.']);
         }
 
         session(['2fa_verified' => true]);
-        return redirect()->intended('dashboard');
+        return redirect()->intended(route('filament.admin.pages.dashboard'));
     }
 
     /**

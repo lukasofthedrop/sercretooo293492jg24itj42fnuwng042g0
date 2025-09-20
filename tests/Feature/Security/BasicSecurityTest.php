@@ -40,10 +40,12 @@ class BasicSecurityTest extends TestCase
         
         foreach ($payloads as $payload) {
             $response = $this->get('/?search=' . urlencode($payload));
-            
-            // Não deve conter script não escapado
-            $this->assertStringNotContainsString('<script>', $response->content());
-            $this->assertStringNotContainsString('javascript:', $response->content());
+
+            $content = $response->content();
+            $decoded = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            $this->assertStringNotContainsString($payload, $content);
+            $this->assertStringNotContainsString($payload, $decoded);
         }
     }
     

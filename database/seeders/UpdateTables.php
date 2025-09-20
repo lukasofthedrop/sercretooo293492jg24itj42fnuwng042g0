@@ -15,49 +15,48 @@ class UpdateTables extends Seeder
     {
        
         Schema::table('settings', function ($table) {
-            $table->boolean('digito_is_enable')->default(false);
-            $table->boolean('ezzepay_is_enable')->default(false);
-            $table->string('saque')->default("ezzepay");
-
+            if (! Schema::hasColumn('settings', 'digito_is_enable')) {
+                $table->boolean('digito_is_enable')->default(false);
+            }
+            if (! Schema::hasColumn('settings', 'ezzepay_is_enable')) {
+                $table->boolean('ezzepay_is_enable')->default(false);
+            }
+            if (! Schema::hasColumn('settings', 'saque')) {
+                $table->string('saque')->default('ezzepay');
+            }
         });
-        Schema::table('gateways', function ($table) {
-            $table->string('digito_uri')->nullable();
-            $table->string('digito_client')->nullable();
-            $table->string('digito_secret')->nullable();
-            $table->string('ezze_uri')->nullable();
-            $table->string('ezze_client')->nullable();
-            $table->string('ezze_secret')->nullable();
-            $table->string('ezze_user')->nullable();
-            $table->string('ezze_senha')->nullable();
 
+        Schema::table('gateways', function ($table) {
+            foreach ([
+                'digito_uri', 'digito_client', 'digito_secret',
+                'ezze_uri', 'ezze_client', 'ezze_secret', 'ezze_user', 'ezze_senha',
+            ] as $column) {
+                if (! Schema::hasColumn('gateways', $column)) {
+                    $table->string($column)->nullable();
+                }
+            }
         });
 
         Schema::table('withdrawals', function ($table) {
-            $table->string('cpf')->nullable();
-            $table->string('name')->nullable();
-          
-
+            if (! Schema::hasColumn('withdrawals', 'cpf')) {
+                $table->string('cpf')->nullable();
+            }
+            if (! Schema::hasColumn('withdrawals', 'name')) {
+                $table->string('name')->nullable();
+            }
         });
-        Schema::table('custom_layouts', function ($table) {
-            $table->string('image_Jackpot')->nullable();
-            $table->string('image_hot1')->nullable();
-            $table->string('image_hot2')->nullable();
-            $table->string('image_hot3')->nullable();
-            $table->string('image_hot4')->nullable();
-            $table->string('image_hot5')->nullable();
-            $table->string('banner_deposito1')->nullable();
-            $table->string('banner_deposito2')->nullable();
-            $table->string('banner_registro')->nullable();
-            $table->string('banner_login')->nullable();
-            $table->string('image_navbar')->nullable();
-            $table->string('popup_fluatuante')->nullable();
-            $table->string('link_fluatuante')->nullable();
-            $table->string('popup2_fluatuante')->nullable();
-            $table->string('link_fluatuante2')->nullable();
-            $table->string('idPixelFC')->nullable();
-            $table->string('idPixelGoogle')->nullable();
-            $table->string('link_suporte')->nullable();
 
+        Schema::table('custom_layouts', function ($table) {
+            foreach ([
+                'image_Jackpot', 'image_hot1', 'image_hot2', 'image_hot3', 'image_hot4', 'image_hot5',
+                'banner_deposito1', 'banner_deposito2', 'banner_registro', 'banner_login', 'image_navbar',
+                'popup_fluatuante', 'link_fluatuante', 'popup2_fluatuante', 'link_fluatuante2',
+                'idPixelFC', 'idPixelGoogle', 'link_suporte',
+            ] as $column) {
+                if (! Schema::hasColumn('custom_layouts', $column)) {
+                    $table->string($column)->nullable();
+                }
+            }
         });
     }
 }

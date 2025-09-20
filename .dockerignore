@@ -1,0 +1,25 @@
+.git
+.gitignore
+node_modules
+vendor
+storage/*.log
+storage/debugbar
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+bootstrap/cache/*.php
+.env
+.env.*
+backup_antes_*
+backups
+bet.sorte365.fun
+npm-debug.log
+yarn-error.log
+*.sqlite
+*.sql
+# allow public assets in storage
+!storage/app/public/**
+# remove leftover vendor caches
+public/assets/css/fontawesome.min.css
+public/assets/js/fontawesome.min.js
+public/assets/webfonts

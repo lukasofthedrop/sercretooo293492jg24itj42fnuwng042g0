@@ -11,37 +11,56 @@ return new class extends Migration
     {
         // Índices compostos para queries frequentes
         Schema::table('orders', function (Blueprint $table) {
-            $table->index(['user_id', 'created_at'], 'idx_user_date');
-            $table->index(['game_id', 'type', 'created_at'], 'idx_game_type_date');
-            $table->index(['status', 'created_at'], 'idx_status_date');
+            if (Schema::hasColumn('orders', 'user_id')) {
+                $table->index(['user_id', 'created_at'], 'idx_user_date');
+            }
+            if (Schema::hasColumn('orders', 'game_id') && Schema::hasColumn('orders', 'type')) {
+                $table->index(['game_id', 'type', 'created_at'], 'idx_game_type_date');
+            }
+            if (Schema::hasColumn('orders', 'status')) {
+                $table->index(['status', 'created_at'], 'idx_status_date');
+            }
         });
         
         Schema::table('transactions', function (Blueprint $table) {
-            $table->index(['user_id', 'status', 'created_at'], 'idx_user_status_date');
-            $table->index(['type', 'created_at'], 'idx_type_date');
+            if (Schema::hasColumn('transactions', 'user_id') && Schema::hasColumn('transactions', 'status')) {
+                $table->index(['user_id', 'status', 'created_at'], 'idx_user_status_date');
+            }
+            if (Schema::hasColumn('transactions', 'type')) {
+                $table->index(['type', 'created_at'], 'idx_type_date');
+            }
         });
         
         Schema::table('affiliate_histories', function (Blueprint $table) {
-            $table->index(['inviter', 'commission_type', 'status'], 'idx_affiliate_commission');
-            $table->index(['created_at', 'status'], 'idx_date_status');
+            if (Schema::hasColumn('affiliate_histories', 'inviter')) {
+                $table->index(['inviter', 'commission_type', 'status'], 'idx_affiliate_commission');
+            }
+            if (Schema::hasColumn('affiliate_histories', 'status')) {
+                $table->index(['created_at', 'status'], 'idx_date_status');
+            }
         });
         
         Schema::table('wallets', function (Blueprint $table) {
-            $table->index(['user_id', 'updated_at'], 'idx_wallet_user_update');
+            if (Schema::hasColumn('wallets', 'user_id')) {
+                $table->index(['user_id', 'updated_at'], 'idx_wallet_user_update');
+            }
         });
         
         Schema::table('games', function (Blueprint $table) {
-            $table->index(['provider_id', 'active'], 'idx_provider_active');
-            $table->index(['category_id', 'views'], 'idx_category_views');
+            if (Schema::hasColumn('games', 'active')) {
+                $table->index(['provider_id', 'active'], 'idx_provider_active');
+            }
+            if (Schema::hasColumn('games', 'category_id')) {
+                $table->index(['category_id', 'views'], 'idx_category_views');
+            }
         });
         
-        // Configurar tabelas para InnoDB com row format dinâmico
-        DB::statement('ALTER TABLE orders ROW_FORMAT=DYNAMIC');
-        DB::statement('ALTER TABLE transactions ROW_FORMAT=DYNAMIC');
-        DB::statement('ALTER TABLE affiliate_histories ROW_FORMAT=DYNAMIC');
-        
-        // Analisar e otimizar tabelas
-        DB::statement('ANALYZE TABLE orders, transactions, affiliate_histories, wallets, games');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE orders ROW_FORMAT=DYNAMIC');
+            DB::statement('ALTER TABLE transactions ROW_FORMAT=DYNAMIC');
+            DB::statement('ALTER TABLE affiliate_histories ROW_FORMAT=DYNAMIC');
+            DB::statement('ANALYZE TABLE orders, transactions, affiliate_histories, wallets, games');
+        }
     }
     
     public function down()

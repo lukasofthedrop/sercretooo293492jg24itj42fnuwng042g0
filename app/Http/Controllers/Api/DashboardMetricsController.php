@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class DashboardMetricsController extends Controller
 {
@@ -38,17 +39,30 @@ class DashboardMetricsController extends Controller
         */
 
         $period = $request->get('period', 'month');
-        
-        $data = [
-            'deposits' => $this->getDepositsData($period),
-            'users' => $this->getUsersData($period),
-            'games' => $this->getGamesData($period),
-            'revenue' => $this->getRevenueData($period),
-            'stats' => $this->getGeneralStats($period),
-            'realtime' => $this->getRealtimeData()
-        ];
 
-        return response()->json($data);
+        try {
+            $data = [
+                'deposits' => $this->getDepositsData($period),
+                'users' => $this->getUsersData($period),
+                'games' => $this->getGamesData($period),
+                'revenue' => $this->getRevenueData($period),
+                'stats' => $this->getGeneralStats($period),
+                'realtime' => $this->getRealtimeData(),
+                'test_mode' => false,
+            ];
+
+            return response()->json($data);
+        } catch (\Throwable $throwable) {
+            Log::warning('Dashboard metrics falling back to demo dataset.', [
+                'period' => $period,
+                'message' => $throwable->getMessage(),
+            ]);
+
+            $fallback = $this->buildDemoMetrics($period);
+            $fallback['test_mode'] = true;
+
+            return response()->json($fallback);
+        }
     }
 
     /**
@@ -421,41 +435,53 @@ class DashboardMetricsController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }*/
 
-        $data = [];
-        $hours = 24;
+        try {
+            $data = [];
+            $hours = 24;
 
-        switch ($type) {
-            case 'deposits':
-                for ($i = $hours - 1; $i >= 0; $i--) {
-                    $hour = Carbon::now()->subHours($i);
-                    $value = Deposit::where('status', 1)
-                        ->whereBetween('created_at', [$hour, $hour->copy()->addHour()])
-                        ->sum('amount');
-                    $data[] = floatval($value);
-                }
-                break;
-                
-            case 'users':
-                for ($i = $hours - 1; $i >= 0; $i--) {
-                    $hour = Carbon::now()->subHours($i);
-                    $value = User::whereBetween('created_at', [$hour, $hour->copy()->addHour()])
-                        ->count();
-                    $data[] = $value;
-                }
-                break;
-                
-            case 'bets':
-                for ($i = $hours - 1; $i >= 0; $i--) {
-                    $hour = Carbon::now()->subHours($i);
-                    $value = Order::where('type', 'bet')
-                        ->whereBetween('created_at', [$hour, $hour->copy()->addHour()])
-                        ->count();
-                    $data[] = $value;
-                }
-                break;
+            switch ($type) {
+                case 'deposits':
+                    for ($i = $hours - 1; $i >= 0; $i--) {
+                        $hour = Carbon::now()->subHours($i);
+                        $value = Deposit::where('status', 1)
+                            ->whereBetween('created_at', [$hour, $hour->copy()->addHour()])
+                            ->sum('amount');
+                        $data[] = floatval($value);
+                    }
+                    break;
+                    
+                case 'users':
+                    for ($i = $hours - 1; $i >= 0; $i--) {
+                        $hour = Carbon::now()->subHours($i);
+                        $value = User::whereBetween('created_at', [$hour, $hour->copy()->addHour()])
+                            ->count();
+                        $data[] = $value;
+                    }
+                    break;
+                    
+                case 'bets':
+                    for ($i = $hours - 1; $i >= 0; $i--) {
+                        $hour = Carbon::now()->subHours($i);
+                        $value = Order::where('type', 'bet')
+                            ->whereBetween('created_at', [$hour, $hour->copy()->addHour()])
+                            ->count();
+                        $data[] = $value;
+                    }
+                    break;
+            }
+
+            return response()->json(['data' => $data]);
+        } catch (\Throwable $throwable) {
+            Log::warning('Sparkline fallback dataset em uso.', [
+                'type' => $type,
+                'message' => $throwable->getMessage(),
+            ]);
+
+            return response()->json([
+                'data' => $this->buildDemoSparkline($type),
+                'fallback' => true,
+            ]);
         }
-
-        return response()->json(['data' => $data]);
     }
 
     /**
@@ -556,180 +582,222 @@ class DashboardMetricsController extends Controller
     }
 
     /**
-     * Gerar dados de teste para visualização
-     * APENAS PARA DESENVOLVIMENTO - REMOVER EM PRODUÇÃO
+     * Construir métricas de demonstração quando o banco não está disponível.
      */
-    public function generateTestData(Request $request)
+    private function buildDemoMetrics(string $period = 'today'): array
     {
-        // NOVO: Gerar dados REAIS no banco de dados
-        $this->generateRealTestData();
-        
-        $period = $request->get('period', 'today');
-        
-        // Gerar dados de depósitos
+        $period = $this->normalizePeriod($period);
+        $now = now();
+
         $deposits = [];
-        if ($period === 'today') {
-            $now = now();
-            for ($i = 0; $i < 24; $i++) {
-                $hour = $now->copy()->hour($i);
-                $value = 0;
-                
-                // Simular picos em horários específicos
-                if ($i >= 8 && $i <= 23) {
-                    $value = rand(500, 5000);
-                    if ($i >= 19 && $i <= 22) {
-                        $value = rand(3000, 8000); // Pico noturno
-                    }
-                }
-                
-                $deposits[] = [
-                    'x' => $hour->timestamp * 1000,
-                    'y' => $value
-                ];
-            }
-        }
-        
-        // Gerar dados de usuários
         $usersLabels = [];
         $usersData = [];
-        for ($i = 0; $i < 24; $i++) {
-            $usersLabels[] = sprintf('%02d:00', $i);
-            $userCount = 0;
-            
-            if ($i >= 6 && $i <= 23) {
-                $userCount = rand(2, 20);
-                if ($i >= 20 && $i <= 22) {
-                    $userCount = rand(15, 35); // Pico noturno
-                }
-            }
-            
-            $usersData[] = $userCount;
-        }
-        
-        // Gerar dados de jogos
-        $games = [
-            'Gates of Olympus',
-            'Fortune Tiger', 
-            'Sweet Bonanza',
-            'Aviator',
-            'Spaceman',
-            'Mines',
-            'Fortune Ox',
-            'Sugar Rush'
-        ];
-        
-        $gamesData = [];
-        $gamesLabels = [];
-        
-        // Selecionar 5 jogos aleatórios
-        shuffle($games);
-        for ($i = 0; $i < min(5, count($games)); $i++) {
-            $gamesLabels[] = $games[$i];
-            $gamesData[] = rand(10, 100);
-        }
-        
-        // Gerar dados de receita
         $revenueLabels = [];
         $receita = [];
         $lucro = [];
-        
-        if ($period === 'today') {
-            for ($i = 0; $i < 24; $i++) {
-                $revenueLabels[] = sprintf('%02d:00', $i);
-                $depositValue = 0;
-                $profitValue = 0;
-                
-                if ($i >= 8 && $i <= 23) {
-                    $depositValue = rand(1000, 10000);
-                    $profitValue = $depositValue * 0.15; // 15% de lucro médio
+
+        if (in_array($period, ['today', 'yesterday'], true)) {
+            $reference = $period === 'today' ? $now->copy() : $now->copy()->subDay();
+
+            for ($hour = 0; $hour < 24; $hour++) {
+                $timestamp = $reference->copy()->startOfDay()->addHours($hour)->timestamp * 1000;
+
+                if ($hour >= 18 && $hour <= 23) {
+                    $amount = $this->randomFloat(3200, 9800);
+                } elseif ($hour >= 8 && $hour <= 17) {
+                    $amount = $this->randomFloat(900, 4200);
+                } else {
+                    $amount = $this->randomFloat(120, 620);
                 }
-                
-                $receita[] = $depositValue;
-                $lucro[] = $profitValue;
+
+                $deposits[] = ['x' => $timestamp, 'y' => round($amount, 2)];
+
+                $usersLabels[] = sprintf('%02d:00', $hour);
+                $usersData[] = $hour >= 6 && $hour <= 23
+                    ? rand(3, ($hour >= 19 && $hour <= 22) ? 38 : 18)
+                    : rand(0, 2);
+
+                $revenueLabels[] = sprintf('%02d:00', $hour);
+                $receipt = $amount > 0 ? $amount * $this->randomFloat(1.05, 1.22) : 0;
+                $profit = $receipt * $this->randomFloat(0.16, 0.24);
+
+                $receita[] = round($receipt, 2);
+                $lucro[] = round($profit, 2);
+            }
+        } else {
+            $days = $period === 'week' ? 7 : 30;
+
+            for ($offset = $days - 1; $offset >= 0; $offset--) {
+                $date = $now->copy()->subDays($offset);
+                $dailyDeposits = $period === 'week'
+                    ? $this->randomFloat(25000, 68000)
+                    : $this->randomFloat(32000, 135000);
+
+                $deposits[] = [
+                    'x' => $date->copy()->startOfDay()->timestamp * 1000,
+                    'y' => round($dailyDeposits, 2),
+                ];
+
+                $label = $date->format('d/m');
+                $usersLabels[] = $label;
+                $usersData[] = rand(24, $period === 'week' ? 140 : 320);
+
+                $revenueLabels[] = $label;
+                $receipt = $dailyDeposits * $this->randomFloat(1.04, 1.18);
+                $profit = $receipt * $this->randomFloat(0.18, 0.26);
+
+                $receita[] = round($receipt, 2);
+                $lucro[] = round($profit, 2);
             }
         }
-        
-        // Gerar estatísticas gerais
+
+        $gamesPool = [
+            'Gates of Olympus', 'Fortune Tiger', 'Sweet Bonanza', 'Aviator',
+            'Spaceman', 'Mines', 'Fortune Ox', 'Sugar Rush',
+            'Big Bass Bonanza', 'Wanted Dead or a Wild', 'Fruit Party',
+            'Fire Strike', 'Starlight Princess', 'Roulette Azure',
+            'Bac Bo', 'Crazy Time', 'Lightning Roulette', 'Blackjack Azure'
+        ];
+
+        shuffle($gamesPool);
+        $gamesLabels = array_slice($gamesPool, 0, 5);
+        $gamesData = array_map(fn () => rand(60, 220), $gamesLabels);
+
+        $top5GamesTestData = collect();
+        foreach ($gamesLabels as $idx => $label) {
+            $top5GamesTestData->push((object) [
+                'game' => $label,
+                'plays' => $gamesData[$idx],
+                'total_amount' => $this->randomFloat(950, 4200),
+            ]);
+        }
+        Cache::put('top5_games_chart_data', $top5GamesTestData, 900);
+
+        $usersRankingTestData = collect();
+        $rankingNames = [
+            'Lucrativa Admin', 'Afiliado Elite', 'Jogador VIP', 'High Roller',
+            'Streamer Parceiro', 'Influencer Bet', 'Cliente Gold',
+            'Cliente Silver', 'Cliente Bronze'
+        ];
+        $rankingEmails = [
+            'admin@lucrativabet.com', 'afiliado@rede.com', 'vip@clientes.com', 'roller@lucrativabet.com',
+            'streamer@parceiros.com', 'influencer@social.com', 'gold@clientes.com',
+            'silver@clientes.com', 'bronze@clientes.com'
+        ];
+
+        foreach ($rankingNames as $idx => $name) {
+            $usersRankingTestData->push((object) [
+                'name' => $name,
+                'email' => $rankingEmails[$idx] ?? strtolower(str_replace(' ', '.', $name)) . '@demo.com',
+                'total_deposited' => $this->randomFloat(900, 9200),
+                'total_deposits' => rand(3, 15),
+            ]);
+        }
+        Cache::put('users_ranking_chart_data', $usersRankingTestData, 1800);
+
+        $totalDeposits = array_sum(array_column($deposits, 'y'));
+        $totalProfit = array_sum($lucro);
+        $totalUsers = array_sum($usersData);
+
         $stats = [
-            'total_deposits' => rand(50000, 150000),
-            'total_deposits_change' => rand(-20, 50),
-            'total_users' => rand(50, 200),
-            'total_users_change' => rand(-10, 30),
-            'total_bets' => rand(500, 2000),
-            'total_bets_change' => rand(-15, 40),
-            'total_profit' => rand(10000, 30000),
-            'total_profit_change' => rand(-25, 60),
-            'withdrawals' => rand(5000, 20000),
+            'total_deposits' => round($totalDeposits, 2),
+            'total_deposits_change' => rand(-18, 48),
+            'total_users' => $totalUsers,
+            'total_users_change' => rand(-12, 36),
+            'total_bets' => rand(550, 2600) * (in_array($period, ['week', 'month'], true) ? ($period === 'week' ? 7 : 30) : 1),
+            'total_bets_change' => rand(-20, 45),
+            'total_profit' => round($totalProfit, 2),
+            'total_profit_change' => rand(-22, 53),
+            'withdrawals' => round($totalDeposits * 0.34, 2),
         ];
-        
-        // Dados em tempo real
+
         $realtime = [
-            'active_users' => rand(10, 50),
-            'recent_deposits' => rand(1, 10),
-            'recent_bets' => rand(5, 30),
-            'timestamp' => now()->timestamp
+            'active_users' => rand(14, 56),
+            'recent_deposits' => rand(2, 14),
+            'recent_bets' => rand(8, 36),
+            'timestamp' => now()->timestamp,
         ];
-        
-        $data = [
-            'test_mode' => true,
-            'message' => 'DADOS DE TESTE - Para visualização apenas',
+
+        return [
+            'message' => 'Dados simulados sem conexão com o banco.',
+            'source' => 'demo',
+            'period' => $period,
             'deposits' => $deposits,
             'users' => [
                 'labels' => $usersLabels,
-                'data' => $usersData
+                'data' => $usersData,
             ],
             'games' => [
                 'labels' => $gamesLabels,
-                'data' => $gamesData
+                'data' => $gamesData,
             ],
             'revenue' => [
                 'labels' => $revenueLabels,
                 'receita' => $receita,
-                'lucro' => $lucro
+                'lucro' => $lucro,
             ],
             'stats' => $stats,
-            'realtime' => $realtime
+            'realtime' => $realtime,
         ];
-        
-        // SALVAR DADOS DE TESTE NO CACHE PARA OS WIDGETS FUNCIONAREM
-        
-        // 1. Salvar dados do Top 5 Games no formato esperado pelo widget
-        $top5GamesTestData = collect();
-        $gamesAmounts = [2097, 1161, 1322, 1942, 954]; // Valores de receita
-        for ($i = 0; $i < count($gamesLabels); $i++) {
-            $top5GamesTestData->push((object)[
-                'game' => $gamesLabels[$i],
-                'plays' => $gamesData[$i],
-                'total_amount' => $gamesAmounts[$i] ?? rand(500, 2500)
+    }
+
+    private function normalizePeriod(?string $period): string
+    {
+        $allowed = ['today', 'yesterday', 'week', 'month'];
+
+        return in_array($period, $allowed, true) ? $period : 'today';
+    }
+
+    private function randomFloat(float $min, float $max, int $precision = 2): float
+    {
+        if ($min > $max) {
+            [$min, $max] = [$max, $min];
+        }
+
+        $factor = 10 ** $precision;
+
+        return mt_rand((int) round($min * $factor), (int) round($max * $factor)) / $factor;
+    }
+
+    private function buildDemoSparkline(string $type): array
+    {
+        return collect(range(0, 23))->map(function (int $index) use ($type) {
+            if ($type === 'deposits') {
+                if ($index >= 18 && $index <= 23) {
+                    return $this->randomFloat(2500, 7800);
+                }
+
+                if ($index >= 8 && $index <= 17) {
+                    return $this->randomFloat(850, 3200);
+                }
+
+                return $this->randomFloat(80, 400);
+            }
+
+            if ($type === 'users') {
+                return $index >= 6 && $index <= 23 ? rand(1, ($index >= 19 && $index <= 22) ? 28 : 14) : rand(0, 2);
+            }
+
+            // bets
+            return $index >= 8 && $index <= 23 ? rand(4, 34) : rand(0, 4);
+        })->toArray();
+    }
+
+    public function generateTestData(Request $request)
+    {
+        $period = $request->get('period', 'today');
+
+        try {
+            $this->generateRealTestData();
+        } catch (\Throwable $throwable) {
+            Log::notice('Não foi possível gerar dados persistentes de teste.', [
+                'message' => $throwable->getMessage(),
             ]);
         }
-        Cache::put('top5_games_chart_data', $top5GamesTestData, 900); // 15 minutos
-        
-        // 2. Salvar dados do Users Ranking no formato esperado pelo widget  
-        $usersTestNames = [
-            'Teste CPF Auto', 'Admin LucrativaBet', 'Teste Demo', 
-            'Teste AureoLink', 'Admin', 'Teste Usuario 2',
-            'Teste VIP 1', 'Teste VIP 2', 'Demo User'
-        ];
-        $usersTestEmails = [
-            'teste1@email.com', 'admin@lucrativa.com', 'demo@test.com',
-            'aureo@test.com', 'admin@test.com', 'usuario2@test.com', 
-            'vip1@test.com', 'vip2@test.com', 'demo@user.com'
-        ];
-        $usersTestDeposits = [4, 3, 2, 3, 3, 3, 2, 2, 1];
-        $usersTestAmounts = [2149, 1708, 1454, 769, 712, 600, 450, 350, 200];
-        
-        $usersRankingTestData = collect();
-        for ($i = 0; $i < min(count($usersTestNames), 9); $i++) {
-            $usersRankingTestData->push((object)[
-                'name' => $usersTestNames[$i],
-                'email' => $usersTestEmails[$i],
-                'total_deposited' => $usersTestAmounts[$i],
-                'total_deposits' => $usersTestDeposits[$i]
-            ]);
-        }
-        Cache::put('users_ranking_chart_data', $usersRankingTestData, 1800); // 30 minutos
-        
+
+        $data = $this->buildDemoMetrics($period);
+        $data['test_mode'] = true;
+
         return response()->json($data);
     }
 

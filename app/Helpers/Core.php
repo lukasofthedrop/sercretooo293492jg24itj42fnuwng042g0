@@ -908,63 +908,8 @@ class Core
             
         )->first();
         
-        $layout = CustomLayout::select(
-
-            'link_app',
-            'link_telegram',
-            'link_facebook',
-            'link_whatsapp',
-            'link_instagram',
-            'link_siderbar_1',
-            'link_siderbar_2',
-            'link_siderbar_3',
-            'link_lincenca',
-
-            'navbar_imglogin',
-            'menucell_inicio',
-            'menucell_carteira',
-            'menucell_suporte',
-            'menucell_afiliado',
-            'menucell_saque',
-            'menucell_sair',
-            'footer_imagen1',
-            'footer_imagen2',
-            'footer_imagen3',
-            'footer_telegram',
-            'footer_facebook',
-            'footer_whatsapp',
-            'footer_instagram',
-            'footer_mais18',
-            'navebar_app',
-            
-            'homepage_jogos_em_destaque',
-            'vip_titulo',
-            'vip_descriçao',
-            'vip_sub_texto',
-            'vip_sub_titulo',
-
-            'image_Jackpot',
-            'image_navbar',
-            'image_hot1',
-            'image_hot2',
-            'image_hot3',
-            'image_hot4',
-            'image_hot5',
-            'banner_deposito1',
-            'banner_registro',
-            'banner_login',
-            'banner_deposito2',
-            'popup_fluatuante',
-            'link_fluatuante',
-            'link_suporte',
-            'token_jivochat',
-            'popup2_fluatuante',
-            'link_fluatuante2',
-            'idPixelFC',
-            'custom_modal_pop',
-            'idPixelGoogle'
-        )->first();
-        $setting->custom = $layout;
+        $layout = CustomLayout::first();
+        $setting->custom = $layout ?? new CustomLayout();
                 
         return $setting;
     }

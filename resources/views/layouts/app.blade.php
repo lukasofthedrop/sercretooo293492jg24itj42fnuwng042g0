@@ -44,22 +44,23 @@
 
 
 
-        <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-S5QnsT1X1x6NqBJ38qRAjPR9U1FVLtZL1NVr7DiIP9N6byjHgNsx3Rp3XIanFkFJxux1DPZWS9Bhi3R7S3u5Xg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Roboto+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100&display=swap" rel="stylesheet">        <title>{{ env('APP_NAME') }}</title>
             
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         @php $custom = \Helper::getCustom() @endphp
-        <!-- Meta Pixel Code -->
-        <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id={{ $custom->idPixelFC }}&ev=PageView&noscript=1"
-        /></noscript>
+        @unless(app()->environment('testing'))
+            <!-- Meta Pixel Code -->
+            <noscript><img height="1" width="1" style="display:none"
+                src="https://www.facebook.com/tr?id={{ $custom->idPixelFC }}&ev=PageView&noscript=1"
+            /></noscript>
+            <!-- End Meta Pixel Code -->
 
-        <!-- End Meta Pixel Code -->
-
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $custom->idPixelGoogle }}"></script>
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ $custom->idPixelGoogle }}"></script>
+        @endunless
         <style>
             body{
                 font-family: {{ $custom['font_family_default'] ?? "'Roboto Condensed', sans-serif" }};

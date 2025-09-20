@@ -15,7 +15,12 @@ use App\Models\Wallet;
 use App\Traits\Providers\PlayFiverTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class GameController extends Controller
 {
@@ -220,30 +225,152 @@ class GameController extends Controller
      */
     public function allGames(Request $request)
     {
-        $query = Game::query();
-        $query->with(['provider', 'categories']);
+        try {
+            $games = $this->buildGamePaginator($request);
 
-        if (!empty($request->provider) && $request->provider != 'all') {
+            if ($games->total() > 0) {
+                return response()->json(['games' => $games]);
+            }
+
+            Log::info('Game catalog empty, falling back to static dataset.');
+        } catch (\Throwable $throwable) {
+            Log::warning('Database game catalog unavailable, using fallback dataset.', [
+                'exception' => $throwable->getMessage(),
+            ]);
+        }
+
+        return response()->json($this->buildFallbackGames($request));
+    }
+
+    private function buildGamePaginator(Request $request): LengthAwarePaginator
+    {
+        $query = Game::query()->with(['provider', 'categories']);
+
+        if ($request->filled('provider') && $request->provider !== 'all') {
             $query->where('provider_id', $request->provider);
         }
 
-        if (!empty($request->category) && $request->category != 'all') {
-            $query->whereHas('categories', function ($categoryQuery) use ($request) {
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->whereHas('categories', function (Builder $categoryQuery) use ($request) {
                 $categoryQuery->where('slug', $request->category);
             });
         }
 
-        if (isset($request->searchTerm) && !empty($request->searchTerm) && strlen($request->searchTerm) > 2) {
+        if ($request->filled('searchTerm') && strlen($request->searchTerm) > 2) {
             $query->whereLike(['game_code', 'game_name', 'distribution', 'provider.name'], $request->searchTerm);
-        }else{
-            $query->orderBy('views', 'desc');
+        } else {
+            $query->orderByDesc('views');
         }
 
-        $games = $query
-            ->where('status', 1)
-            ->paginate(12)->appends(request()->query());
+        $perPage = max((int) $request->get('per_page', 12), 1);
 
-        return response()->json(['games' => $games]);
+        return $query
+            ->where('status', 1)
+            ->paginate($perPage)
+            ->appends($request->query());
+    }
+
+    private function buildFallbackGames(Request $request): array
+    {
+        $path = resource_path('data/casino-games.json');
+
+        if (!File::exists($path)) {
+            return [
+                'games' => new LengthAwarePaginator([], 0, 12, 1),
+                'fallback' => true,
+            ];
+        }
+
+        $payload = json_decode(File::get($path), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::error('Invalid fallback casino-games.json', [
+                'error' => json_last_error_msg(),
+            ]);
+
+            return [
+                'games' => new LengthAwarePaginator([], 0, 12, 1),
+                'fallback' => true,
+            ];
+        }
+
+        $games = collect($payload['games']['data'] ?? $payload['games'] ?? []);
+
+        $games = $this->filterFallbackGames($games, $request);
+
+        $perPage = max((int) $request->get('per_page', 12), 1);
+        $currentPage = max((int) $request->get('page', 1), 1);
+        $total = $games->count();
+        $slice = $games->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $paginator = new LengthAwarePaginator(
+            $slice,
+            $total,
+            $perPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'pageName' => 'page',
+                'query' => $request->query(),
+            ]
+        );
+
+        return [
+            'games' => $paginator,
+            'fallback' => true,
+            'total' => $total,
+        ];
+    }
+
+    private function filterFallbackGames(Collection $games, Request $request): Collection
+    {
+        if ($request->filled('provider') && $request->provider !== 'all') {
+            $providerFilter = strtolower((string) $request->provider);
+
+            $games = $games->filter(function (array $game) use ($providerFilter) {
+                $provider = $game['provider'] ?? [];
+
+                return strtolower((string) ($game['provider_id'] ?? '')) === $providerFilter
+                    || strtolower((string) ($provider['code'] ?? '')) === $providerFilter
+                    || strtolower((string) ($provider['name'] ?? '')) === $providerFilter;
+            });
+        }
+
+        if ($request->filled('category') && $request->category !== 'all') {
+            $categoryFilter = Str::slug($request->category);
+
+            $games = $games->filter(function (array $game) use ($categoryFilter) {
+                $categories = collect($game['categories'] ?? []);
+
+                return $categories->contains(function ($category) use ($categoryFilter) {
+                    $slug = Str::slug($category['slug'] ?? $category['name'] ?? '');
+                    return $slug === $categoryFilter;
+                });
+            });
+        }
+
+        if ($request->filled('searchTerm') && strlen($request->searchTerm) > 2) {
+            $term = mb_strtolower($request->searchTerm);
+
+            $games = $games->filter(function (array $game) use ($term) {
+                $fields = [
+                    $game['game_code'] ?? '',
+                    $game['game_name'] ?? '',
+                    $game['distribution'] ?? '',
+                    $game['provider']['name'] ?? '',
+                ];
+
+                foreach ($fields as $field) {
+                    if ($field && str_contains(mb_strtolower((string) $field), $term)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+        }
+
+        return $games->values();
     }
 
     

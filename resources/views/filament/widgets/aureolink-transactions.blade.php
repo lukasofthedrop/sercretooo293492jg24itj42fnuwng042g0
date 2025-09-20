@@ -1,9 +1,9 @@
 <x-filament-widgets::widget>
-    <x-filament-widgets::widget-header>
-        <x-filament-widgets::widget-header-heading>
+    <div class="flex items-center justify-between gap-4 px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Histórico de Transações AureoLink
-        </x-filament-widgets::widget-header-heading>
-        <x-filament-widgets::widget-header-actions>
+        </h3>
+        <div class="flex items-center gap-2">
             <button wire:click="refreshTransactions" 
                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -11,8 +11,8 @@
                 </svg>
                 Atualizar
             </button>
-        </x-filament-widgets::widget-header-actions>
-    </x-filament-widgets::widget-header>
+        </div>
+    </div>
 
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
         <div class="overflow-x-auto">

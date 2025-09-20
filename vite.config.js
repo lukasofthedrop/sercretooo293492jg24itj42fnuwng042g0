@@ -90,8 +90,15 @@ export default defineConfig({
     ],
     build: {
         chunkSizeWarningLimit: 2024,
+        manifest: true,
+        rollupOptions: {
+            output: {
+                entryFileNames: 'assets/[name].js',
+                chunkFileNames: 'assets/[name].js',
+                assetFileNames: 'assets/[name][extname]'
+            },
+        },
     }
 });
-
 
 

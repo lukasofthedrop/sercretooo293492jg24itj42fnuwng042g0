@@ -1,0 +1,38 @@
+server {
+    listen       ${PORT};
+    listen       [::]:${PORT};
+    server_name  _;
+
+    root   /app/public;
+    index  index.php index.html;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ^~ /storage/ {
+        try_files $uri /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include        fastcgi_params;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param  PATH_INFO $fastcgi_path_info;
+        fastcgi_intercept_errors off;
+    }
+
+    location ~* \.(?:css|js|jpg|jpeg|gif|png|svg|webp|ico|woff|woff2|ttf|map)$ {
+        expires 30d;
+        access_log off;
+    }
+
+    location ~* /\.ht {
+        deny all;
+    }
+
+    sendfile        on;
+    client_max_body_size 50m;
+}
