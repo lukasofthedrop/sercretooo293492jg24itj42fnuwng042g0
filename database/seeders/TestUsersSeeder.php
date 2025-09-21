@@ -30,8 +30,8 @@ class TestUsersSeeder extends Seeder
         );
 
         // Assign admin role
-        Role::firstOrCreate(['name' => 'Admin']);
-        $admin->assignRole('Admin');
+        Role::firstOrCreate(['name' => 'admin']);
+        $admin->assignRole('admin');
 
         // Create Affiliate
         $affiliate = User::create([
@@ -42,8 +42,8 @@ class TestUsersSeeder extends Seeder
         ]);
 
         // Assign affiliate role
-        Role::firstOrCreate(['name' => 'Affiliate']);
-        $affiliate->assignRole('Affiliate');
+        Role::firstOrCreate(['name' => 'afiliado']);
+        $affiliate->assignRole('afiliado');
 
         // Create Player
         $player = User::create([
