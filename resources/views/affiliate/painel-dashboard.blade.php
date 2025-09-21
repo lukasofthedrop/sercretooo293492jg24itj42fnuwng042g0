@@ -8,30 +8,172 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
+/* FORCE ADMIN GREEN-BLACK IDENTITY - OVERRIDE ALL PINK/FROUNTEND COLORS */
+:root {
+    /* Primary color overrides - force green */
+    --ci-primary-color: #10b981 !important;
+    --ci-primary-opacity-color: rgba(16, 185, 129, 0.1) !important;
+    --ci-secundary-color: #059669 !important;
+
+    /* Home page colors override to black/green */
+    --home_background: #111827 !important;
+    --home_text_color: #f9fafb !important;
+    --home_button_jogar: #10b981 !important;
+    --home_hover_jogar: #059669 !important;
+    --home_background_button_jogar: #10b981 !important;
+    --home_background_button_banner: #10b981 !important;
+    --home_icon_color_button_jogar: #000000 !important;
+    --home_background_categorias: #374151 !important;
+    --home_text_color_categorias: #f9fafb !important;
+    --home_background_pesquisa: #374151 !important;
+    --home_text_color_pesquisa: #9ca3af !important;
+    --home_background_button_pesquisa: #10b981 !important;
+    --home_icon_color_button_pesquisa: #000000 !important;
+    --home_background_button_vertodos: #374151 !important;
+    --home_text_color_button_vertodos: #f9fafb !important;
+    --home_background_input_pesquisa: #1f2937 !important;
+    --home_icon_color_input_pesquisa: #9ca3af !important;
+    --home_border_color_input_pesquisa: #4b5563 !important;
+
+    /* Navbar overrides to black/green */
+    --navbar_background: #111827 !important;
+    --navbar-text: #f9fafb !important;
+    --navbar_button_background_login: #10b981 !important;
+    --navbar_button_background_registro: #059669 !important;
+    --navbar_button_border_color: #059669 !important;
+    --navbar_button_text_login: #000000 !important;
+    --navbar_button_text_registro: #000000 !important;
+    --navbar_icon_menu: #f9fafb !important;
+    --navbar_icon_promocoes: #10b981 !important;
+    --navbar_icon_casino: #10b981 !important;
+    --navbar_icon_sport: #10b981 !important;
+    --navbar_button_text_superior: #f9fafb !important;
+    --navbar_button_background_superior: #374151 !important;
+    --navbar_button_deposito_background: #10b981 !important;
+    --navbar_button_deposito_text_color: #000000 !important;
+    --navbar_button_deposito_border_color: #059669 !important;
+    --navbar_button_deposito_píx_color_text: #f9fafb !important;
+    --navbar_button_deposito_píx_background: #059669 !important;
+    --navbar_button_deposito_píx_icon: #000000 !important;
+    --navbar_button_carteira_background: #374151 !important;
+    --navbar_button_carteira_text_color: #f9fafb !important;
+    --navbar_button_carteira_border_color: #4b5563 !important;
+    --navbar_perfil_text_color: #f9fafb !important;
+    --navbar_perfil_background: #374151 !important;
+    --navbar_perfil_icon_color: #d1d5db !important;
+    --navbar_perfil_icon_color_border: #4b5563 !important;
+    --navbar_perfil_modal_icon_color: #d1d5db !important;
+    --navbar_perfil_modal_text_modal: #f9fafb !important;
+    --navbar_perfil_modal_background_modal: #1f2937 !important;
+    --navbar_perfil_modal_hover_modal: #374151 !important;
+    --navbar_icon_promocoes_segunda_cor: #10b981 !important;
+
+    /* Sidebar overrides */
+    --sidebar-background: #111827 !important;
+    --sidebar-text-color: #f9fafb !important;
+    --sidebar-button_missoes_background: #374151 !important;
+    --sidebar-button_vip_background: #374151 !important;
+    --sidebar-button_ganhe_background: #374151 !important;
+    --sidebar-button_bonus_background: #374151 !important;
+    --sidebar_button_missoes_text: #f9fafb !important;
+    --sidebar_button_ganhe_text: #f9fafb !important;
+    --sidebar_button_vip_text: #f9fafb !important;
+    --sidebar-button_hover: #10b981 !important;
+    --sidebar-text-hover: #000000 !important;
+    --sidebar_border: #4b5563 !important;
+    --sidebar_icons: #10b981 !important;
+    --sidebar_icons_background: #374151 !important;
+
+    /* Ensure no pink - override all possible pink elements */
+    --ci-gray-dark: #1f2937 !important;
+    --ci-gray-light: #9ca3af !important;
+    --ci-gray-medium: #6b7280 !important;
+    --ci-gray-over: #9ca3af !important;
+
+    /* Force green for all primary elements */
+    --primary-color: #10b981 !important;
+    --danger-500: #ef4444 !important; /* Keep red for errors */
+    --success-500: #10b981 !important;
+    --warning-500: #f59e0b !important;
+}
+
+/* Ensure no pink classes or styles - extra overrides */
+[class*="pink"],
+[style*="pink"],
+[style*="Pink"],
+[style*="Rosa"],
+.bg-pink-500,
+.border-pink-500,
+.text-pink-500,
+.color-pink,
+.rosa-50,
+.rosa-100, 
+.rosa-200, 
+.rosa-300, 
+.rosa-400, 
+.rosa-500, 
+.rosa-600, 
+.rosa-700, 
+.rosa-800, 
+.rosa-900,
+.bg-rosa-50,
+.bg-rosa-100, 
+.bg-rosa-200, 
+.bg-rosa-300, 
+.bg-rosa-400, 
+.bg-rosa-500, 
+.bg-rosa-600, 
+.bg-rosa-700, 
+.bg-rosa-800, 
+.bg-rosa-900,
+.text-rosa-50,
+.text-rosa-100, 
+.text-rosa-200, 
+.text-rosa-300, 
+.text-rosa-400, 
+.text-rosa-500, 
+.text-rosa-600, 
+.text-rosa-700, 
+.text-rosa-800, 
+.text-rosa-900 {
+    background-color: #1f2937 !important;
+    color: #10b981 !important;
+    border-color: #10b981 !important;
+    text-shadow: none !important;
+}
+
+/* Body force dark mode with admin theme */
+body.dark {
+    background-color: #111827 !important;
+    color: #f9fafb !important;
+}
+
 /* Affiliate dashboard matching admin theme - green-black identity */
 .dashboard-container {
-    background-color: var(--gray-900, #111827);
-    color: #F4F4F4;
+    background-color: #111827 !important;
+    color: #f9fafb;
     min-height: 100vh;
     padding: 2rem;
+    background: #111827 !important;
 }
 
 .header-affiliate {
-    background: linear-gradient(to right, var(--gray-800), var(--gray-900));
-    border-bottom: 2px solid var(--primary-500);
+    background: linear-gradient(to right, #1f2937, #111827) !important;
+    border-bottom: 2px solid #10b981 !important;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1) !important;
     margin-bottom: 2rem;
     border-radius: 12px;
+    background: #1f2937 !important;
 }
 
 .logo-affiliate {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary-500, #10b981);
+    color: #10b981 !important;
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
@@ -62,24 +204,25 @@
 .dashboard-title-affiliate {
     font-size: 2.5rem;
     margin-bottom: 2rem;
-    background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+    background: linear-gradient(90deg, #10b981, #059669) !important;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
+    color: #10b981 !important;
 }
 
 .revshare-highlight-affiliate {
-    background: linear-gradient(135deg, var(--gray-800, #1f2937) 0%, var(--gray-900, #111827) 100%);
-    border: 2px solid var(--primary-500, #10b981);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+    border: 2px solid #10b981 !important;
     border-radius: 20px;
     padding: 2.5rem;
     margin-bottom: 2rem;
     text-align: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.2) !important;
 }
 
 .revshare-highlight-affiliate::before {
@@ -89,7 +232,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%) !important;
     animation: rotate 10s linear infinite;
 }
 
@@ -101,8 +244,8 @@
 .revshare-value-affiliate {
     font-size: 5rem;
     font-weight: 700;
-    color: var(--primary-500, #10b981);
-    text-shadow: 0 0 40px rgba(16, 185, 129, 0.8), 0 0 60px rgba(10, 184, 129, 0.4);
+    color: #10b981 !important;
+    text-shadow: 0 0 40px rgba(16, 185, 129, 0.8), 0 0 60px rgba(10, 184, 129, 0.4) !important;
     animation: pulse-scale 2s ease-in-out infinite;
     position: relative;
     z-index: 1;
@@ -115,7 +258,7 @@
 
 .revshare-label-affiliate {
     font-size: 1.5rem;
-    color: var(--gray-400, #9ca3af);
+    color: #9ca3af !important;
     margin-top: 0.5rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -125,12 +268,12 @@
 }
 
 .affiliate-code-section-affiliate {
-    background: linear-gradient(135deg, var(--gray-800, #1f2937) 0%, var(--gray-900, #111827) 100%);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
     border-radius: 16px;
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 .code-display-affiliate {
@@ -142,37 +285,37 @@
 
 .code-text-affiliate {
     flex: 1;
-    background: var(--gray-900, #111827);
-    border: 2px solid rgba(16, 185, 129, 0.3);
+    background: #111827 !important;
+    border: 2px solid rgba(16, 185, 129, 0.3) !important;
     border-radius: 10px;
     padding: 1.25rem;
     font-family: 'Roboto Condensed', monospace;
     font-size: 1.5rem;
-    color: var(--primary-500, #10b981);
+    color: #10b981 !important;
     letter-spacing: 0.15em;
     font-weight: 600;
     text-align: center;
 }
 
 .copy-button-affiliate {
-    background: linear-gradient(135deg, var(--primary-500, #10b981) 0%, var(--primary-600, #059669) 100%);
-    color: #000000;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #000000 !important;
     border: none;
     border-radius: 10px;
     padding: 1.25rem 2.5rem;
     font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease !important;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
 }
 
 .copy-button-affiliate:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
-    background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5) !important;
+    background: linear-gradient(135deg, #059669, #10b981) !important;
 }
 
 .stats-grid-affiliate {
@@ -183,12 +326,12 @@
 }
 
 .stat-card-affiliate {
-    background: linear-gradient(135deg, var(--gray-800, #1f2937) 0%, var(--gray-900, #111827) 100%);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
     border-radius: 16px;
     padding: 1.75rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease !important;
     position: relative;
     overflow: hidden;
 }
@@ -200,7 +343,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, transparent, var(--primary-500), transparent);
+    background: linear-gradient(90deg, transparent, #10b981, transparent) !important;
     transform: translateX(-100%);
     animation: scan 3s linear infinite;
 }
@@ -210,13 +353,13 @@
 }
 
 .stat-card-affiliate:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.15);
-    border-color: var(--primary-500);
+    transform: translateY(-6px) !important;
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.15) !important;
+    border-color: #10b981 !important;
 }
 
 .stat-label-affiliate {
-    color: var(--gray-400, #9ca3af);
+    color: #9ca3af !important;
     font-size: 0.9rem;
     margin-bottom: 0.75rem;
     text-transform: uppercase;
@@ -225,7 +368,7 @@
 }
 
 .stat-value-affiliate {
-    color: #F4F4F4;
+    color: #f9fafb !important;
     font-size: 2.25rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
@@ -233,35 +376,35 @@
 }
 
 .stat-value-affiliate.highlight {
-    background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+    background: linear-gradient(90deg, #10b981, #059669) !important;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: none;
+    text-shadow: none !important;
 }
 
 .stat-change-affiliate {
     font-size: 0.875rem;
-    color: var(--gray-400, #9ca3af);
-    display: flex;
+    color: #9ca3af !important;
+    display: flex !important;
     align-items: center;
     gap: 0.5rem;
 }
 
 .stat-change-affiliate i {
-    color: var(--primary-500);
+    color: #10b981 !important;
 }
 
 .chart-container-affiliate {
-    background: linear-gradient(135deg, var(--gray-800, #1f2937) 0%, var(--gray-900, #111827) 100%);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
     border-radius: 16px;
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 .chart-title-affiliate {
-    color: #F4F4F4;
+    color: #f9fafb !important;
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
@@ -273,25 +416,25 @@
 }
 
 .chart-title-affiliate i {
-    color: var(--primary-500);
+    color: #10b981 !important;
 }
 
 .table-container-affiliate {
-    background: linear-gradient(135deg, var(--gray-800, #1f2937) 0%, var(--gray-900, #111827) 100%);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 .table-header-affiliate {
-    background: linear-gradient(90deg, var(--gray-800), var(--gray-900));
+    background: linear-gradient(90deg, #1f2937, #111827) !important;
     padding: 1.25rem 1.5rem;
-    border-bottom: 2px solid var(--primary-500);
+    border-bottom: 2px solid #10b981 !important;
 }
 
 .table-title-affiliate {
-    color: #F4F4F4;
+    color: #f9fafb !important;
     font-size: 1.25rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -303,26 +446,26 @@ table.affiliate-table {
 }
 
 .affiliate-table th {
-    background: var(--gray-800, #1f2937);
-    color: var(--gray-400, #9ca3af);
+    background: #111827 !important;
+    color: #9ca3af !important;
     font-size: 0.9rem;
     font-weight: 600;
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2) !important;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .affiliate-table td {
-    color: #F4F4F4;
+    color: #f9fafb !important;
     padding: 1rem;
-    border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.1) !important;
     font-weight: 500;
 }
 
 .affiliate-table tr:hover td {
-    background: rgba(16, 185, 129, 0.05);
+    background: rgba(16, 185, 129, 0.05) !important;
 }
 
 .status-badge-affiliate {
@@ -336,29 +479,40 @@ table.affiliate-table {
 }
 
 .status-badge-affiliate.active {
-    background: rgba(16, 185, 129, 0.2);
-    color: var(--primary-500);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.4) !important;
 }
 
 .status-badge-affiliate.inactive {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
 }
 
 .commission-value-affiliate {
-    color: var(--primary-500);
+    color: #10b981 !important;
     font-weight: 700;
-    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3) !important;
 }
 
-/* No pink anywhere */
-* [style*="pink"],
-[class*="pink"] {
-    background-color: var(--gray-900) !important;
-    color: var(--primary-500) !important;
-    border-color: var(--primary-500) !important;
+/* Scrollbar for dark theme */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #111827;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #059669;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
 }
 </style>
 @endsection
@@ -368,10 +522,10 @@ table.affiliate-table {
     <div class="header-affiliate">
         <div class="logo-affiliate">
             <i class="fas fa-coins"></i>
-            <span>LucrativaBet <span style="font-weight: 300; color: var(--gray-500);">- AFILIADO</span></span>
+            <span>LucrativaBet <span style="font-weight: 300; color: #6b7280;">- AFILIADO</span></span>
         </div>
         <div class="user-info-affiliate">
-            <span style="color: var(--gray-400); font-weight: 500;">{{ auth()->user()->email }}</span>
+            <span style="color: #9ca3af; font-weight: 500;">{{ auth()->user()->email }}</span>
             <a href="{{ route('logout') }}" class="copy-button-affiliate" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i> Sair
             </a>
@@ -394,7 +548,7 @@ table.affiliate-table {
 
         <!-- Código de Afiliado -->
         <div class="affiliate-code-section-affiliate">
-            <h3 style="color: #F4F4F4; margin-bottom: 0.5rem;">
+            <h3 style="color: #f9fafb; margin-bottom: 0.5rem;">
                 <i class="fas fa-link"></i> Seu Código de Afiliado
             </h3>
             <div class="code-display-affiliate">
@@ -403,8 +557,8 @@ table.affiliate-table {
                     <i class="fas fa-copy"></i> Copiar Código
                 </button>
             </div>
-            <p style="color: var(--gray-400); margin-top: 0.5rem; font-size: 0.875rem;">
-                Link de convite: <span style="color: var(--primary-500);">{{ $invite_link }}</span>
+            <p style="color: #9ca3af; margin-top: 0.5rem; font-size: 0.875rem;">
+                Link de convite: <span style="color: #10b981;">{{ $invite_link }}</span>
             </p>
         </div>
 
@@ -446,7 +600,7 @@ table.affiliate-table {
         <!-- Gráfico de Performance -->
         <div class="chart-container-affiliate">
             <h3 class="chart-title-affiliate">
-                <i class="fas fa-chart-bar"></i>
+                <i class="fas fa-chart-bar" style="color: #10b981;"></i>
                 Performance Mensal - Comissão de {{ $revshare_percentage }}%
             </h3>
             <canvas id="performanceChart" height="80"></canvas>
@@ -489,8 +643,8 @@ table.affiliate-table {
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; color: var(--gray-400); padding: 2rem;">
-                            <i class="fas fa-user-plus" style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--primary-500);"></i>
+                        <td colspan="6" style="text-align: center; color: #9ca3af; padding: 2rem;">
+                            <i class="fas fa-user-plus" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
                             Nenhum indicado ainda. Compartilhe seu código para começar a ganhar!
                         </td>
                     </tr>
@@ -500,7 +654,6 @@ table.affiliate-table {
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('scripts')
@@ -513,7 +666,7 @@ function copyCode() {
     const button = event.target.closest('button');
     const originalText = button.innerHTML;
     button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-    button.style.background = 'linear-gradient(135deg, var(--success-600, #059669) 0%, var(--success-500, #10b981) 100%)';
+    button.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%) !important';
     
     setTimeout(() => {
         button.innerHTML = originalText;
@@ -534,8 +687,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     label: 'NGR Gerado',
                     data: monthlyData.map(d => d.ngr),
-                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.2) !important',
+                    borderColor: 'rgba(16, 185, 129, 1) !important',
                     borderWidth: 2,
                     borderRadius: 6,
                     order: 2
@@ -544,11 +697,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: 'Sua Comissão ({{ $revshare_percentage }}%)',
                     data: monthlyData.map(d => d.commission),
                     type: 'line',
-                    borderColor: 'var(--primary-500, #10b981)',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderColor: '#10b981 !important',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1) !important',
                     borderWidth: 3,
-                    pointBackgroundColor: 'var(--primary-500)',
-                    pointBorderColor: '#fff',
+                    pointBackgroundColor: '#10b981 !important',
+                    pointBorderColor: '#fff !important',
                     pointBorderWidth: 2,
                     pointRadius: 6,
                     pointHoverRadius: 8,
@@ -564,18 +717,18 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: {
                     labels: {
-                        color: 'rgba(244, 244, 244, 0.8)',
+                        color: 'rgba(249, 250, 251, 0.8) !important',
                         font: {
                             size: 12
                         }
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                    borderColor: 'rgba(16, 185, 129, 0.3)',
+                    backgroundColor: 'rgba(17, 24, 39, 0.95) !important',
+                    borderColor: 'rgba(16, 185, 129, 0.3) !important',
                     borderWidth: 1,
-                    titleColor: '#F4F4F4',
-                    bodyColor: 'rgba(244, 244, 244, 0.8)',
+                    titleColor: '#f9fafb !important',
+                    bodyColor: 'rgba(249, 250, 251, 0.8) !important',
                     padding: 12,
                     displayColors: true,
                     callbacks: {
@@ -597,11 +750,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(244, 244, 244, 0.1)',
-                        borderColor: 'rgba(244, 244, 244, 0.2)'
+                        color: 'rgba(249, 250, 251, 0.1) !important',
+                        borderColor: 'rgba(249, 250, 251, 0.2) !important'
                     },
                     ticks: {
-                        color: 'rgba(244, 244, 244, 0.6)',
+                        color: 'rgba(249, 250, 251, 0.6) !important',
                         callback: function(value) {
                             return 'R$ ' + new Intl.NumberFormat('pt-BR', {
                                 minimumFractionDigits: 0,
@@ -612,11 +765,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 x: {
                     grid: {
-                        color: 'rgba(244, 244, 244, 0.1)',
-                        borderColor: 'rgba(244, 244, 244, 0.2)'
+                        color: 'rgba(249, 250, 251, 0.1) !important',
+                        borderColor: 'rgba(249, 250, 251, 0.2) !important'
                     },
                     ticks: {
-                        color: 'rgba(244, 244, 244, 0.6)'
+                        color: 'rgba(249, 250, 251, 0.6) !important'
                     }
                 }
             }

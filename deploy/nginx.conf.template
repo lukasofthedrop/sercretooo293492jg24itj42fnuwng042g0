@@ -25,7 +25,8 @@ server {
     }
 
     location ~* \.(?:css|js|jpg|jpeg|gif|png|svg|webp|ico|woff|woff2|ttf|map)$ {
-        expires 30d;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
         access_log off;
     }
 

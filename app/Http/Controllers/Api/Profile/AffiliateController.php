@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Deposit;
 use App\Models\Withdrawal;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class AffiliateController extends Controller
 {
@@ -244,129 +246,138 @@ class AffiliateController extends Controller
     }
     
     /**
-     * Painel do Afiliado - Versão Web com Dashboard Completa
+     * Painel do Afiliado - Versão Web com Dashboard Completa - Optimized for performance
      */
     public function painelAfiliado()
     {
         $user = auth()->user();
-        $settings = AffiliateSettings::getOrCreateForUser($user->id);
         
-        // Se não tem código de afiliado, gera um
-        if (!$user->inviter_code) {
-            $code = $this->gencode();
-            if (!empty($code)) {
-                $user->inviter_code = $code;
-                $user->save();
-                
-                // Adiciona role de afiliado
-                \DB::table('model_has_roles')->updateOrInsert(
-                    [
+        // Cache whole dashboard for 15 minutes
+        $cacheKey = 'affiliate_dashboard_' . $user->id;
+        $dashboardData = Cache::remember($cacheKey, 15 * 60, function () use ($user) {
+            $settings = AffiliateSettings::getOrCreateForUser($user->id);
+            
+            // Generate code if not exists (cached)
+            if (!$user->inviter_code) {
+                $code = $this->gencode();
+                if ($code) {
+                    $user->inviter_code = $code;
+                    $user->save();
+                    \DB::table('model_has_roles')->updateOrInsert([
                         'role_id' => 2,
                         'model_type' => 'App\Models\User',
                         'model_id' => $user->id,
-                    ],
-                );
+                    ]);
+                }
             }
-        }
-        
-        // Busca indicados
-        $referred = User::where('inviter', $user->id)->get();
-        $referredCount = $referred->count();
-        
-        // Calcula indicados ativos (fizeram depósito nos últimos 30 dias)
-        $activeReferred = $referred->filter(function($ref) {
-            return Deposit::where('user_id', $ref->id)
-                ->where('status', 1)
-                ->where('created_at', '>=', Carbon::now()->subDays(30))
-                ->exists();
-        })->count();
-        
-        // Calcula NGR do mês atual
-        $monthStart = Carbon::now()->startOfMonth();
-        $monthEnd = Carbon::now()->endOfMonth();
-        
-        $referredIds = $referred->pluck('id');
-        
-        $monthDeposits = Deposit::whereIn('user_id', $referredIds)
-            ->whereBetween('created_at', [$monthStart, $monthEnd])
-            ->where('status', 1)
-            ->sum('amount');
             
-        $monthWithdrawals = Withdrawal::whereIn('user_id', $referredIds)
-            ->whereBetween('created_at', [$monthStart, $monthEnd])
-            ->where('status', 1)
-            ->sum('amount');
+            // Get referred IDs first
+            $referredIds = DB::table('users')->where('inviter', $user->id)->pluck('id');
+            if ($referredIds->isEmpty()) {
+                $referredIds = collect([]); // Empty collection for queries
+            }
             
-        $monthNGR = $monthDeposits - $monthWithdrawals;
-        
-        // Calcula total ganho (baseado no FAKE 40%)
-        $totalEarned = $user->wallet->refer_rewards ?? 0;
-        
-        // Dados dos últimos 6 meses para gráfico
-        $monthlyData = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $date = Carbon::now()->subMonths($i);
-            $startDate = $date->copy()->startOfMonth();
-            $endDate = $date->copy()->endOfMonth();
+            // Total referred (cached)
+            $totalReferred = User::where('inviter', $user->id)->count();
             
-            $deposits = Deposit::whereIn('user_id', $referredIds)
-                ->whereBetween('created_at', [$startDate, $endDate])
+            // Active referred (optimized with subquery)
+            $activeReferred = User::where('inviter', $user->id)
+                ->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                         ->from('deposits')
+                         ->whereColumn('deposits.user_id', 'users.id')
+                         ->where('deposits.status', 1)
+                         ->where('deposits.created_at', '>=', Carbon::now()->subDays(30));
+                })
+                ->count();
+            
+            // Month NGR (optimized with single queries)
+            $monthStart = Carbon::now()->startOfMonth();
+            $monthEnd = Carbon::now()->endOfMonth();
+            
+            $monthDeposits = DB::table('deposits')
+                ->whereIn('user_id', $referredIds)
+                ->whereBetween('created_at', [$monthStart, $monthEnd])
                 ->where('status', 1)
                 ->sum('amount');
                 
-            $withdrawals = Withdrawal::whereIn('user_id', $referredIds)
-                ->whereBetween('created_at', [$startDate, $endDate])
+            $monthWithdrawals = DB::table('withdrawals')
+                ->whereIn('user_id', $referredIds)
+                ->whereBetween('created_at', [$monthStart, $monthEnd])
                 ->where('status', 1)
                 ->sum('amount');
                 
-            $ngr = $deposits - $withdrawals;
+            $monthNGR = $monthDeposits - $monthWithdrawals;
             
-            $monthlyData[] = [
-                'month' => $date->format('M/Y'),
-                'deposits' => $deposits,
-                'withdrawals' => $withdrawals,
-                'ngr' => $ngr,
-                // Mostra comissão FAKE de 40%
-                'commission' => $ngr * 0.40
-            ];
-        }
-        
-        // Lista de indicados recentes
-        $recentReferred = $referred->take(10)->map(function($ref) {
-            $totalDeposited = Deposit::where('user_id', $ref->id)
+            // Monthly data for 6 months (optimized with single query)
+            $monthlyData = DB::table('deposits')
+                ->select(
+                    DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+                    DB::raw('SUM(amount) as deposits')
+                )
+                ->whereIn('user_id', $referredIds)
                 ->where('status', 1)
-                ->sum('amount');
-                
-            $isActive = Deposit::where('user_id', $ref->id)
-                ->where('status', 1)
-                ->where('created_at', '>=', Carbon::now()->subDays(30))
-                ->exists();
-                
+                ->whereBetween('created_at', [Carbon::now()->subMonths(5)->startOfMonth(), Carbon::now()])
+                ->groupBy('month')
+                ->orderBy('month', 'desc')
+                ->limit(6)
+                ->get()
+                ->map(function ($item) use ($referredIds, $monthStart) {
+                    $withdrawals = DB::table('withdrawals')
+                        ->whereIn('user_id', $referredIds)
+                        ->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$item->month])
+                        ->where('status', 1)
+                        ->sum('amount');
+                    $ngr = $item->deposits - $withdrawals;
+                    return [
+                        'month' => Carbon::createFromFormat('Y-m', $item->month)->format('M/Y'),
+                        'ngr' => $ngr,
+                        'commission' => $ngr * 0.40 // FAKE 40%
+                    ];
+                })
+                ->values();
+            
+            // Recent referred with optimized joins (limit 10)
+            $recentReferred = DB::table('users')
+                ->select(
+                    'users.name',
+                    'users.email',
+                    'users.created_at',
+                    DB::raw('SUM(deposits.amount) as total_deposited'),
+                    DB::raw('IF(EXISTS (SELECT 1 FROM deposits WHERE deposits.user_id = users.id AND deposits.status = 1 AND deposits.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)), 1, 0) as has_recent_deposit')
+                )
+                ->leftJoin('deposits', function ($join) {
+                    $join->on('deposits.user_id', '=', 'users.id')
+                         ->where('deposits.status', 1);
+                })
+                ->where('users.inviter', $user->id)
+                ->groupBy('users.id', 'users.name', 'users.email', 'users.created_at')
+                ->orderBy('users.created_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($user) {
+                    $user->created_at = Carbon::parse($user->created_at)->format('d/m/Y');
+                    $user->is_active = (bool) $user->has_recent_deposit;
+                    $user->commission_generated = $user->total_deposited * 0.40; // FAKE 40%
+                    unset($user->has_recent_deposit);
+                    return (array) $user;
+                });
+            
             return [
-                'name' => $ref->name,
-                'email' => $ref->email,
-                'created_at' => $ref->created_at->format('d/m/Y'),
-                'is_active' => $isActive,
-                'total_deposited' => $totalDeposited,
-                // Mostra comissão FAKE de 40%
-                'commission_generated' => $totalDeposited * 0.40
+                'user' => $user,
+                'affiliate_code' => $user->inviter_code,
+                'invite_link' => url('/register?code=' . $user->inviter_code),
+                'total_referred' => $totalReferred,
+                'active_referred' => $activeReferred,
+                'available_balance' => $user->wallet->refer_rewards ?? 0,
+                'month_ngr' => $monthNGR,
+                'revshare_percentage' => 40, // FAKE 40%
+                'monthly_data' => $monthlyData,
+                'recent_referred' => $recentReferred,
+                'settings' => $settings
             ];
         });
         
-        return view('affiliate.painel-dashboard', [
-            'user' => $user,
-            'affiliate_code' => $user->inviter_code,
-            'invite_link' => url('/register?code=' . $user->inviter_code),
-            'total_referred' => $referredCount,
-            'active_referred' => $activeReferred,
-            'available_balance' => $user->wallet->refer_rewards ?? 0,
-            'total_earned' => $totalEarned,
-            'month_ngr' => $monthNGR,
-            // SEMPRE mostra 40% como RevShare (FAKE)
-            'revshare_percentage' => 40,
-            'monthly_data' => $monthlyData,
-            'recent_referred' => $recentReferred,
-            'settings' => $settings
-        ]);
+        return view('affiliate.painel-dashboard', $dashboardData);
     }
 }
