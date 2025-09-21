@@ -1,0 +1,122 @@
+@import '../../../vendor/filament/filament/resources/css/theme.css';
+
+/* Custom green-black theme for Filament admin panel */
+/* Override primary color to green and backgrounds to black/shades */
+
+:root {
+    --primary-50: #ecfdf5;
+    --primary-100: #d1fae5;
+    --primary-200: #a7f3d0;
+    --primary-300: #6ee7b7;
+    --primary-400: #34d399;
+    --primary-500: #10b981; /* Main green accent */
+    --primary-600: #059669;
+    --primary-700: #047857;
+    --primary-800: #065f46;
+    --primary-900: #064e3b;
+
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937; /* Dark gray for contrasts */
+    --gray-900: #111827; /* Almost black */
+
+    --danger-500: #ef4444; /* Keep red for errors if needed, but override to not be pink */
+    --success-500: #10b981;
+    --warning-500: #f59e0b;
+
+    --neutral-100: #f8fafc;
+    --neutral-200: #f1f5f9;
+    --neutral-300: #e2e8f0;
+    --neutral-400: #cbd5e1;
+    --neutral-500: #94a3b8;
+    --neutral-600: #64748b;
+    --neutral-700: #334155;
+    --neutral-800: #1e293b;
+    --neutral-900: #0f172a;
+
+    --border-color: #e2e8f0; /* Light gray border */
+    --secondary-500: #64748b;
+
+    --success-500: #10b981;
+    --success-600: #059669;
+
+    /* Black backgrounds for main areas */
+    --page-background: #000000; /* Pure black */
+    --sidebar-background: #0f172a; /* Dark blue-black */
+    --header-background: #000000; /* Black header */
+
+    --font-family-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Segoe UI Icon';
+}
+
+/* Override Filament pink/blue defaults with green-black */
+.fi-sidebar {
+    background-color: var(--sidebar-background) !important;
+    --bg-color-1: #0f172a;
+    --bg-color-2: #111827;
+}
+
+.fi-navbar {
+    background-color: var(--header-background) !important;
+    border-bottom-color: var(--border-color) !important;
+    color: #ffffff !important;
+}
+
+.fi-main {
+    background-color: var(--page-background) !important;
+}
+
+/* Override any pink buttons/links to green */
+.btn-primary {
+    background-color: var(--primary-500) !important;
+    border-color: var(--primary-500) !important;
+    color: #000000 !important;
+}
+
+.btn-danger { /* If any danger is pink, override */
+    background-color: #ef4444 !important;
+}
+
+/* Ensure no pink in forms, tables, etc. */
+.fi-fieldset {
+    background-color: #1f2937 !important; /* Dark gray for forms */
+    border-color: var(--border-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-500) !important;
+}
+
+/* Remove any default pink accents */
+.text-pink-500,
+.bg-pink-500,
+.border-pink-500,
+.ring-pink-500 {
+    color: var(--primary-500) !important;
+    background-color: var(--primary-500) !important;
+    border-color: var(--primary-500) !important;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-600);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-500);
+}

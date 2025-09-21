@@ -1,3 +1,9 @@
+@php
+    $user = Auth::user();
+    $isAdmin = $user && $user->hasRole('admin');
+    $isAffiliate = $user && $user->hasRole('affiliate');
+@endphp
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -83,6 +89,17 @@
             border-color: #00ff00;
         }
         
+        .btn-logout {
+            border-color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+        }
+        
+        .btn-logout:hover {
+            border-color: #ff6666;
+            box-shadow: 0 10px 25px rgba(255, 68, 68, 0.3);
+            transform: translateY(-5px);
+        }
+        
         .icon {
             font-size: 3em;
             margin-bottom: 15px;
@@ -94,6 +111,10 @@
         
         .btn-affiliate .icon {
             color: #00ff00;
+        }
+        
+        .btn-logout .icon {
+            color: #ff4444;
         }
         
         .btn-title {
@@ -121,17 +142,56 @@
         <p class="subtitle">Escolha o painel que deseja acessar</p>
         
         <div class="buttons">
-            <a href="/admin/login" class="btn btn-admin">
-                <div class="icon">👔</div>
-                <div class="btn-title">Administrador</div>
-                <div class="btn-desc">Painel de gestão completa</div>
-            </a>
-            
-            <a href="/afiliado/login" class="btn btn-affiliate">
-                <div class="icon">🤝</div>
-                <div class="btn-title">Afiliado</div>
-                <div class="btn-desc">Dashboard de afiliados</div>
-            </a>
+            @if($isAdmin)
+                <form method="POST" action="{{ route('logout') }}" class="btn btn-logout" style="display: inline-block;">
+                    @csrf
+                    <div class="icon">🚪</div>
+                    <div class="btn-title">Logout Admin</div>
+                    <div class="btn-desc">Sair do painel administrativo</div>
+                    <button type="submit" style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; padding: 0;">
+                        <div style="display: flex; flex-direction: column; align-items: center; padding: 30px; min-width: 180px;">
+                            <div class="icon">🚪</div>
+                            <div class="btn-title">Logout Admin</div>
+                            <div class="btn-desc">Sair do painel administrativo</div>
+                        </div>
+                    </button>
+                </form>
+                
+                <a href="/admin" class="btn btn-admin">
+                    <div class="icon">👔</div>
+                    <div class="btn-title">Ir para Admin</div>
+                    <div class="btn-desc">Acessar painel de gestão</div>
+                </a>
+            @elseif($isAffiliate)
+                <a href="/afiliado" class="btn btn-affiliate">
+                    <div class="icon">🤝</div>
+                    <div class="btn-title">Ir para Afiliado</div>
+                    <div class="btn-desc">Acessar dashboard de afiliados</div>
+                </a>
+                
+                <form method="POST" action="{{ route('logout') }}" class="btn btn-logout" style="display: inline-block;">
+                    @csrf
+                    <button type="submit" style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; padding: 0;">
+                        <div style="display: flex; flex-direction: column; align-items: center; padding: 30px; min-width: 180px;">
+                            <div class="icon">🚪</div>
+                            <div class="btn-title">Logout</div>
+                            <div class="btn-desc">Sair do painel</div>
+                        </div>
+                    </button>
+                </form>
+            @else
+                <a href="/admin/login" class="btn btn-admin">
+                    <div class="icon">👔</div>
+                    <div class="btn-title">Administrador</div>
+                    <div class="btn-desc">Painel de gestão completa</div>
+                </a>
+                
+                <a href="/afiliado/login" class="btn btn-affiliate">
+                    <div class="icon">🤝</div>
+                    <div class="btn-title">Afiliado</div>
+                    <div class="btn-desc">Dashboard de afiliados</div>
+                </a>
+            @endif
         </div>
     </div>
 </body>

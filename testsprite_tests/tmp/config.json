@@ -1,0 +1,12 @@
+{
+  "status": "init",
+  "executionArgs": {
+    "projectName": "lucrativabet-gpt5codex",
+    "projectPath": "/Users/rkripto/Downloads/lucrativabet-gpt5codex",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-DfWtOz89IwFItnS3mxWjJEeaaog5Em84QGUxI7cG9J0ijD7uOfWgGNE_lExazXxm18JfvCpqAz-pNEu4H65_FEhZyY5BQEycDUpuCwMQY_jXIdJQTHA7PyrU4tTGoSJD7h0"
+    }
+  }
+}

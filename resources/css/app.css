@@ -1,3 +1,149 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Green-Black Casino Theme Restoration - Override All Pink/Rosa */
+body, .dark {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* Override any pink/rosa colors to green-black theme */
+.pink-50, .bg-pink-50, .text-pink-50, .border-pink-50 {
+    background-color: #000000 !important;
+    color: #e5e7eb !important;
+    border-color: #22c55e !important;
+}
+.pink-100, .bg-pink-100, .text-pink-100, .border-pink-100 {
+    background-color: #1a1a1a !important;
+    color: #9ca3af !important;
+    border-color: #16a34a !important;
+}
+.pink-200, .bg-pink-200, .text-pink-200, .border-pink-200 {
+    background-color: #1a1a1a !important;
+    color: #6b7280 !important;
+    border-color: #10b981 !important;
+}
+.pink-300, .bg-pink-300, .text-pink-300, .border-pink-300 {
+    background-color: #111827 !important;
+    color: #4b5563 !important;
+    border-color: #059669 !important;
+}
+.pink-400, .bg-pink-400, .text-pink-400, .border-pink-400 {
+    background-color: #111827 !important;
+    color: #374151 !important;
+    border-color: #047857 !important;
+}
+.pink-500, .bg-pink-500, .text-pink-500, .border-pink-500 {
+    background-color: #22c55e !important;
+    color: #000000 !important;
+    border-color: #16a34a !important;
+}
+.pink-600, .bg-pink-600, .text-pink-600, .border-pink-600 {
+    background-color: #16a34a !important;
+    color: #000000 !important;
+    border-color: #15803d !important;
+}
+.pink-700, .bg-pink-700, .text-pink-700, .border-pink-700 {
+    background-color: #15803d !important;
+    color: #ffffff !important;
+    border-color: #166534 !important;
+}
+.pink-800, .bg-pink-800, .text-pink-800, .border-pink-800 {
+    background-color: #166534 !important;
+    color: #ffffff !important;
+    border-color: #14532d !important;
+}
+.pink-900, .bg-pink-900, .text-pink-900, .border-pink-900 {
+    background-color: #14532d !important;
+    color: #ffffff !important;
+    border-color: #134e4a !important;
+}
+/* Rosa in Portuguese/Spanish */
+.rosa-50, .bg-rosa-50, .text-rosa-50, .border-rosa-50 {
+    background-color: #000000 !important;
+    color: #e5e7eb !important;
+    border-color: #22c55e !important;
+}
+/* Apply similar overrides for rosa-100 to rosa-900 as above */
+
+body.theme-green-black {
+    --casino-bg: #000000;
+    --casino-primary: #22c55e;
+    --casino-secondary: #10b981;
+    --casino-border: #374151;
+    --casino-text: #e5e7eb;
+}
+
+.navbar, .header {
+    background: linear-gradient(to right, #000000, #1a1a1a) !important;
+    border-bottom: 2px solid #22c55e !important;
+}
+
+.casino-section, .main-content, .affiliate-dashboard {
+    background-color: #000000 !important;
+    border: 1px solid #22c55e !important;
+    color: #e5e7eb !important;
+}
+
+.btn-primary, .casino-btn, .copy-button, .btn-affiliate {
+    background-color: #22c55e !important;
+    border-color: #22c55e !important;
+    color: #000000 !important;
+}
+
+.btn-primary:hover, .casino-btn:hover, .copy-button:hover {
+    background-color: #16a34a !important;
+    border-color: #16a34a !important;
+}
+
+.logo-section {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 20px 0 !important;
+}
+
+.logo-section img {
+    max-width: 300px !important;
+    height: auto !important;
+    filter: drop-shadow(0 0 10px #22c55e) !important;
+}
+
+/* Casino Game Cards */
+.game-card, .metric-card, .stat-card {
+    background: linear-gradient(to bottom, #1a1a1a, #000000) !important;
+    border: 1px solid #22c55e !important;
+    box-shadow: 0 4px 6px rgba(34, 197, 94, 0.1) !important;
+}
+
+.game-card:hover, .metric-card:hover {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Footer and Sidebar Adjustments */
+.footer, .sidebar, .affiliate-header {
+    background-color: #1a1a1a !important;
+    border-top: 1px solid #22c55e !important;
+}
+
+/* Ensure dark mode consistency for affiliate */
+.dark .bg-base, .affiliate-dashboard {
+    background-color: #000000 !important;
+}
+
+.dark .text-white, .metric-value {
+    color: #e5e7eb !important;
+}
+
+.dark .border-green-500 {
+    border-color: #22c55e !important;
+}
+
+/* Override Tailwind pink classes for affiliate pages */
+.affiliate-dashboard .bg-pink-*, .affiliate-dashboard .text-pink-*, .affiliate-dashboard .border-pink-* {
+    background-color: #1a1a1a !important;
+    color: #22c55e !important;
+    border-color: #16a34a !important;
+}

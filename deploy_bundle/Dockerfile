@@ -1,0 +1,102 @@
+# syntax=docker/dockerfile:1
+
+##########
+# Composer stage
+##########
+FROM composer:2.7 AS vendor
+WORKDIR /app
+
+# Install PHP dependencies (cached by composer files)
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --no-interaction \
+    --no-progress \
+    --no-autoloader \
+    --no-scripts \
+    --ignore-platform-req=ext-intl
+
+# Copy the remainder of the application code and re-run install to ensure autoload is up to date
+COPY . .
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs \
+    && composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --prefer-dist \
+    --no-interaction \
+    --no-progress \
+    --no-scripts \
+    --ignore-platform-req=ext-intl
+
+##########
+# Production stage
+##########
+FROM php:8.2-fpm-alpine AS production
+WORKDIR /app
+
+# Install system packages and PHP extensions required by the application
+RUN apk add --no-cache \
+        bash \
+        curl \
+        git \
+        gettext \
+        mysql-client \
+        nginx \
+        supervisor \
+        tzdata \
+        xz \
+        icu-dev \
+        libzip-dev \
+        libxml2-dev \
+        oniguruma-dev \
+        zip \
+        unzip \
+    && apk add --no-cache --virtual .build-deps \
+        autoconf \
+        g++ \
+        make \
+        libtool \
+        pkgconf \
+    && docker-php-ext-install \
+        bcmath \
+        intl \
+        pcntl \
+        pdo_mysql \
+        zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apk del .build-deps
+
+# Copy application code (including pre-built public assets)
+COPY --from=vendor /app /app
+RUN chmod 644 /app/composer.json /app/composer.lock
+
+# Copy runtime configuration assets
+COPY deploy/nginx.conf.template /app/docker/nginx.conf.template
+COPY deploy/supervisord.conf /app/docker/supervisord.conf
+COPY deploy/entrypoint.sh /app/docker/entrypoint.sh
+COPY php-optimization.ini /usr/local/etc/php/conf.d/zz-php-optimization.ini
+RUN chmod +x /app/docker/entrypoint.sh
+
+# Prepare storage directories
+RUN mkdir -p \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+    && touch storage/logs/laravel.log \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+ENV PORT=8080
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV APP_ROLE=web
+
+# Ensure nginx directories exist
+RUN mkdir -p /run/nginx /etc/nginx/http.d
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/docker/entrypoint.sh"]

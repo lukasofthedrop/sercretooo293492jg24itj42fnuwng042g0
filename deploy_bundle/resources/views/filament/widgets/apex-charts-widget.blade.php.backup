@@ -1,0 +1,559 @@
+<x-filament-widgets::widget>
+    <x-filament::section>
+        <!-- Filtros de Período -->
+        <div class="mb-6 flex justify-center gap-2 flex-wrap">
+            <button data-period="today" id="filter-today" class="filter-btn px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30 hover:bg-green-500/30 transition-all duration-300">
+                📅 HOJE
+            </button>
+            <button data-period="yesterday" id="filter-yesterday" class="filter-btn px-4 py-2 bg-gray-800/50 text-gray-400 rounded-lg border border-gray-600/30 hover:bg-green-500/30 hover:text-green-400 hover:border-green-500/30 transition-all duration-300">
+                📆 ONTEM
+            </button>
+            <button data-period="week" id="filter-week" class="filter-btn px-4 py-2 bg-gray-800/50 text-gray-400 rounded-lg border border-gray-600/30 hover:bg-green-500/30 hover:text-green-400 hover:border-green-500/30 transition-all duration-300">
+                📊 ÚLTIMA SEMANA
+            </button>
+            <button data-period="month" id="filter-month" class="filter-btn px-4 py-2 bg-gray-800/50 text-gray-400 rounded-lg border border-gray-600/30 hover:bg-green-500/30 hover:text-green-400 hover:border-green-500/30 transition-all duration-300">
+                📈 ÚLTIMO MÊS
+            </button>
+        </div>
+        
+        <!-- Cards de Estatísticas Rápidas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gradient-to-br from-green-500/20 to-green-700/20 rounded-lg p-4 border border-green-500/30">
+                <div class="text-green-400 text-sm font-semibold">💰 TOTAL DEPÓSITOS</div>
+                <div class="text-white text-2xl font-bold mt-2" id="stat-deposits">R$ 0,00</div>
+                <div class="text-green-400 text-xs mt-1">↑ <span id="stat-deposits-change">0%</span></div>
+            </div>
+            <div class="bg-gradient-to-br from-blue-500/20 to-blue-700/20 rounded-lg p-4 border border-blue-500/30">
+                <div class="text-blue-400 text-sm font-semibold">👥 NOVOS USUÁRIOS</div>
+                <div class="text-white text-2xl font-bold mt-2" id="stat-users">0</div>
+                <div class="text-blue-400 text-xs mt-1">↑ <span id="stat-users-change">0%</span></div>
+            </div>
+            <div class="bg-gradient-to-br from-yellow-500/20 to-yellow-700/20 rounded-lg p-4 border border-yellow-500/30">
+                <div class="text-yellow-400 text-sm font-semibold">🎮 TOTAL APOSTAS</div>
+                <div class="text-white text-2xl font-bold mt-2" id="stat-bets">0</div>
+                <div class="text-yellow-400 text-xs mt-1">↑ <span id="stat-bets-change">0%</span></div>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500/20 to-purple-700/20 rounded-lg p-4 border border-purple-500/30">
+                <div class="text-purple-400 text-sm font-semibold">📊 LUCRO LÍQUIDO</div>
+                <div class="text-white text-2xl font-bold mt-2" id="stat-profit">R$ 0,00</div>
+                <div class="text-purple-400 text-xs mt-1">↑ <span id="stat-profit-change">0%</span></div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Gráfico de Depósitos -->
+            <div class="bg-black/50 rounded-lg p-4 border border-green-500/30">
+                <h3 class="text-green-400 font-bold mb-4">📈 DEPÓSITOS <span id="deposits-period" class="text-xs text-gray-400">(HOJE)</span></h3>
+                <div id="deposits-chart" style="min-height: 350px;"></div>
+            </div>
+            
+            <!-- Gráfico de Usuários -->
+            <div class="bg-black/50 rounded-lg p-4 border border-green-500/30">
+                <h3 class="text-green-400 font-bold mb-4">👥 NOVOS USUÁRIOS <span id="users-period" class="text-xs text-gray-400">(HOJE)</span></h3>
+                <div id="users-chart" style="min-height: 350px;"></div>
+            </div>
+            
+            <!-- Gráfico de Jogos -->
+            <div class="bg-black/50 rounded-lg p-4 border border-green-500/30">
+                <h3 class="text-green-400 font-bold mb-4">🎮 TOP JOGOS <span id="games-period" class="text-xs text-gray-400">(HOJE)</span></h3>
+                <div id="games-donut-chart" style="min-height: 380px;"></div>
+            </div>
+            
+            <!-- Gráfico de Receita -->
+            <div class="bg-black/50 rounded-lg p-4 border border-green-500/30">
+                <h3 class="text-green-400 font-bold mb-4">💰 RECEITA VS LUCRO <span id="revenue-period" class="text-xs text-gray-400">(HOJE)</span></h3>
+                <div id="revenue-chart" style="min-height: 350px;"></div>
+            </div>
+        </div>
+        
+        <link href="{{ asset('build/assets/dashboard-lucrativa-2d5cbd0a.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/assets/dashboard-spacing-fix-f075044a.css') }}" rel="stylesheet">
+        <link href="{{ asset('build/assets/modals-fix-0d15d0c2.css') }}" rel="stylesheet">
+        <script src="{{ asset('build/assets/dashboard-charts-b6b2d9ff.js') }}" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js"></script>
+        
+        <script>
+        // Variáveis globais para gerenciar os gráficos
+        let currentPeriod = 'today';
+        let charts = {};
+        
+        // Função para mudar período
+        function changePeriod(period) {
+            currentPeriod = period;
+            updateFilterButtons(period);
+            loadDashboardData(period);
+        }
+        
+        // Adicionar event listeners para os botões de filtro
+        function initFilterButtons() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const period = this.getAttribute('data-period');
+                    changePeriod(period);
+                });
+            });
+        }
+        
+        // Atualizar visual dos botões de filtro
+        function updateFilterButtons(activePeriod) {
+            const buttons = ['today', 'yesterday', 'week', 'month'];
+            buttons.forEach(btn => {
+                const element = document.getElementById(`filter-${btn}`);
+                if (btn === activePeriod) {
+                    element.className = 'px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30 hover:bg-green-500/30 transition-all duration-300';
+                } else {
+                    element.className = 'px-4 py-2 bg-gray-800/50 text-gray-400 rounded-lg border border-gray-600/30 hover:bg-green-500/30 hover:text-green-400 hover:border-green-500/30 transition-all duration-300';
+                }
+            });
+            
+            // Atualizar labels dos períodos
+            const periodText = {
+                'today': 'HOJE',
+                'yesterday': 'ONTEM', 
+                'week': 'ÚLTIMA SEMANA',
+                'month': 'ÚLTIMO MÊS'
+            };
+            
+            document.getElementById('deposits-period').textContent = `(${periodText[activePeriod]})`;
+            document.getElementById('users-period').textContent = `(${periodText[activePeriod]})`;
+            document.getElementById('games-period').textContent = `(${periodText[activePeriod]})`;
+            document.getElementById('revenue-period').textContent = `(${periodText[activePeriod]})`;
+        }
+        
+        // Sistema de inicialização robusto
+        function initDashboard() {
+            // Garantir que as funções globais existam
+            if (typeof window.changePeriod === 'undefined') {
+                console.log('Criando funções JavaScript de fallback...');
+                
+                // Variáveis globais
+                window.currentPeriod = 'today';
+                window.charts = {};
+                
+                // Função updateFilterButtons
+                window.updateFilterButtons = function(activePeriod) {
+                    const buttons = ['today', 'yesterday', 'week', 'month'];
+                    buttons.forEach(btn => {
+                        const element = document.getElementById(`filter-${btn}`);
+                        if (element) {
+                            if (btn === activePeriod) {
+                                element.className = 'px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30 hover:bg-green-500/30 transition-all duration-300';
+                            } else {
+                                element.className = 'px-4 py-2 bg-gray-800/50 text-gray-400 rounded-lg border border-gray-600/30 hover:bg-green-500/30 hover:text-green-400 hover:border-green-500/30 transition-all duration-300';
+                            }
+                        }
+                    });
+                    
+                    // Atualizar labels dos períodos
+                    const periodText = {
+                        'today': 'HOJE',
+                        'yesterday': 'ONTEM', 
+                        'week': 'ÚLTIMA SEMANA',
+                        'month': 'ÚLTIMO MÊS'
+                    };
+                    
+                    const depositsLabel = document.getElementById('deposits-period');
+                    const usersLabel = document.getElementById('users-period');
+                    const gamesLabel = document.getElementById('games-period');
+                    const revenueLabel = document.getElementById('revenue-period');
+                    
+                    if (depositsLabel) depositsLabel.textContent = `(${periodText[activePeriod]})`;
+                    if (usersLabel) usersLabel.textContent = `(${periodText[activePeriod]})`;
+                    if (gamesLabel) gamesLabel.textContent = `(${periodText[activePeriod]})`;
+                    if (revenueLabel) revenueLabel.textContent = `(${periodText[activePeriod]})`;
+                    
+                    console.log(`Labels atualizados para: ${periodText[activePeriod]}`);
+                };
+                
+                // Função changePeriod
+                window.changePeriod = function(period) {
+                    window.currentPeriod = period;
+                    console.log(`Mudando período para: ${period}`);
+                    window.updateFilterButtons(period);
+                    if (typeof loadDashboardData !== 'undefined') {
+                        loadDashboardData(period);
+                    }
+                };
+            }
+            
+            // Inicializar filtros
+            initFilterButtons();
+            
+            // Carregar dados
+            if (typeof loadDashboardData !== 'undefined') {
+                loadDashboardData('today');
+            }
+        }
+        
+        // Carregar ApexCharts dinamicamente
+        if (typeof window.ApexCharts === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js';
+            script.onload = function() {
+                console.log('ApexCharts carregado com sucesso');
+                setTimeout(initDashboard, 100);
+            };
+            script.onerror = function() {
+                console.error('Erro ao carregar ApexCharts do CDN - inicializando sem gráficos');
+                setTimeout(initDashboard, 100);
+            };
+            document.head.appendChild(script);
+        } else {
+            console.log('ApexCharts já estava carregado');
+            setTimeout(initDashboard, 100);
+        }
+        
+        function loadDashboardData(period) {
+            console.log('Carregando dados para período:', period);
+            if (typeof ApexCharts === 'undefined') {
+                console.error('ApexCharts ainda não está disponível');
+                return;
+            }
+            
+            // Buscar dados da API com período
+            fetch(`/api/admin/dashboard-metrics?period=${period}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                console.log('Resposta da API:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Dados recebidos:', data);
+                
+                // Atualizar estatísticas
+                if (data.stats) {
+                    document.getElementById('stat-deposits').textContent = formatCurrency(data.stats.total_deposits);
+                    document.getElementById('stat-deposits-change').textContent = formatPercentChange(data.stats.total_deposits_change);
+                    document.getElementById('stat-users').textContent = data.stats.total_users;
+                    document.getElementById('stat-users-change').textContent = formatPercentChange(data.stats.total_users_change);
+                    document.getElementById('stat-bets').textContent = data.stats.total_bets;
+                    document.getElementById('stat-bets-change').textContent = formatPercentChange(data.stats.total_bets_change);
+                    document.getElementById('stat-profit').textContent = formatCurrency(data.stats.total_profit);
+                    document.getElementById('stat-profit-change').textContent = formatPercentChange(data.stats.total_profit_change);
+                }
+                
+                // Destruir gráficos anteriores se existirem
+                if (charts.deposits) charts.deposits.destroy();
+                if (charts.users) charts.users.destroy();
+                if (charts.games) charts.games.destroy();
+                if (charts.revenue) charts.revenue.destroy();
+                
+                // Gráfico de Depósitos
+                if (document.querySelector('#deposits-chart')) {
+                        const depositOptions = {
+                            series: [{
+                                name: 'Depósitos',
+                                data: data.deposits || []
+                            }],
+                            chart: {
+                                type: 'area',
+                                height: 350,
+                                background: 'transparent',
+                                toolbar: { show: false },
+                                animations: {
+                                    enabled: true,
+                                    easing: 'easeinout',
+                                    speed: 800
+                                }
+                            },
+                            colors: ['#22c55e'],
+                            fill: {
+                                type: 'gradient',
+                                gradient: {
+                                    shadeIntensity: 1,
+                                    opacityFrom: 0.7,
+                                    opacityTo: 0.2,
+                                    stops: [0, 90, 100]
+                                }
+                            },
+                            stroke: {
+                                curve: 'smooth',
+                                width: 3
+                            },
+                            xaxis: { 
+                                type: 'datetime',
+                                labels: {
+                                    style: {
+                                        colors: '#9ca3af'
+                                    }
+                                }
+                            },
+                            yaxis: {
+                                labels: {
+                                    style: {
+                                        colors: '#9ca3af'
+                                    },
+                                    formatter: (value) => 'R$ ' + value.toFixed(2)
+                                }
+                            },
+                            tooltip: {
+                                theme: 'dark',
+                                y: {
+                                    formatter: (value) => 'R$ ' + value.toFixed(2)
+                                }
+                            },
+                            grid: {
+                                borderColor: 'rgba(34, 197, 94, 0.1)',
+                                strokeDashArray: 4
+                            },
+                            theme: { mode: 'dark' }
+                        };
+                        charts.deposits = new ApexCharts(document.querySelector('#deposits-chart'), depositOptions);
+                        charts.deposits.render();
+                    }
+                    
+                    // Gráfico de Usuários
+                    if (document.querySelector('#users-chart')) {
+                        const userOptions = {
+                            series: [{
+                                name: 'Novos Usuários',
+                                data: data.users?.data || []
+                            }],
+                            chart: {
+                                type: 'line',
+                                height: 350,
+                                background: 'transparent',
+                                toolbar: { show: false }
+                            },
+                            colors: ['#00ff41'],
+                            stroke: {
+                                width: 3,
+                                curve: 'smooth'
+                            },
+                            markers: {
+                                size: 4,
+                                colors: ['#00ff41'],
+                                strokeColors: '#0a0a0a',
+                                strokeWidth: 2,
+                                hover: { size: 7 }
+                            },
+                            xaxis: {
+                                categories: data.users?.labels || [],
+                                labels: {
+                                    style: {
+                                        colors: '#9ca3af'
+                                    }
+                                }
+                            },
+                            yaxis: {
+                                title: {
+                                    text: 'Usuários',
+                                    style: {
+                                        color: '#22c55e'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        colors: '#9ca3af'
+                                    }
+                                }
+                            },
+                            tooltip: { theme: 'dark' },
+                            grid: {
+                                borderColor: 'rgba(34, 197, 94, 0.1)'
+                            },
+                            theme: { mode: 'dark' }
+                        };
+                        charts.users = new ApexCharts(document.querySelector('#users-chart'), userOptions);
+                        charts.users.render();
+                    }
+                    
+                    // Gráfico Donut
+                    if (document.querySelector('#games-donut-chart') && data.games?.data && data.games.data.length > 0) {
+                        const gamesOptions = {
+                            series: data.games.data,
+                            labels: data.games.labels,
+                            chart: {
+                                type: 'donut',
+                                height: 380,
+                                background: 'transparent'
+                            },
+                            colors: ['#22c55e', '#00ff41', '#ff6b35', '#4dabf7', '#ffd43b'],
+                            plotOptions: {
+                                pie: {
+                                    donut: {
+                                        size: '70%',
+                                        labels: {
+                                            show: true,
+                                            name: {
+                                                show: true,
+                                                fontSize: '16px',
+                                                fontWeight: 600,
+                                                color: '#ffffff'
+                                            },
+                                            value: {
+                                                show: true,
+                                                fontSize: '24px',
+                                                fontWeight: 900,
+                                                color: '#22c55e',
+                                                formatter: (val) => val + ' apostas'
+                                            },
+                                            total: {
+                                                show: true,
+                                                showAlways: true,
+                                                label: 'Total',
+                                                fontSize: '14px',
+                                                color: '#9ca3af',
+                                                formatter: (w) => {
+                                                    const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                                    return total + ' apostas';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            dataLabels: { enabled: false },
+                            stroke: {
+                                width: 2,
+                                colors: ['#0a0a0a']
+                            },
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    colors: '#ffffff'
+                                }
+                            },
+                            tooltip: {
+                                theme: 'dark',
+                                y: {
+                                    formatter: (val) => val + ' apostas'
+                                }
+                            },
+                            theme: { mode: 'dark' }
+                        };
+                        charts.games = new ApexCharts(document.querySelector('#games-donut-chart'), gamesOptions);
+                        charts.games.render();
+                    } else if (document.querySelector('#games-donut-chart')) {
+                        // Placeholder quando não há dados
+                        document.querySelector('#games-donut-chart').innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 380px; color: #9ca3af;">Aguardando dados de jogos...</div>';
+                    }
+                    
+                    // Gráfico de Receita
+                    if (document.querySelector('#revenue-chart')) {
+                        const revenueOptions = {
+                            series: [{
+                                name: 'Receita',
+                                data: data.revenue?.receita || []
+                            }, {
+                                name: 'Lucro',
+                                data: data.revenue?.lucro || []
+                            }],
+                            chart: {
+                                type: 'bar',
+                                height: 350,
+                                background: 'transparent',
+                                toolbar: { show: false }
+                            },
+                            colors: ['#22c55e', '#00ff41'],
+                            plotOptions: {
+                                bar: {
+                                    horizontal: false,
+                                    columnWidth: '55%',
+                                    borderRadius: 8
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                formatter: (val) => 'R$ ' + val,
+                                offsetY: -20,
+                                style: {
+                                    fontSize: '12px',
+                                    colors: ['#22c55e']
+                                }
+                            },
+                            stroke: {
+                                show: true,
+                                width: 2,
+                                colors: ['transparent']
+                            },
+                            xaxis: {
+                                categories: data.revenue?.labels || [],
+                                labels: {
+                                    style: {
+                                        colors: '#9ca3af'
+                                    }
+                                }
+                            },
+                            yaxis: {
+                                title: {
+                                    text: 'R$ (Reais)',
+                                    style: {
+                                        color: '#22c55e'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        colors: '#9ca3af'
+                                    },
+                                    formatter: (val) => 'R$ ' + val
+                                }
+                            },
+                            fill: {
+                                type: 'gradient',
+                                gradient: {
+                                    shade: 'light',
+                                    type: 'vertical',
+                                    shadeIntensity: 0.5,
+                                    opacityFrom: 0.9,
+                                    opacityTo: 0.5
+                                }
+                            },
+                            tooltip: {
+                                theme: 'dark',
+                                y: {
+                                    formatter: (val) => 'R$ ' + val
+                                }
+                            },
+                            grid: {
+                                borderColor: 'rgba(34, 197, 94, 0.1)'
+                            },
+                            theme: { mode: 'dark' }
+                        };
+                        charts.revenue = new ApexCharts(document.querySelector('#revenue-chart'), revenueOptions);
+                        charts.revenue.render();
+                    }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar dados:', error);
+                // Mostrar erro no console com mais detalhes
+                if (error.message) {
+                    console.error('Mensagem de erro:', error.message);
+                }
+            });
+        }
+        
+        
+        // Funções auxiliares de formatação
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value || 0);
+        }
+        
+        function formatPercentChange(value) {
+            const arrow = value >= 0 ? '↑' : '↓';
+            const color = value >= 0 ? 'green' : 'red';
+            return `${Math.abs(value)}%`;
+        }
+        
+        // Atualizar a cada 30 segundos
+        setInterval(function() {
+            if (typeof window.ApexCharts !== 'undefined') {
+                loadDashboardData(currentPeriod);
+            }
+        }, 30000);
+        </script>
+    </x-filament::section>
+</x-filament-widgets::widget>

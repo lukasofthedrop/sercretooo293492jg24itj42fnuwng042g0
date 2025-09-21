@@ -1,0 +1,187 @@
+{
+  "name": "Auth - Login",
+  "nodes": [
+    {
+      "id": "Webhook_Login",
+      "name": "Webhook Login",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {
+        "path": "api/auth/login",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "responseData": "={{$json}}"
+        }
+      }
+    },
+    {
+      "id": "Validate_Payload",
+      "name": "Validate Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [220, 0],
+      "parameters": {
+        "functionCode": "const body = $json.body;\nif (!body || typeof body.email !== 'string' || typeof body.password !== 'string') {\n  throw new Error('Email e senha são obrigatórios.');\n}\nreturn [{ json: { email: body.email.trim().toLowerCase(), password: body.password } }];"
+      }
+    },
+    {
+      "id": "Get_User",
+      "name": "Get User",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [440, 0],
+      "credentials": {
+        "mySql": {
+          "id": "={{$env.RAILWAY_SERVICE_ID}}",
+          "name": "Railway-MySQL"
+        }
+      },
+      "parameters": {
+        "operation": "query",
+        "query": "SELECT id, name, email, password, inviter_code, created_at FROM users WHERE email = :email LIMIT 1",
+        "additionalFields": {
+          "queryParameters": [
+            {
+              "name": "email",
+              "value": "={{$json.email}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "Verify_Password",
+      "name": "Verify Password",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [660, 0],
+      "parameters": {
+        "functionCode": "const bcrypt = require('bcryptjs');\nconst rows = items[0].json;\nif (!Array.isArray(rows) || rows.length === 0) {\n  throw new Error('Credenciais inválidas.');\n}\nconst user = rows[0];\nconst password = $json.password;\nconst ok = await bcrypt.compare(password, user.password);\nif (!ok) {\n  throw new Error('Credenciais inválidas.');\n}\nreturn [{ json: { user } }];"
+      }
+    },
+    {
+      "id": "Update_Last_Login",
+      "name": "Update Last Login",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [860, 0],
+      "credentials": {
+        "mySql": {
+          "id": "={{$env.RAILWAY_SERVICE_ID}}",
+          "name": "Railway-MySQL"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE users SET last_login_at = NOW() WHERE id = :id",
+        "additionalFields": {
+          "queryParameters": [
+            {
+              "name": "id",
+              "value": "={{$json.user.id}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "Generate_Tokens",
+      "name": "Generate Tokens",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1080, 0],
+      "parameters": {
+        "functionCode": "const jwt = require('jsonwebtoken');\nconst user = $json.user;\nconst secret = $env.JWT_SECRET;\nif (!secret) {\n  throw new Error('JWT_SECRET não configurado.');\n}\nconst payload = { id: user.id, email: user.email, name: user.name };\nconst accessToken = jwt.sign(payload, secret, { expiresIn: '1h' });\nconst refreshToken = jwt.sign({ id: user.id }, secret, { expiresIn: '30d' });\nreturn [{ json: {\n  token_type: 'Bearer',\n  access_token: accessToken,\n  refresh_token: refreshToken,\n  expires_in: 3600,\n  user: {\n    id: user.id,\n    name: user.name,\n    email: user.email,\n    inviter_code: user.inviter_code\n  }\n} }];"
+      }
+    },
+    {
+      "id": "HTTP_Response",
+      "name": "HTTP Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1300, 0],
+      "parameters": {
+        "responseBody": "={{$json}}",
+        "responseCode": 200
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Login": {
+      "main": [
+        [
+          {
+            "node": "Validate Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Payload": {
+      "main": [
+        [
+          {
+            "node": "Get User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User": {
+      "main": [
+        [
+          {
+            "node": "Verify Password",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Password": {
+      "main": [
+        [
+          {
+            "node": "Update Last Login",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Last Login": {
+      "main": [
+        [
+          {
+            "node": "Generate Tokens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Tokens": {
+      "main": [
+        [
+          {
+            "node": "HTTP Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveManualExecutions": true,
+    "timezone": "America/Sao_Paulo"
+  },
+  "staticData": {
+    "connections": {}
+  },
+  "pinData": {}
+}

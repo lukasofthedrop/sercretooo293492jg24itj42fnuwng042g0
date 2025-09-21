@@ -1,0 +1,35 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/css/dashboard-lucrativa.css": {
+    "file": "assets/dashboard-lucrativa.css",
+    "isEntry": true,
+    "src": "resources/css/dashboard-lucrativa.css"
+  },
+  "resources/css/dashboard-spacing-fix.css": {
+    "file": "assets/dashboard-spacing-fix.css",
+    "isEntry": true,
+    "src": "resources/css/dashboard-spacing-fix.css"
+  },
+  "resources/css/modals-fix.css": {
+    "file": "assets/modals-fix.css",
+    "isEntry": true,
+    "src": "resources/css/modals-fix.css"
+  },
+  "resources/js/app.js": {
+    "css": [
+      "assets/app.css"
+    ],
+    "file": "assets/app.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/dashboard-charts.js": {
+    "file": "assets/dashboard-charts.js",
+    "isEntry": true,
+    "src": "resources/js/dashboard-charts.js"
+  }
+}

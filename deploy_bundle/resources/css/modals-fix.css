@@ -1,0 +1,315 @@
+/* ========================================
+   CORREÇÕES VISUAIS - MANTENDO IDENTIDADE LUCRATIVABET
+   Apenas correções de espaçamento e bugs
+   MANTÉM O DESIGN ORIGINAL
+   ======================================== */
+
+/* CORREÇÃO DE ESPAÇAMENTOS DOS MODAIS EXISTENTES */
+.modal-ranking-detalhes,
+.modal-games-detalhes,
+.matrix-modal-backdrop {
+    /* Mantém o fundo escuro original */
+    background: rgba(0, 0, 0, 0.95) !important;
+}
+
+/* MANTÉM O CONTAINER ORIGINAL COM PEQUENOS AJUSTES */
+.matrix-container {
+    /* Mantém o fundo preto com sutil gradiente */
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%) !important;
+    /* Mantém borda verde fina */
+    border: 1px solid #00ff41 !important;
+    border-radius: 8px !important;
+    /* Correção de espaçamento */
+    padding: 20px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    /* Sutil sombra verde */
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2) !important;
+}
+
+/* HEADER - MANTÉM ESTILO ORIGINAL COM AJUSTES */
+.matrix-header {
+    /* Mantém fundo preto com leve transparência verde */
+    background: rgba(0, 255, 65, 0.05) !important;
+    border-bottom: 1px solid #00ff41 !important;
+    padding: 15px 20px !important;
+    margin-bottom: 20px !important;
+}
+
+.matrix-title {
+    /* Mantém cor verde original */
+    color: #00ff41 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    /* Remove sombras exageradas */
+    text-shadow: none !important;
+}
+
+/* BOTÃO FECHAR - ESTILO ORIGINAL MELHORADO */
+.matrix-close {
+    background: transparent !important;
+    border: 1px solid #00ff41 !important;
+    color: #00ff41 !important;
+    padding: 6px 12px !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    transition: all 0.2s ease !important;
+}
+
+.matrix-close:hover {
+    background: rgba(0, 255, 65, 0.1) !important;
+    border-color: #00ff41 !important;
+}
+
+/* SEÇÕES - MANTÉM ESTILO MINIMALISTA */
+.matrix-section {
+    background: rgba(0, 255, 65, 0.02) !important;
+    border: 1px solid rgba(0, 255, 65, 0.2) !important;
+    border-radius: 6px !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+}
+
+.matrix-section-title {
+    color: #00ff41 !important;
+    font-size: 16px !important;
+    margin-bottom: 15px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.1) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* CORREÇÃO DAS LINHAS DE USUÁRIOS */
+.matrix-user-row {
+    background: transparent !important;
+    border: 1px solid rgba(0, 255, 65, 0.1) !important;
+    border-radius: 4px !important;
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.matrix-user-row:hover {
+    background: rgba(0, 255, 65, 0.03) !important;
+    border-color: rgba(0, 255, 65, 0.3) !important;
+}
+
+/* BADGES DE RANKING - ESTILO SUTIL */
+.matrix-rank-badge {
+    background: rgba(0, 255, 65, 0.1) !important;
+    border: 1px solid #00ff41 !important;
+    color: #00ff41 !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+/* VALORES - MANTÉM COR VERDE */
+.matrix-amount {
+    color: #00ff41 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+/* TEXTOS SECUNDÁRIOS */
+.matrix-user-row .text-green-300 {
+    color: rgba(0, 255, 65, 0.7) !important;
+    font-size: 12px !important;
+}
+
+/* CORREÇÃO DO GRÁFICO */
+.matrix-section canvas {
+    max-height: 300px !important;
+}
+
+/* SCROLLBAR SUTIL */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 65, 0.5) !important;
+    border-radius: 3px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 65, 0.7) !important;
+}
+
+/* CORREÇÃO DE ESPAÇAMENTOS GERAIS */
+.modal-content-grid {
+    gap: 20px !important;
+}
+
+/* FOOTER DO MODAL - ESTILO MINIMALISTA */
+.modal-footer,
+.matrix-footer {
+    margin-top: 20px !important;
+    padding-top: 15px !important;
+    border-top: 1px solid rgba(0, 255, 65, 0.1) !important;
+    text-align: center !important;
+}
+
+.modal-footer * {
+    color: rgba(0, 255, 65, 0.6) !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* REMOVE ANIMAÇÕES EXAGERADAS */
+@keyframes subtle-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.matrix-modal-backdrop {
+    animation: subtle-fade 0.2s ease !important;
+}
+
+.matrix-container {
+    animation: subtle-fade 0.3s ease !important;
+}
+
+/* AJUSTES PARA MODAL DE JOGOS */
+.lucrativa-modal-container {
+    background: #000000 !important;
+    border: 1px solid #00ff41 !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+}
+
+.lucrativa-modal-header {
+    background: rgba(0, 255, 65, 0.05) !important;
+    border-bottom: 1px solid #00ff41 !important;
+    padding: 15px 20px !important;
+}
+
+.lucrativa-modal-title {
+    color: #00ff41 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+.lucrativa-modal-close {
+    background: transparent !important;
+    border: 1px solid #00ff41 !important;
+    color: #00ff41 !important;
+    padding: 6px 12px !important;
+    border-radius: 4px !important;
+}
+
+.lucrativa-modal-close:hover {
+    background: rgba(0, 255, 65, 0.1) !important;
+}
+
+.lucrativa-game-row {
+    background: transparent !important;
+    border: 1px solid rgba(0, 255, 65, 0.1) !important;
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+    border-radius: 4px !important;
+}
+
+.lucrativa-game-row:hover {
+    background: rgba(0, 255, 65, 0.03) !important;
+    border-color: rgba(0, 255, 65, 0.3) !important;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+    .matrix-container {
+        width: 95% !important;
+        margin: 10px !important;
+        padding: 15px !important;
+    }
+    
+    .matrix-header {
+        padding: 10px 15px !important;
+    }
+    
+    .matrix-title {
+        font-size: 16px !important;
+    }
+}
+
+/* CORREÇÃO DE Z-INDEX */
+.matrix-modal-backdrop {
+    z-index: 9999 !important;
+}
+
+.matrix-container {
+    z-index: 10000 !important;
+}
+
+/* REMOVER EFEITOS DESNECESSÁRIOS */
+.matrix-container::before,
+.matrix-section::before,
+.lucrativa-modal-header::before {
+    display: none !important;
+}
+
+/* MANTER CORES CONSISTENTES */
+* {
+    --lucrativa-green: #00ff41;
+    --lucrativa-green-dark: #00cc33;
+    --lucrativa-bg: #000000;
+    --lucrativa-bg-alt: #0a0a0a;
+}
+
+/* CORREÇÃO DE OVERFLOW */
+.matrix-section {
+    overflow: visible !important;
+}
+
+.matrix-user-row {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* AJUSTE DE TIPOGRAFIA */
+.matrix-container * {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* CORREÇÃO DE ALINHAMENTO */
+.flex.items-center.justify-between {
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.flex.items-center {
+    align-items: center !important;
+}
+
+/* CORREÇÃO DE PADDING E MARGIN */
+.p-0 { padding: 0 !important; }
+.p-1 { padding: 0.25rem !important; }
+.p-2 { padding: 0.5rem !important; }
+.p-3 { padding: 0.75rem !important; }
+.p-4 { padding: 1rem !important; }
+.p-5 { padding: 1.25rem !important; }
+
+.m-0 { margin: 0 !important; }
+.mb-2 { margin-bottom: 0.5rem !important; }
+.mb-3 { margin-bottom: 0.75rem !important; }
+.mb-4 { margin-bottom: 1rem !important; }
+
+/* CORREÇÃO FINAL - LIMPAR ESTILOS CONFLITANTES */
+.matrix-modal-backdrop * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-text-stroke: 0 !important;
+}
