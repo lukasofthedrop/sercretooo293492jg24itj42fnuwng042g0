@@ -6,11 +6,21 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class TestUsersSeeder extends Seeder
 {
     public function run(): void
     {
+        try {
+            // Test DB connection before proceeding
+            DB::connection()->getPdo();
+            $this->command->info('Database connection successful at ' . now());
+        } catch (\Exception $e) {
+            $this->command->error('Database connection failed at ' . now() . ': ' . $e->getMessage());
+            return; // Stop seeder if connection fails
+        }
+
         // Delete existing test users if any
         User::whereIn('email', [
             'admin@lucrativa.bet',
