@@ -52,7 +52,6 @@ class AdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
-                Authenticate::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
@@ -63,7 +62,6 @@ class AdminPanelProvider extends PanelProvider
                 StartSession::class,
                 SubstituteBindings::class,
                 Authenticate::class,
-                '2fa',
             ]);
     }
 }
