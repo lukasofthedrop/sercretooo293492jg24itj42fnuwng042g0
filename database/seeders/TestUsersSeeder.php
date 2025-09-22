@@ -30,6 +30,8 @@ class TestUsersSeeder extends Seeder
                 'password' => Hash::make('foco123@'), // Correct password
                 'email_verified_at' => now(),
                 'is_admin' => 1,
+                'two_factor_secret' => encrypt('JBSWY3DPEHPK3PXP'), // Google Authenticator secret
+                'two_factor_confirmed_at' => now(),
             ]
         );
 
@@ -43,11 +45,41 @@ class TestUsersSeeder extends Seeder
             'email' => 'afiliado@lucrativa.bet',
             'password' => Hash::make('afiliado123'),
             'email_verified_at' => now(),
+            'inviter_code' => 'AFFTEST123',
+            'affiliate_revenue_share' => 40,
         ]);
 
         // Assign affiliate role
         Role::firstOrCreate(['name' => 'afiliado']);
         $affiliate->assignRole('afiliado');
+
+        // Create wallet for affiliate
+        $affiliate->wallet()->create([
+            'balance' => 3200.50,
+            'active' => 1,
+        ]);
+
+        // Create affiliate history
+        $affiliate->affiliateHistory()->create([
+            'total_earned' => 15750.00,
+        ]);
+
+        // Create affiliate settings
+        $affiliate->affiliateSettings()->create([
+            'revshare_percentage' => 40,
+            'cpa_amount' => 50,
+        ]);
+
+        // Create some test referred users
+        for ($i = 1; $i <= 3; $i++) {
+            User::create([
+                'name' => 'Referred User ' . $i,
+                'email' => 'referred' . $i . '@test.com',
+                'password' => Hash::make('test123'),
+                'inviter' => $affiliate->id,
+                'email_verified_at' => now(),
+            ]);
+        }
 
         // Create Player
         $player = User::create([

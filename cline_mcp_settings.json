@@ -1,0 +1,118 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "autoApprove": [
+        "read_multiple_files"
+      ],
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/rkripto/Downloads/lucrativabet-gpt5codex"
+      ]
+    },
+    "github": {
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
+    },
+    "playwright": {
+      "autoApprove": [
+        "browser_navigate",
+        "browser_type"
+      ],
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp"
+      ]
+    },
+    "server-memory": {
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "memory-bank": {
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@aakarsh-sasi/memory-bank-mcp"
+      ],
+      "env": {
+        "MEMORY_BANK_PATH": "/Users/rkripto/Downloads/lucrativabet-1-1/.memory-bank"
+      }
+    },
+    "contextual-memory": {
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@peakmojo/mcp-openmemory"
+      ]
+    },
+    "brave-search": {
+      "autoApprove": [
+        "brave_web_search"
+      ],
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "opcional"
+      },
+      "disabled": true
+    },
+    "sequential-thinking": {
+      "disabled": true,
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "everything": {
+      "disabled": true,
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ]
+    },
+    "railway": {
+      "autoApprove": [
+        "project_info",
+        "configure_api_token"
+      ],
+      "timeout": 60,
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "railway-mcp"
+      ]
+    }
+  }
+}

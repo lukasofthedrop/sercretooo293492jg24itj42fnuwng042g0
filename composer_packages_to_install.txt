@@ -1,1 +1,0 @@
-spatie/laravel-activitylog

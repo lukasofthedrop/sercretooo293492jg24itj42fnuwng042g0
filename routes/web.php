@@ -140,6 +140,10 @@ Route::get('/logout-completo', [App\Http\Controllers\LogoutController::class, 'l
 Route::get('/escolher-painel', [App\Http\Controllers\LogoutController::class, 'escolherPainel'])->name('escolher.painel');
 
 // DASHBOARD DO AFILIADO - ANTES DO CATCH-ALL
+Route::get('/afiliado', function() {
+    return redirect('/affiliate/dashboard');
+})->name('afiliado');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/affiliate/dashboard', [AffiliateController::class, 'dashboard'])->name('affiliate.dashboard');
 });
