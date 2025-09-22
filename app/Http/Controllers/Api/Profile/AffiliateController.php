@@ -250,14 +250,18 @@ class AffiliateController extends Controller
      */
     public function painelAfiliado()
     {
+        $startTotal = microtime(true);
         $user = auth()->user();
         
         // Cache whole dashboard for 15 minutes
         $cacheKey = 'affiliate_dashboard_' . $user->id;
         $dashboardData = Cache::remember($cacheKey, 15 * 60, function () use ($user) {
+            $startCache = microtime(true);
             $settings = AffiliateSettings::getOrCreateForUser($user->id);
+            \Log::info('Affiliate Dashboard - Settings loaded', ['time' => microtime(true) - $startCache, 'user_id' => $user->id]);
             
             // Generate code if not exists (cached)
+            $startCode = microtime(true);
             if (!$user->inviter_code) {
                 $code = $this->gencode();
                 if ($code) {
@@ -270,17 +274,23 @@ class AffiliateController extends Controller
                     ]);
                 }
             }
+            \Log::info('Affiliate Dashboard - Code generation', ['time' => microtime(true) - $startCode, 'user_id' => $user->id]);
             
             // Get referred IDs first
+            $startReferred = microtime(true);
             $referredIds = DB::table('users')->where('inviter', $user->id)->pluck('id');
             if ($referredIds->isEmpty()) {
                 $referredIds = collect([]); // Empty collection for queries
             }
+            \Log::info('Affiliate Dashboard - Referred IDs', ['time' => microtime(true) - $startReferred, 'count' => $referredIds->count(), 'user_id' => $user->id]);
             
             // Total referred (cached)
+            $startTotal = microtime(true);
             $totalReferred = User::where('inviter', $user->id)->count();
+            \Log::info('Affiliate Dashboard - Total referred count', ['time' => microtime(true) - $startTotal, 'total' => $totalReferred, 'user_id' => $user->id]);
             
             // Active referred (optimized with subquery)
+            $startActive = microtime(true);
             $activeReferred = User::where('inviter', $user->id)
                 ->whereExists(function ($query) {
                     $query->select(DB::raw(1))
@@ -290,45 +300,44 @@ class AffiliateController extends Controller
                          ->where('deposits.created_at', '>=', Carbon::now()->subDays(30));
                 })
                 ->count();
+            \Log::info('Affiliate Dashboard - Active referred count', ['time' => microtime(true) - $startActive, 'active' => $activeReferred, 'user_id' => $user->id]);
             
-            // Month NGR (optimized with single queries)
+            // Month NGR (combined query)
+            $startMonth = microtime(true);
             $monthStart = Carbon::now()->startOfMonth();
             $monthEnd = Carbon::now()->endOfMonth();
             
-            $monthDeposits = DB::table('deposits')
+            $monthNGR = DB::table('deposits')
                 ->whereIn('user_id', $referredIds)
                 ->whereBetween('created_at', [$monthStart, $monthEnd])
                 ->where('status', 1)
-                ->sum('amount');
-                
-            $monthWithdrawals = DB::table('withdrawals')
-                ->whereIn('user_id', $referredIds)
-                ->whereBetween('created_at', [$monthStart, $monthEnd])
-                ->where('status', 1)
-                ->sum('amount');
-                
-            $monthNGR = $monthDeposits - $monthWithdrawals;
+                ->sum(DB::raw('(amount - COALESCE((SELECT SUM(w.amount) FROM withdrawals w WHERE w.user_id = deposits.user_id AND w.created_at BETWEEN "' . $monthStart . '" AND "' . $monthEnd . '" AND w.status = 1), 0))'));
+            \Log::info('Affiliate Dashboard - Month NGR combined', ['time' => microtime(true) - $startMonth, 'ngr' => $monthNGR, 'user_id' => $user->id]);
             
-            // Monthly data for 6 months (optimized with single query)
-            $monthlyData = DB::table('deposits')
+            // Monthly data for 6 months (combined join query)
+            $startMonthly = microtime(true);
+            $monthlyData = DB::table(DB::raw("({$referredIds->implode(',')}) as referred_users"))
                 ->select(
-                    DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                    DB::raw('SUM(amount) as deposits')
+                    DB::raw('DATE_FORMAT(d.created_at, "%Y-%m") as month'),
+                    DB::raw('COALESCE(SUM(d.amount), 0) as deposits'),
+                    DB::raw('COALESCE(SUM(w.amount), 0) as withdrawals')
                 )
-                ->whereIn('user_id', $referredIds)
-                ->where('status', 1)
-                ->whereBetween('created_at', [Carbon::now()->subMonths(5)->startOfMonth(), Carbon::now()])
+                ->leftJoin('deposits as d', function($join) {
+                    $join->on(DB::raw('referred_users.id'), '=', 'd.user_id')
+                         ->where('d.status', 1)
+                         ->whereBetween('d.created_at', [Carbon::now()->subMonths(5)->startOfMonth(), Carbon::now()]);
+                })
+                ->leftJoin('withdrawals as w', function($join) {
+                    $join->on(DB::raw('referred_users.id'), '=', 'w.user_id')
+                         ->where('w.status', 1)
+                         ->whereBetween('w.created_at', [Carbon::now()->subMonths(5)->startOfMonth(), Carbon::now()]);
+                })
                 ->groupBy('month')
                 ->orderBy('month', 'desc')
                 ->limit(6)
                 ->get()
-                ->map(function ($item) use ($referredIds, $monthStart) {
-                    $withdrawals = DB::table('withdrawals')
-                        ->whereIn('user_id', $referredIds)
-                        ->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$item->month])
-                        ->where('status', 1)
-                        ->sum('amount');
-                    $ngr = $item->deposits - $withdrawals;
+                ->map(function ($item) {
+                    $ngr = $item->deposits - $item->withdrawals;
                     return [
                         'month' => Carbon::createFromFormat('Y-m', $item->month)->format('M/Y'),
                         'ngr' => $ngr,
@@ -336,19 +345,21 @@ class AffiliateController extends Controller
                     ];
                 })
                 ->values();
+            \Log::info('Affiliate Dashboard - Monthly data combined', ['time' => microtime(true) - $startMonthly, 'months' => $monthlyData->count(), 'user_id' => $user->id]);
             
             // Recent referred with optimized joins (limit 10)
+            $startRecent = microtime(true);
             $recentReferred = DB::table('users')
                 ->select(
                     'users.name',
                     'users.email',
                     'users.created_at',
-                    DB::raw('SUM(deposits.amount) as total_deposited'),
-                    DB::raw('IF(EXISTS (SELECT 1 FROM deposits WHERE deposits.user_id = users.id AND deposits.status = 1 AND deposits.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)), 1, 0) as has_recent_deposit')
+                    DB::raw('COALESCE(SUM(d.amount), 0) as total_deposited'),
+                    DB::raw('IF(EXISTS (SELECT 1 FROM deposits d2 WHERE d2.user_id = users.id AND d2.status = 1 AND d2.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)), 1, 0) as has_recent_deposit')
                 )
-                ->leftJoin('deposits', function ($join) {
-                    $join->on('deposits.user_id', '=', 'users.id')
-                         ->where('deposits.status', 1);
+                ->leftJoin('deposits as d', function ($join) {
+                    $join->on('d.user_id', '=', 'users.id')
+                         ->where('d.status', 1);
                 })
                 ->where('users.inviter', $user->id)
                 ->groupBy('users.id', 'users.name', 'users.email', 'users.created_at')
@@ -362,6 +373,7 @@ class AffiliateController extends Controller
                     unset($user->has_recent_deposit);
                     return (array) $user;
                 });
+            \Log::info('Affiliate Dashboard - Recent referred', ['time' => microtime(true) - $startRecent, 'count' => $recentReferred->count(), 'user_id' => $user->id]);
             
             return [
                 'user' => $user,
@@ -377,6 +389,8 @@ class AffiliateController extends Controller
                 'settings' => $settings
             ];
         });
+        
+        \Log::info('Affiliate Dashboard - Total load time', ['time' => microtime(true) - $startTotal, 'user_id' => $user->id, 'from_cache' => Cache::has($cacheKey)]);
         
         return view('affiliate.painel-dashboard', $dashboardData);
     }
