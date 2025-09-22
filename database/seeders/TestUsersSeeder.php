@@ -12,14 +12,8 @@ class TestUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        try {
-            // Test DB connection before proceeding
-            DB::connection()->getPdo();
-            $this->command->info('Database connection successful at ' . now());
-        } catch (\Exception $e) {
-            $this->command->error('Database connection failed at ' . now() . ': ' . $e->getMessage());
-            return; // Stop seeder if connection fails
-        }
+        // Skip DB connection test in remote execution to avoid internal hostname issues
+        $this->command->info('Skipping DB connection test for remote execution at ' . now());
 
         // Delete existing test users if any
         User::whereIn('email', [
