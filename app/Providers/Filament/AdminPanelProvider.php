@@ -26,6 +26,7 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Green,
                 'gray' => Color::Gray,
             ])
+            ->brandLogo(asset('assets/images/logo.png'))
             ->login()
             ->registration()
             ->passwordReset()

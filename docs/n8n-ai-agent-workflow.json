@@ -1,0 +1,359 @@
+{
+  "name": "LucrativaBet – AI Workflow Builder",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "public": false,
+        "options": {
+          "responseMode": "responseNodes"
+        }
+      },
+      "id": "1",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -900,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const store = this.getWorkflowStaticData('global');\nconst chatId = $json.chatId ?? $json.sessionId ?? 'default';\nconst rawInput = ($json.chatInput ?? '').trimStart();\nconst match = rawInput.match(/^\\/model\\s+(grok|openrouter)\\b/i);\nlet provider = store[`model_${chatId}`] ?? 'openrouter';\nlet prompt = rawInput;\nif (match) {\n  provider = match[1].toLowerCase();\n  store[`model_${chatId}`] = provider;\n  prompt = rawInput.slice(match[0].length).trim();\n}\nif (!store[`model_${chatId}`]) {\n  store[`model_${chatId}`] = provider;\n}\nreturn [{\n  json: {\n    provider,\n    sessionId: chatId,\n    rawInput: rawInput,\n    chatInput: prompt || `Modelo alternado para ${provider}. Envie a próxima instrução.`,\n    modelChanged: Boolean(match),\n    emptyAfterSwitch: Boolean(match) && !prompt\n  }\n}];"
+      },
+      "id": "2",
+      "name": "Parse Chat Command",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.emptyAfterSwitch}}",
+              "operation": "equal",
+              "value2": false
+            }
+          ]
+        }
+      },
+      "id": "3",
+      "name": "Has Prompt?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 2,
+        "rules": {
+          "rule": [
+            {
+              "modelIndex": 1,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.provider}}",
+                    "operation": "equal",
+                    "value2": "grok"
+                  }
+                ]
+              }
+            },
+            {
+              "modelIndex": 2,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.provider}}",
+                    "operation": "equal",
+                    "value2": "openrouter"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Model Selector",
+      "type": "@n8n/n8n-nodes-langchain.modelSelector",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "model": "grok-4-fast-reasoning",
+        "options": {
+          "maxTokens": 4000,
+          "temperature": 0.6,
+          "responseFormat": "text"
+        }
+      },
+      "id": "5",
+      "name": "xAI Grok Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatXAiGrok",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        -220
+      ],
+      "credentials": {
+        "xAiApi": {
+          "name": "xAI Grok (LucrativaBet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o-mini",
+        "options": {
+          "maxTokens": 4000,
+          "temperature": 0.4,
+          "responseFormat": "text"
+        }
+      },
+      "id": "6",
+      "name": "OpenRouter Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        140
+      ],
+      "credentials": {
+        "openRouterApi": {
+          "name": "OpenRouter API (LucrativaBet)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.chatInput}}",
+        "options": {
+          "systemMessage": "Você é o agente de automação da LucrativaBet rodando dentro do n8n. Sempre explique o plano antes de criar ou alterar nós. Nunca execute ações destrutivas sem confirmação explícita do usuário. Use a ferramenta ‘n8n Workflow API’ apenas quando precisar criar ou editar fluxos e sempre envie payloads JSON válidos. Responda em português, mantendo foco nos próximos passos para evoluir o workflow."
+        },
+        "needsFallback": true,
+        "returnOutput": "full"
+      },
+      "id": "7",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        120,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "message": "={{$json.result ?? $json.text ?? $json.response ?? $json.answer ?? 'Sem resposta do agente.'}}",
+        "waitUserReply": true
+      },
+      "id": "8",
+      "name": "Responder Chat",
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        420,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "message",
+              "value": "={{$json.chatInput}}"
+            }
+          ]
+        }
+      },
+      "id": "9",
+      "name": "Switch Ack Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "message": "={{$json.message}}",
+        "waitUserReply": true
+      },
+      "id": "10",
+      "name": "Responder Chat (Ack)",
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        40,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Chama a API REST do n8n para criar ou atualizar fluxos. Sempre preencha {baseUrl} com o endereço do painel (ex.: https://studio.n8n.cloud), {workflowId} com o ID numérico do workflow alvo e forneça um corpo JSON válido descrevendo as mudanças desejadas. Sempre retorne um resumo das alterações aplicadas e peça confirmação antes de sobrescrever fluxos críticos.",
+        "method": "PATCH",
+        "url": "{baseUrl}/rest/workflows/{workflowId}",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "model",
+        "placeholderDefinitions": {
+          "values": [
+            {
+              "name": "baseUrl",
+              "description": "URL raiz do painel n8n (inclua https://)",
+              "type": "string"
+            },
+            {
+              "name": "workflowId",
+              "description": "ID do workflow que deve ser atualizado",
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "description": "JSON com as alterações, normalmente contém propriedades como name, nodes e connections",
+              "type": "json"
+            }
+          ]
+        },
+        "optimizeResponse": true,
+        "responseType": "json"
+      },
+      "id": "11",
+      "name": "n8n Workflow API",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        120,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Chat Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Chat Command": {
+      "main": [
+        [
+          {
+            "node": "Has Prompt?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Prompt?": {
+      "main": [
+        [
+          {
+            "node": "Model Selector",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Ack Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Selector": {
+      "ai_model": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_model",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "xAI Grok Model": {
+      "ai_model": [
+        [
+          {
+            "node": "Model Selector",
+            "type": "ai_model",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Model": {
+      "ai_model": [
+        [
+          {
+            "node": "Model Selector",
+            "type": "ai_model",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Responder Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "ai_tool": [
+        [
+          {
+            "node": "n8n Workflow API",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Ack Payload": {
+      "main": [
+        [
+          {
+            "node": "Responder Chat (Ack)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

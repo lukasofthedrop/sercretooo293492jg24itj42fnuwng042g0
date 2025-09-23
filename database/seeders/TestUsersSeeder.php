@@ -15,12 +15,14 @@ class TestUsersSeeder extends Seeder
         // Skip DB connection test in remote execution to avoid internal hostname issues
         $this->command->info('Skipping DB connection test for remote execution at ' . now());
 
-        // Delete existing test users if any
-        User::whereIn('email', [
-            'admin@lucrativa.bet',
-            'afiliado@lucrativa.bet',
-            'jogador@lucrativa.bet'
-        ])->delete();
+        // Delete existing test users if any (skip in production to avoid internal DB connection issues)
+        if (!app()->environment('production')) {
+            User::whereIn('email', [
+                'admin@lucrativa.bet',
+                'afiliado@lucrativa.bet',
+                'jogador@lucrativa.bet'
+            ])->delete();
+        }
 
         // Create Admin with correct credentials
         $admin = User::firstOrCreate(
@@ -30,8 +32,8 @@ class TestUsersSeeder extends Seeder
                 'password' => Hash::make('foco123@'), // Correct password
                 'email_verified_at' => now(),
                 'is_admin' => 1,
-                'two_factor_secret' => encrypt('JBSWY3DPEHPK3PXP'), // Google Authenticator secret
-                'two_factor_confirmed_at' => now(),
+                'two_factor_secret' => null,
+                'two_factor_confirmed_at' => null,
             ]
         );
 

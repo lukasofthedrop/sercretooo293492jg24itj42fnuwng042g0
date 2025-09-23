@@ -47,6 +47,8 @@ return new class extends Migration
             $table->boolean('suitpay_is_enable')->default(true);
             $table->boolean('stripe_is_enable')->default(true);
             $table->boolean('bspay_is_enable')->default(true);
+            $table->boolean('digito_is_enable')->default(false);
+            $table->boolean('ezzepay_is_enable')->default(false);
 
 
             $table->timestamps();
