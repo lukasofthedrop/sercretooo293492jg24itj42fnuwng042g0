@@ -521,7 +521,11 @@ table.affiliate-table {
 <div class="dashboard-container">
     <div class="header-affiliate">
         <div class="logo-affiliate">
-            <i class="fas fa-coins"></i>
+            @if(!empty(\Helper::getSetting()['software_logo_white']))
+                <img src="{{ asset('storage/'. \Helper::getSetting()['software_logo_white']) }}" alt="LucrativaBet" class="h-8 w-auto mr-2">
+            @else
+                <i class="fas fa-coins text-green-500 text-xl mr-2"></i>
+            @endif
             <span>LucrativaBet <span style="font-weight: 300; color: #6b7280;">- AFILIADO</span></span>
         </div>
         <div class="user-info-affiliate">
