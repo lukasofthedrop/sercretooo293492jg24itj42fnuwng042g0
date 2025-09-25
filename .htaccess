@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Redireciona tudo para a pasta public/
+RewriteRule ^$ public/ [L]
+RewriteRule (.*) public/$1 [L]
+
+# Impede acesso ao arquivo .env
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>

@@ -1,0 +1,187 @@
+/* custom-filament-theme.css */
+
+/* Estilos globais */
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Estilos específicos para AffiliateWithdrawResource */
+.page-affiliate-withdraw body {
+    background-color: #f0f0ff;
+    color: #000;
+}
+
+/* Estilos específicos para BannerResource */
+.page-banner body {
+    background-color: #ffe6e6;
+    color: #000;
+}
+
+/* Estilos específicos para CategoryResource */
+.page-category body {
+    background-color: #e6ffe6;
+    color: #000;
+}
+
+/* Estilos específicos para DepositResource */
+.page-deposit body {
+    background-color: #e6e6ff;
+    color: #000;
+}
+
+/* Adicione mais estilos específicos conforme necessário para cada recurso */
+
+/* FORÇAR CORES VERDES NO FILAMENT ADMIN - SOBRESCREVER CORES ROSA CHOQUE */
+
+/* Botões primários - verde corrida */
+.fi-btn-primary, 
+.fi-btn--color-primary,
+[data-color="primary"] {
+    background-color: #00ff00 !important;
+    border-color: #00ff00 !important;
+    color: #000000 !important;
+}
+
+.fi-btn-primary:hover,
+.fi-btn--color-primary:hover,
+[data-color="primary"]:hover {
+    background-color: #00cc00 !important;
+    border-color: #00cc00 !important;
+}
+
+/* Links e elementos info - verde corrida */
+.fi-link--color-info,
+[data-color="info"] {
+    color: #00ff00 !important;
+}
+
+/* Elementos success - verde corrida */
+.fi-badge--color-success,
+[data-color="success"] {
+    background-color: #00ff00 !important;
+    color: #000000 !important;
+}
+
+/* Checkbox e radio buttons */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background-color: #00ff00 !important;
+    border-color: #00ff00 !important;
+}
+
+/* Toggle switches */
+.fi-toggle input:checked + .fi-toggle-slider {
+    background-color: #00ff00 !important;
+}
+
+/* Progress bars */
+.fi-progress-bar-bar {
+    background-color: #00ff00 !important;
+}
+
+/* Accent colors - sobrescrever qualquer cor primária */
+.text-primary-600,
+.text-primary-500,
+.bg-primary-600,
+.bg-primary-500 {
+    color: #00ff00 !important;
+    background-color: #00ff00 !important;
+}
+
+/* Bordas primárias */
+.border-primary-600,
+.border-primary-500 {
+    border-color: #00ff00 !important;
+}
+
+/* ============================================ */
+/* TEMA ESCURO PARA WIDGETS DE ESTATÍSTICAS    */
+/* ============================================ */
+
+/* Container principal dos widgets de estatísticas - tema escuro */
+.fi-wi-stats-overview {
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%) !important;
+    border: 2px solid #00ff00 !important;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+/* Fundo escuro para os cards individuais dos stats */
+.fi-wi-stat {
+    background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%) !important;
+    border: 1px solid #00ff00 !important;
+    box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2) !important;
+    border-radius: 8px !important;
+    margin: 10px !important;
+}
+
+/* Títulos dos widgets em verde neon brilhante */
+.fi-wi-stat-label {
+    color: #00ff00 !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5) !important;
+    font-size: 14px !important;
+}
+
+/* Valores numéricos em branco brilhante */
+.fi-wi-stat-value {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5) !important;
+    font-size: 24px !important;
+}
+
+/* Descrições em verde claro */
+.fi-wi-stat-description {
+    color: #90EE90 !important;
+    font-size: 12px !important;
+}
+
+/* Ícones dos widgets em verde neon */
+.fi-wi-stat-description-icon {
+    color: #00ff00 !important;
+    filter: drop-shadow(0 0 3px rgba(0, 255, 0, 0.5)) !important;
+}
+
+/* Área dos gráficos com fundo preto semi-transparente */
+.fi-wi-stat-chart {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 8px !important;
+    padding: 5px !important;
+    margin-top: 10px !important;
+}
+
+/* Hover effects - elevação e brilho */
+.fi-wi-stat:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(0, 255, 0, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Efeito de pulse nos títulos */
+.fi-wi-stat-label:hover {
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8) !important;
+    transition: text-shadow 0.3s ease !important;
+}
+
+/* Background para página inteira da dashboard */
+.fi-main {
+    background: radial-gradient(ellipse at center, #2a2a2a 0%, #000000 100%) !important;
+    min-height: 100vh !important;
+}
+
+/* Navbar e header também em tema escuro */
+.fi-topbar {
+    background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 100%) !important;
+    border-bottom: 2px solid #00ff00 !important;
+}
+
+/* Cards de recursos em tema escuro consistente */
+.fi-resource-table,
+.fi-table {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%) !important;
+    border: 1px solid #00ff00 !important;
+    box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2) !important;
+}
