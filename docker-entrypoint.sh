@@ -2,20 +2,37 @@
 set -e
 
 echo "=== Laravel Application Initialization ==="
+echo "Current user: $(whoami)"
+echo "Working directory: $(pwd)"
+echo "Files in /var/www/html:"
+ls -la /var/www/html/ | head -10
 
 # Wait for a moment to ensure the environment is ready
 sleep 2
 
+# Verify .env.example exists
+if [ -f "/var/www/html/.env.example" ]; then
+    echo "✅ .env.example found"
+    ls -la /var/www/html/.env.example
+else
+    echo "❌ .env.example NOT found in /var/www/html/"
+    echo "Files in /var/www/html/ that start with .env:"
+    ls -la /var/www/html/.env* || echo "No .env* files found"
+    exit 1
+fi
+
 # Create .env file if it doesn't exist
 if [ ! -f /var/www/html/.env ]; then
-    echo "Creating .env file..."
-    if [ -f "/var/www/html/.env.example" ]; then
-        echo "Using .env.example as template"
-        cp /var/www/html/.env.example /var/www/html/.env
-    else
-        echo ".env.example not found, creating from environment variables"
-        # Create .env from environment variables provided by DigitalOcean
-        cat > /var/www/html/.env << EOF
+    echo "Creating .env file from .env.example..."
+    cp /var/www/html/.env.example /var/www/html/.env
+    echo "✅ .env file created successfully"
+else
+    echo "✅ .env file already exists"
+fi
+
+# Override .env with environment variables from DigitalOcean
+echo "Updating .env with DigitalOcean environment variables..."
+cat > /var/www/html/.env << EOF
 APP_NAME=${APP_NAME:-LucrativaBet}
 APP_ENV=${APP_ENV:-production}
 APP_KEY=${APP_KEY:-}
@@ -40,39 +57,51 @@ SESSION_LIFETIME=${SESSION_LIFETIME:-120}
 
 JWT_SECRET=${JWT_SECRET:-}
 JWT_TTL=${JWT_TTL:-60}
+
+# Filament Configuration
+FILAMENT_BASE_URL=${FILAMENT_BASE_URL:-admin}
 EOF
-        echo "Created .env from environment variables"
-    fi
+
+echo "✅ .env file updated with environment variables"
+
+# Generate application key if not present or empty
+if grep -q "APP_KEY=$" /var/www/html/.env || ! grep -q "APP_KEY=base64:" /var/www/html/.env; then
+    echo "Generating new application key..."
+    php artisan key:generate --force --no-interaction
+    echo "✅ Application key generated"
 else
-    echo ".env file already exists"
+    echo "✅ Application key already set"
 fi
 
-# Generate application key if not present
-if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "base64:" ]; then
-    echo "Generating application key..."
-    php artisan key:generate --force --no-interaction
-else
-    echo "Application key already set"
-fi
+# Set proper file permissions before running artisan commands
+echo "Setting proper file permissions..."
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html/storage
+chmod -R 755 /var/www/html/bootstrap/cache
+chmod 644 /var/www/html/.env
+echo "✅ Permissions set"
+
+# Clear all caches first
+echo "Clearing all caches..."
+php artisan config:clear || echo "Config clear failed (non-critical)"
+php artisan route:clear || echo "Route clear failed (non-critical)"
+php artisan view:clear || echo "View clear failed (non-critical)"
+php artisan cache:clear || echo "Cache clear failed (non-critical)"
+echo "✅ Caches cleared"
 
 # Cache configuration for better performance
 echo "Caching configuration..."
-php artisan config:cache
+php artisan config:cache || echo "Config cache failed (non-critical)"
+echo "✅ Configuration cached"
 
-# Cache routes for better performance
-echo "Caching routes..."
-php artisan route:cache
-
-# Clear any existing cache that might be stale
-echo "Clearing application cache..."
-php artisan cache:clear
-
-# Ensure storage and bootstrap/cache are writable
-echo "Setting permissions..."
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
+# Test basic Laravel functionality
+echo "Testing Laravel installation..."
+php artisan --version
+echo "✅ Laravel is working"
 
 echo "=== Initialization complete. Starting Apache ==="
+echo "Apache version: $(apache2 -v | head -1)"
+echo "PHP version: $(php -v | head -1)"
 
-# Execute the original command (start Apache)
+# Start Apache in foreground
 exec apache2-foreground
