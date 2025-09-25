@@ -10,22 +10,29 @@ ls -la /var/www/html/ | head -10
 # Wait for a moment to ensure the environment is ready
 sleep 2
 
-# Verify .env.example exists
+# Check if .env.example exists - if not, we'll create .env directly from environment variables
 if [ -f "/var/www/html/.env.example" ]; then
     echo "✅ .env.example found"
     ls -la /var/www/html/.env.example
+    USE_ENV_EXAMPLE=true
 else
-    echo "❌ .env.example NOT found in /var/www/html/"
+    echo "⚠️ .env.example NOT found in /var/www/html/ - will create .env from environment variables"
     echo "Files in /var/www/html/ that start with .env:"
     ls -la /var/www/html/.env* || echo "No .env* files found"
-    exit 1
+    USE_ENV_EXAMPLE=false
 fi
 
 # Create .env file if it doesn't exist
 if [ ! -f /var/www/html/.env ]; then
-    echo "Creating .env file from .env.example..."
-    cp /var/www/html/.env.example /var/www/html/.env
-    echo "✅ .env file created successfully"
+    if [ "$USE_ENV_EXAMPLE" = true ]; then
+        echo "Creating .env file from .env.example..."
+        cp /var/www/html/.env.example /var/www/html/.env
+        echo "✅ .env file created from .env.example"
+    else
+        echo "Creating .env file directly from environment variables..."
+        # Will be created in the next step
+        echo "✅ .env will be created from environment variables"
+    fi
 else
     echo "✅ .env file already exists"
 fi

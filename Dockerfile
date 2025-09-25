@@ -25,11 +25,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable Apache modules
 RUN a2enmod rewrite headers ssl
 
-# Copy application files
+# Copy application files first
 COPY . /var/www/html
 
-# Ensure .env.example exists (force copy)
+# Debug: List files to see what was copied
+RUN ls -la /var/www/html/.env* || echo "No .env files found"
+
+# Ensure .env.example exists (force copy - this should work since it's in Git)
 COPY .env.example /var/www/html/.env.example
+
+# Debug: Verify .env.example was copied
+RUN ls -la /var/www/html/.env.example && echo "✅ .env.example confirmed" || echo "❌ .env.example missing"
 
 # Create necessary directories with correct permissions
 RUN mkdir -p /var/www/html/storage/logs \
