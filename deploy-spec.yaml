@@ -1,0 +1,59 @@
+name: lucrativabet-casino
+region: nyc1
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: lukasofthedrop/sercretooo293492jg24itj42fnuwng042g0
+    branch: main
+    deploy_on_push: true
+  dockerfile_path: Dockerfile
+  http_port: 80
+  instance_count: 1
+  instance_size_slug: professional-xs
+  routes:
+  - path: /
+  run_command: /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+  envs:
+  - key: APP_NAME
+    value: "Lucrativa Bet"
+  - key: APP_ENV
+    value: production
+  - key: APP_KEY
+    value: "base64:jP1f2K0S7Xe5JkyxyP8EptDNe8w77mGYOWcEoZyH9FU="
+  - key: APP_DEBUG
+    value: "false"
+  - key: APP_URL
+    value: ${_self.URL}
+  - key: LOG_CHANNEL
+    value: stack
+  - key: LOG_LEVEL
+    value: error
+  - key: DB_CONNECTION
+    value: mysql
+  - key: DB_HOST
+    value: lucrativa-mysql-do-user-26563437-0.g.db.ondigitalocean.com
+  - key: DB_PORT
+    value: "25060"
+  - key: DB_DATABASE
+    value: defaultdb
+  - key: DB_USERNAME
+    value: doadmin
+  - key: DB_PASSWORD
+    value: AVNS_oKuuPV4DQ3PuRqz-AGj
+  - key: BROADCAST_DRIVER
+    value: log
+  - key: CACHE_DRIVER
+    value: file
+  - key: FILESYSTEM_DISK
+    value: local
+  - key: QUEUE_CONNECTION
+    value: sync
+  - key: SESSION_DRIVER
+    value: file
+  - key: SESSION_LIFETIME
+    value: "120"
+  - key: JWT_SECRET
+    value: 71RdDYCHDZCUQIYGU9EP8PVEp93YAYLnvlh49a3smdAKJwNj9XG0iQHiDhyQbKSk
+  - key: JWT_TTL
+    value: "60"

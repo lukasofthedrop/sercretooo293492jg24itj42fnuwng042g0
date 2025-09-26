@@ -1,0 +1,345 @@
+/* custom-filament-theme.css */
+
+/* Estilos globais */
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Estilos específicos para AffiliateWithdrawResource */
+.page-affiliate-withdraw body {
+    background-color: #f0f0ff;
+    color: #000;
+}
+
+/* Estilos específicos para BannerResource */
+.page-banner body {
+    background-color: #ffe6e6;
+    color: #000;
+}
+
+/* Estilos específicos para CategoryResource */
+.page-category body {
+    background-color: #e6ffe6;
+    color: #000;
+}
+
+/* Estilos específicos para DepositResource */
+.page-deposit body {
+    background-color: #e6e6ff;
+    color: #000;
+}
+
+/* Adicione mais estilos específicos conforme necessário para cada recurso */
+
+/* SUBSTITUIR APENAS CORES ROSA/MAGENTA ESPECÍFICAS POR VERDE */
+
+/* Sobrescrever cores primárias do Filament (eram rosa choque) */
+:root {
+    --primary-500: 0, 255, 0 !important;
+    --primary-600: 0, 204, 0 !important;
+}
+
+/* Elementos com cores rosa específicas que devem virar verdes (EXCETO na sidebar) */
+.text-primary-500:not(.fi-sidebar *), .text-primary-600:not(.fi-sidebar *) {
+    color: rgb(0, 255, 0) !important;
+}
+
+.bg-primary-500, .bg-primary-600 {
+    background-color: rgb(0, 255, 0) !important;
+}
+
+/* Botões primários que eram rosa */
+.fi-btn-primary, 
+.fi-btn--color-primary,
+[data-color="primary"] {
+    background-color: #00ff00 !important;
+    border-color: #00ff00 !important;
+}
+
+.fi-btn-primary:hover,
+.fi-btn--color-primary:hover,
+[data-color="primary"]:hover {
+    background-color: #00cc00 !important;
+    border-color: #00cc00 !important;
+}
+
+/* Links primários que eram rosa (EXCETO na sidebar) */
+.fi-link--color-primary:not(.fi-sidebar *),
+.text-primary-600:not(.fi-sidebar *),
+.text-primary-500:not(.fi-sidebar *) {
+    color: rgb(0, 255, 0) !important;
+}
+
+/* Checkbox e radio buttons primários */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background-color: #00ff00 !important;
+    border-color: #00ff00 !important;
+}
+
+/* Bordas primárias */
+.border-primary-600,
+.border-primary-500 {
+    border-color: #00ff00 !important;
+}
+
+/* Elementos com cores rosa inline específicas */
+*[style*="color: rgb(217, 70, 239)"],
+*[style*="color: rgb(236, 72, 153)"],
+*[style*="color: rgb(168, 85, 247)"],
+*[style*="color: rgb(219, 39, 119)"],
+*[style*="color: rgb(147, 51, 234)"],
+*[style*="color: rgb(192, 38, 211)"],
+*[style*="color: rgb(248, 0, 255)"],
+*[style*="rgb(248, 0, 255)"] {
+    color: rgb(0, 255, 0) !important;
+}
+
+/* Classes do Filament que usavam cores primárias rosa (EXCETO na sidebar) */
+[class*="text-primary"]:not(.fi-sidebar *):not(complementary *),
+[data-color="primary"]:not(.fi-sidebar *):not(complementary *) {
+    color: rgb(0, 255, 0) !important;
+}
+
+/* Classes específicas que estão aparecendo em rosa */
+.fi-header-subheading,
+.fi-section-header-description,
+.text-sm.font-medium.text-gray-500.dark\:text-gray-400,
+.fi-wi-stats-overview-stat-description,
+.text-gray-500.dark\:text-gray-400,
+span.text-sm.font-medium,
+.fi-wi-stats-overview-stat-description.text-sm.text-gray-500.dark\:text-gray-400 {
+    color: rgb(0, 255, 0) !important;
+}
+
+/* CUSTOMIZAÇÃO ESPECÍFICA PARA CATEGORIAS DO MENU LATERAL */
+/* Textos das categorias principais em branco */
+.fi-sidebar-group-label.flex-1.text-sm.font-medium.leading-6.text-gray-500.dark\:text-gray-400 {
+    color: rgb(255, 255, 255) !important;
+}
+
+/* FORÇAR TODOS os textos dos itens da sidebar em branco - ESPECIFICIDADE MÁXIMA */
+complementary nav a span,
+complementary nav li a span,
+.fi-sidebar nav li a span,
+.fi-sidebar nav ul li a span,
+.fi-sidebar-item-button span,
+.fi-sidebar-item-label,
+complementary navigation a span,
+complementary navigation li span {
+    color: rgb(255, 255, 255) !important;
+}
+
+/* ANULAR especificamente as regras que estavam fazendo itens ficarem verdes */
+.fi-sidebar a span:not(.fi-sidebar-group-label) {
+    color: rgb(255, 255, 255) !important;
+}
+
+/* FORÇA BRUTA ABSOLUTA: ESPECIFICIDADE MÁXIMA PARA TEXTOS DA SIDEBAR BRANCOS */
+complementary[role="complementary"] .fi-sidebar .text-primary-500,
+complementary[role="complementary"] .fi-sidebar .text-primary-600,
+complementary[role="complementary"] .fi-sidebar [class*="text-primary"],
+complementary[role="complementary"] .fi-sidebar *[style*="color: rgb(0, 255, 0)"],
+complementary[role="complementary"] nav li a span:not(.fi-sidebar-group-label span),
+complementary[role="complementary"] navigation li a span:not(.fi-sidebar-group-label span),
+complementary[role="complementary"] .fi-sidebar nav li a span,
+complementary[role="complementary"] .fi-sidebar navigation a span,
+body complementary nav li a span,
+body .fi-sidebar nav li a span {
+    color: rgb(255, 255, 255) !important;
+}
+
+/* CORREÇÃO DEFINITIVA DOS ÍCONES DA SIDEBAR */
+/* Remover fill sólido e usar apenas stroke para contornos */
+.fi-sidebar svg {
+    color: #00ff00 !important;
+    fill: none !important;
+    stroke: #00ff00 !important;
+    stroke-width: 1.5px !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+/* Para elementos internos que precisam de fill (como círculos pequenos) */
+.fi-sidebar svg path[fill*="currentColor"],
+.fi-sidebar svg circle[fill*="currentColor"],
+.fi-sidebar svg rect[fill*="currentColor"] {
+    fill: #00ff00 !important;
+    stroke: none !important;
+}
+
+/* Elementos específicos que devem manter stroke */
+.fi-sidebar svg path:not([fill]),
+.fi-sidebar svg line,
+.fi-sidebar svg polyline,
+.fi-sidebar svg polygon:not([fill]) {
+    fill: none !important;
+    stroke: #00ff00 !important;
+    stroke-width: 1.5px !important;
+}
+
+/* Garantir que imagens não sejam afetadas */
+.fi-sidebar img {
+    color: inherit !important;
+    fill: inherit !important;
+}
+
+/* ÚLTIMA TENTATIVA RADICAL: ESPECIFICIDADE BRUTAL PARA TEXTOS BRANCOS */
+html body div.fi-layout complementary[role="complementary"] nav ul li a span,
+html body .fi-layout .fi-sidebar nav ul li a span,
+html body complementary nav ul li a span,
+html div complementary nav li a span {
+    color: rgb(255, 255, 255) !important;
+}
+
+/* SOLUÇÃO JAVASCRIPT PERMANENTE: APLICAR CORES CORRETAS NA SIDEBAR */
+/* Este script garante que os textos fiquem brancos e ícones verdes */
+
+
+/* ============================================ */
+/* TEMA LUCRATIVABET PROFISSIONAL */
+/* ============================================ */
+
+/* SIDEBAR ESCURA PROFISSIONAL */
+html body .fi-layout .fi-sidebar,
+html body aside[class*='sidebar'],
+html body complementary {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+    border-right: 2px solid #22c55e !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ÁREA PRINCIPAL DARK PROFISSIONAL */
+html body .fi-layout main,
+html body .fi-main,
+html body .fi-page {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
+    background-attachment: fixed !important;
+}
+
+/* HEADER/TOPBAR SOFISTICADO */
+html body .fi-topbar,
+html body .fi-header,
+html body nav[class*='topbar'] {
+    background: linear-gradient(90deg, #1e293b 0%, #334155 100%) !important;
+    border-bottom: 2px solid #22c55e !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1) !important;
+}
+
+/* ÍCONES VERDES LUCRATIVABET */
+html body .fi-sidebar svg,
+html body complementary svg,
+html body aside svg {
+    color: #22c55e !important;
+    fill: #22c55e !important;
+    stroke: #22c55e !important;
+    filter: drop-shadow(0 0 3px rgba(34, 197, 94, 0.3)) !important;
+}
+
+/* TEXTOS SIDEBAR ELEGANTES */
+html body .fi-sidebar span,
+html body .fi-sidebar a,
+html body complementary span,
+html body complementary a {
+    color: #f1f5f9 !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+}
+
+/* SUBTÍTULO VERDE ELEGANTE */
+html body .fi-header p,
+html body .fi-page-subheading,
+html body p[class*='subheading'] {
+    color: #22c55e !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.2) !important;
+}
+
+/* LOGO LUCRATIVA PROFISSIONAL */
+html body .fi-logo {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+html body .fi-logo::after {
+    content: '🚀' !important;
+    color: #22c55e !important;
+    filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.4)) !important;
+}
+
+/* BOTÕES PROFISSIONAIS */
+html body button[class*='fi-btn'],
+html body .fi-btn {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #22c55e !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+html body .fi-btn:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* HOVER STATES SOFISTICADOS */
+html body .fi-sidebar a:hover,
+html body complementary a:hover {
+    background: rgba(34, 197, 94, 0.1) !important;
+    border-left: 3px solid #22c55e !important;
+    transform: translateX(5px) !important;
+    color: #ffffff !important;
+}
+
+/* ITEM ATIVO ELEGANTE */
+html body [aria-current='page'],
+html body .fi-active {
+    background: linear-gradient(90deg, rgba(34, 197, 94, 0.15), transparent) !important;
+    border-left: 4px solid #22c55e !important;
+    color: #22c55e !important;
+    font-weight: 600 !important;
+}
+
+/* THEME PROFISSIONAL */
+html body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
+    background-attachment: fixed !important;
+    color: #f1f5f9 !important;
+    font-family: 'Inter', 'Roboto', sans-serif !important;
+}
+
+/* CARDS PROFISSIONAIS */
+html body .fi-section,
+html body .fi-card,
+html body .fi-widget {
+    background: rgba(30, 41, 59, 0.7) !important;
+    border: 1px solid rgba(34, 197, 94, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* SCROLLBAR PERSONALIZADA */
+::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e293b !important;
+    border-radius: 10px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #22c55e, #16a34a) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #16a34a, #15803d) !important;
+}
+

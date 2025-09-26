@@ -1,0 +1,55 @@
+{
+  "project_name": "LucrativaBet",
+  "description": "Plataforma de cassino online com sistema de afiliados, gestão de usuários e wallets",
+  "tech_stack": {
+    "backend": {
+      "language": "PHP",
+      "framework": "Laravel 10.48.2",
+      "database": "MySQL",
+      "cache": "Redis",
+      "auth": "Laravel Sanctum with 2FA"
+    },
+    "frontend": {
+      "framework": "Blade Templates + Livewire",
+      "css": "Tailwind CSS",
+      "js": "Alpine.js, Chart.js",
+      "ui_components": "Filament v3"
+    },
+    "infrastructure": {
+      "web_server": "PHP Built-in Server",
+      "port": 8000,
+      "environment": "Development/Production"
+    }
+  },
+  "features": {
+    "user_management": {
+      "registration": true,
+      "login": true,
+      "password_reset": true,
+      "two_factor_auth": true,
+      "roles": ["admin", "user", "affiliate"],
+      "total_users": 14789
+    },
+    "wallet_system": {
+      "multiple_currencies": true,
+      "balance_types": ["withdrawal", "bonus", "rollover"],
+      "total_wallets": 3315,
+      "total_balance": "R$ 52,557.61"
+    },
+    "affiliate_system": {
+      "commission_types": ["NGR", "RevShare"],
+      "tiers": ["Bronze", "Silver", "Gold"],
+      "tracking": true,
+      "reporting": true
+    },
+    "gaming": {
+      "providers": ["Pragmatic Play", "Spribe", "PGSoft", "Evolution"],
+      "games_count": 500,
+      "categories": ["slots", "live_casino", "sports_betting"]
+    },
+    "admin_panel": {
+      "framework": "Filament v3",
+      "features": ["dashboard", "users", "wallets", "games", "settings", "reports"]
+    }
+  }
+}

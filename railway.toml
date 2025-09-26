@@ -1,0 +1,155 @@
+# Railway Configuration for LucrativaBet Casino Application
+# This file defines the services, build commands, and deployment settings
+
+[build]
+command = """
+    composer install --no-dev --optimize-autoloader
+    php artisan key:generate
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    php artisan migrate --force
+    php artisan storage:link
+"""
+
+[deploy]
+startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# Main Web Application Service
+[service.web]
+    # Service settings
+    name = "lucrativabet-web"
+    memory = "512MB"
+    cpu = "0.5"
+    
+    # Docker configuration
+    dockerfilePath = "Dockerfile.railway"
+    dockerContext = "."
+    
+    # Build and deployment
+    buildCommand = """
+        composer install --no-dev --optimize-autoloader
+        php artisan key:generate
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
+        php artisan migrate --force
+        php artisan storage:link
+    """
+    
+    startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
+    
+    # Environment variables for Railway
+    [service.web.env]
+        APP_ENV = "production"
+        APP_DEBUG = "false"
+        APP_URL = "${RAILWAY_PUBLIC_DOMAIN}"
+        LOG_CHANNEL = "stack"
+        LOG_LEVEL = "error"
+        
+        # Database configuration (will be provided by Railway MySQL service)
+        DB_CONNECTION = "mysql"
+        DB_HOST = "${MYSQL.HOST}"
+        DB_PORT = "${MYSQL.PORT}"
+        DB_DATABASE = "${MYSQL.DATABASE}"
+        DB_USERNAME = "${MYSQL.USERNAME}"
+        DB_PASSWORD = "${MYSQL.PASSWORD}"
+        
+        # Redis configuration (will be provided by Railway Redis service)
+        REDIS_HOST = "${REDIS.HOST}"
+        REDIS_PASSWORD = "${REDIS.PASSWORD}"
+        REDIS_PORT = "${REDIS.PORT}"
+        CACHE_DRIVER = "redis"
+        SESSION_DRIVER = "redis"
+        QUEUE_CONNECTION = "redis"
+        
+        # Security settings
+        SESSION_SECURE_COOKIE = "true"
+        SESSION_ENCRYPT = "true"
+        FORCE_HTTPS = "true"
+
+# MySQL Database Service
+[service.mysql]
+    name = "lucrativabet-mysql"
+    memory = "256MB"
+    cpu = "0.25"
+    
+    # MySQL specific settings
+    [service.mysql.env]
+        MYSQL_DATABASE = "lucrativabet"
+        MYSQL_ROOT_PASSWORD = "railway_secure_password_2025"
+
+# Redis Cache Service
+[service.redis]
+    name = "lucrativabet-redis"
+    memory = "128MB"
+    cpu = "0.1"
+    
+    # Redis specific settings
+    [service.redis.env]
+        REDIS_PASSWORD = "railway_redis_password_2025"
+
+# Volume for persistent storage
+[volume.storage]
+    name = "lucrativabet-storage"
+    size = "1GB"
+    mountPath = "/app/storage/app/public"
+
+# Health check configuration
+[healthcheck]
+    path = "/health"
+    interval = "30s"
+    timeout = "10s"
+    retries = 3
+    startPeriod = "40s"
+
+# Domain configuration
+[domain]
+    name = "lucrativabet.railway.app"
+    scheme = "https"
+
+# Environment variables for production
+[env]
+    # Application settings
+    APP_NAME = "Lucrativa Bet"
+    APP_ENV = "production"
+    APP_DEBUG = "false"
+    APP_DEMO = "false"
+    
+    # Security keys (these should be regenerated for production)
+    JWT_SECRET = "jwt_secure_secret_key_2025_generated_for_production"
+    PUSHER_APP_SECRET = "pusher_secure_secret_key_2025_generated"
+    GOOGLE_API_SECRET = "google_api_secret_2025_generated_secure"
+    STRIPE_SECRET = "stripe_api_secret_2025_generated_secure"
+    STRIPE_WEBHOOK_SECRET = "stripe_webhook_secret_2025_generated"
+    
+    # Pusher configuration
+    PUSHER_APP_ID = "6138611"
+    PUSHER_APP_KEY = "jSL647jlthPQkQLyfkDTwmNzkNB5s="
+    PUSHER_HOST = "credkbet.local"
+    PUSHER_PORT = "6001"
+    PUSHER_SCHEME = "http"
+    PUSHER_APP_CLUSTER = "mt1"
+    
+    # Google API
+    GOOGLE_API_KEY = "506408718143-pt505a3la8pktgda0o6624m4hr0nqca7.apps.googleusercontent.com"
+    
+    # Stripe configuration
+    STRIPE_ENABLED = "on"
+    STRIPE_SUBSCRIPTION_ENABLED = "on"
+    STRIPE_BASE_URI = "https://api.stripe.com"
+    STRIPE_KEY = "OndaGames.com"
+    
+    # Mail configuration (using Mailtrap for development)
+    MAIL_MAILER = "smtp"
+    MAIL_HOST = "sandbox.smtp.mailtrap.io"
+    MAIL_PORT = "2525"
+    MAIL_USERNAME = "cd7e378cb24f2d"
+    MAIL_PASSWORD = "1f58d53cf1ddfb"
+    MAIL_ENCRYPTION = "tls"
+    MAIL_FROM_ADDRESS = "hello@example.com"
+    
+    # 2FA token
+    TOKEN_DE_2FA = "000000"
