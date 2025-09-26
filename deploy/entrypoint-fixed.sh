@@ -7,6 +7,9 @@ ROLE=${APP_ROLE:-web}
 if [ "$ROLE" = "web" ]; then
     # Render nginx configuration with the runtime port
     envsubst '$PORT' < /app/docker/nginx.conf.template > /etc/nginx/http.d/default.conf
+    
+    # Set VIEW_COMPILED_PATH environment variable
+    export VIEW_COMPILED_PATH="/tmp/views"
 
     # Extract public storage assets if archive exists and hasn't been unpacked yet
     if [ -f /app/storage_public.tar.xz ] && [ ! -f /app/storage/.public_extracted ]; then
@@ -26,7 +29,10 @@ if [ "$ROLE" = "web" ]; then
     echo "=== /tmp/views Directory Status ===" >&2
     ls -la /tmp/views >&2
     echo "=== View Compiled Path ===" >&2
-    echo "VIEW_COMPILED_PATH: ${VIEW_COMPILED_PATH:-not set}" >&2
+    echo "VIEW_COMPILED_PATH: ${VIEW_COMPILED_PATH}" >&2
+    
+    # Verify the view cache directory exists and is writable
+    php artisan view:clear >/dev/null 2>&1 || true
 
     # Optionally run outstanding migrations when explicitly requested
     if [ "${RUN_MIGRATIONS:-0}" = "1" ]; then
