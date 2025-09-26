@@ -35,6 +35,18 @@ require __DIR__.'/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
+| Fix View Cache Path for Railway
+|--------------------------------------------------------------------------
+|
+| Include our fix to ensure the VIEW_COMPILED_PATH is set correctly
+| before the Laravel application is bootstrapped.
+|
+*/
+
+require __DIR__.'/../bootstrap/view-cache-fix.php';
+
+/*
+|--------------------------------------------------------------------------
 | Run The Application
 |--------------------------------------------------------------------------
 |
