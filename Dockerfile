@@ -75,7 +75,7 @@ RUN chmod 644 /app/composer.json /app/composer.lock
 # Copy runtime configuration assets
 COPY deploy/nginx.conf.template /app/docker/nginx.conf.template
 COPY deploy/supervisord.conf /app/docker/supervisord.conf
-COPY deploy/entrypoint.sh /app/docker/entrypoint.sh
+COPY deploy/entrypoint-fixed.sh /app/docker/entrypoint.sh
 COPY php-optimization.ini /usr/local/etc/php/conf.d/zz-php-optimization.ini
 RUN chmod +x /app/docker/entrypoint.sh
 
@@ -86,8 +86,10 @@ RUN mkdir -p \
         storage/framework/views \
         storage/logs \
         bootstrap/cache \
+        /tmp/views \
     && touch storage/logs/laravel.log \
-    && chown -R www-data:www-data storage bootstrap/cache
+    && chown -R www-data:www-data storage bootstrap/cache /tmp/views \
+    && chmod -R 755 /tmp/views
 
 ENV PORT=8080
 ENV APP_ENV=production

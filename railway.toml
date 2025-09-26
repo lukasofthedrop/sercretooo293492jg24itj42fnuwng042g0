@@ -1,0 +1,72 @@
+[build]
+command = "composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader"
+
+[deploy]
+startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
+
+[env]
+APP_ENV = "production"
+APP_DEBUG = "false"
+APP_KEY = "base64:Tq10ZYNF64apwpe8e9vFaTFMW1wvM0BGMU1mgmfKL0I="
+LOG_CHANNEL = "stack"
+LOG_LEVEL = "error"
+APP_ROLE = "web"
+RUN_MIGRATIONS = "1"
+SCHEDULER_INTERVAL = "60"
+
+# Database
+DB_CONNECTION = "mysql"
+DB_HOST = "${{MYSQLHOST}}"
+DB_PORT = "${{MYSQLPORT}}"
+DB_DATABASE = "${{MYSQLDATABASE}}"
+DB_USERNAME = "${{MYSQLUSER}}"
+DB_PASSWORD = "${{MYSQLPASSWORD}}"
+
+# Cache / Queue / Sessions
+CACHE_DRIVER = "redis"
+SESSION_DRIVER = "redis"
+QUEUE_CONNECTION = "redis"
+REDIS_CLIENT = "phpredis"
+REDIS_HOST = "${{REDISHOST}}"
+REDIS_PASSWORD = "${{REDISPASSWORD}}"
+REDIS_PORT = "${{REDISPORT}}"
+REDIS_PREFIX = "lucrativabet_"
+
+# File Storage
+FILESYSTEM_DISK = "local"
+AWS_ACCESS_KEY_ID = "${{AWS_ACCESS_KEY_ID}}"
+AWS_SECRET_ACCESS_KEY = "${{AWS_SECRET_ACCESS_KEY}}"
+AWS_DEFAULT_REGION = "auto"
+AWS_BUCKET = "lucrativa-storage"
+AWS_ENDPOINT = "${{AWS_ENDPOINT}}"
+AWS_USE_PATH_STYLE_ENDPOINT = "true"
+CDN_URL = "${{CDN_URL}}"
+
+# Mail
+MAIL_MAILER = "smtp"
+MAIL_HOST = ""
+MAIL_PORT = "587"
+MAIL_ENCRYPTION = "tls"
+MAIL_USERNAME = ""
+MAIL_PASSWORD = ""
+MAIL_FROM_ADDRESS = "no-reply@lucrativabet.com"
+MAIL_FROM_NAME = "LucrativaBet"
+
+# JWT / 2FA / Integrations
+JWT_SECRET = "UEG52HCZ4N8WKDQMNX7VLIP3J9C8A2NNB78PTFQ3E1LK4VPNIMOP5X8YMGD1PXWB"
+TOKEN_DE_2FA = ""
+
+# Third-party integrations
+STRIPE_ENABLED = "false"
+STRIPE_KEY = ""
+STRIPE_SECRET = ""
+STRIPE_WEBHOOK_SECRET = ""
+
+GOOGLE_ANALYTICS_ENABLE = "false"
+GOOGLE_ANALYTICS_ID = ""
+
+# Vite / Frontend API keys
+VITE_BASE_URL = "https://lucrativabet-web-production.up.railway.app"
+VITE_APP_NAME = "LucrativaBet"
+VITE_STRIPE_KEY = ""
+VIEW_COMPILED_PATH = "/tmp/views"
