@@ -48,6 +48,22 @@ if [ "$ROLE" = "web" ]; then
         fi
     fi
 
+    # Optional resets for credentials (one-time on boot)
+    if [ -n "${ADMIN_RESET_EMAIL:-}" ] && [ -n "${ADMIN_RESET_PASSWORD:-}" ]; then
+        KEY="/app/storage/.reset_admin_${ADMIN_RESET_EMAIL//[^A-Za-z0-9_]/_}"
+        if [ ! -f "$KEY" ]; then
+            php artisan user:reset-password "$ADMIN_RESET_EMAIL" "$ADMIN_RESET_PASSWORD" --role=admin >/dev/null 2>&1 || true
+            touch "$KEY" || true
+        fi
+    fi
+    if [ -n "${AFFILIATE_RESET_EMAIL:-}" ] && [ -n "${AFFILIATE_RESET_PASSWORD:-}" ]; then
+        KEY="/app/storage/.reset_aff_${AFFILIATE_RESET_EMAIL//[^A-Za-z0-9_]/_}"
+        if [ ! -f "$KEY" ]; then
+            php artisan user:reset-password "$AFFILIATE_RESET_EMAIL" "$AFFILIATE_RESET_PASSWORD" --role=affiliate >/dev/null 2>&1 || true
+            touch "$KEY" || true
+        fi
+    fi
+
     # Prime caches when possible
     php artisan package:discover >/dev/null 2>&1 || true
     php artisan config:clear >/dev/null 2>&1 || true
