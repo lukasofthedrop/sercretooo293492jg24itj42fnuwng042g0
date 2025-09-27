@@ -61,6 +61,9 @@ class AffiliatePanelProvider extends PanelProvider
             ->renderHook(PanelsRenderHook::HEAD_END, function () {
                 return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme-affiliate.css').'">';
             })
+            ->renderHook('panels::auth.head.end', function () {
+                return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme-affiliate.css').'">';
+            })
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups(true)

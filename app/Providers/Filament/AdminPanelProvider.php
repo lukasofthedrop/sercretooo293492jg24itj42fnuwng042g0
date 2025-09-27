@@ -35,6 +35,9 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(PanelsRenderHook::HEAD_END, function () {
                 return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme.css').'">';
             })
+            ->renderHook('panels::auth.head.end', function () {
+                return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme.css').'">';
+            })
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
