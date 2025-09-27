@@ -24,6 +24,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\AffiliateAccess;
+use App\Http\Middleware\InjectLoginTheme;
 use Filament\View\PanelsRenderHook;
 
 class AffiliatePanelProvider extends PanelProvider
@@ -133,6 +134,7 @@ class AffiliatePanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                InjectLoginTheme::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
