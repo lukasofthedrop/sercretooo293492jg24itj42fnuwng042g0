@@ -12,6 +12,14 @@ server {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
+    # Fallback for affiliate theme CSS if missing in image
+    location = /css/custom-filament-theme-affiliate.css {
+        try_files /css/custom-filament-theme-affiliate.css /css/custom-filament-theme.css =404;
+        expires 5m;
+        add_header Cache-Control "public";
+        access_log off;
+    }
+
     location ^~ /storage/ {
         try_files $uri /index.php?$query_string;
     }
