@@ -17,6 +17,30 @@ define('LARAVEL_START', microtime(true));
 
 require __DIR__.'/vendor/autoload.php';
 
+// Hard guard: if someone runs `php artisan serve` in production (e.g., Railway),
+// seamlessly redirect to our production entrypoint (nginx + php-fpm via supervisord).
+// This prevents crashes from Laravel's ServeCommand and ensures the container binds $PORT.
+if (PHP_SAPI === 'cli') {
+    $argv = $_SERVER['argv'] ?? [];
+    $isServe = isset($argv[1]) && $argv[1] === 'serve';
+    $isRailway = getenv('RAILWAY_ENVIRONMENT') || getenv('RAILWAY_PROJECT_ID') || getenv('RAILWAY_SERVICE_ID');
+    $isProd = strtolower((string) getenv('APP_ENV')) === 'production';
+
+    if ($isServe && ($isRailway || $isProd)) {
+        fwrite(STDERR, "[artisan] Intercepting 'php artisan serve' in production. Starting supervisord...\n");
+        $cmd = '/bin/sh';
+        $args = ['-lc', 'exec /app/docker/entrypoint.sh'];
+        // Prefer replacing current process if pcntl is available
+        if (function_exists('pcntl_exec')) {
+            pcntl_exec($cmd, $args, $_ENV);
+            // If pcntl_exec fails, fallback to passthru
+        }
+        $exitCode = 0;
+        passthru($cmd . ' ' . implode(' ', array_map('escapeshellarg', $args)), $exitCode);
+        exit($exitCode);
+    }
+}
+
 $app = require_once __DIR__.'/bootstrap/app.php';
 
 /*

@@ -2,7 +2,9 @@
 command = "composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader"
 
 [deploy]
-startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
+# Use the Docker entrypoint which starts nginx + php-fpm via supervisord.
+# This avoids Laravel's dev server (ServeCommand) in production.
+startCommand = "sh -lc 'exec /app/docker/entrypoint.sh'"
 
 [env]
 APP_ENV = "production"
@@ -70,3 +72,5 @@ VITE_BASE_URL = "https://lucrativabet-web-production.up.railway.app"
 VITE_APP_NAME = "LucrativaBet"
 VITE_STRIPE_KEY = ""
 VIEW_COMPILED_PATH = "/app/storage/framework/views"
+CREATE_TEST_USERS_ON_BOOT = "0"
+USE_CUSTOM_AFFILIATE_PANEL = "false"
