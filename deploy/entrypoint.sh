@@ -8,6 +8,11 @@ if [ "$ROLE" = "web" ]; then
     # Render nginx configuration with the runtime port
     envsubst '$PORT' < /app/docker/nginx.conf.template > /etc/nginx/http.d/default.conf
 
+    # Ensure VIEW_COMPILED_PATH is stable and directories exist
+    export VIEW_COMPILED_PATH="/app/storage/framework/views"
+    mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache || true
+    touch storage/logs/laravel.log || true
+
     # Extract public storage assets if archive exists and hasn't been unpacked yet
     if [ -f /app/storage_public.tar.xz ] && [ ! -f /app/storage/.public_extracted ]; then
         tar -xJf /app/storage_public.tar.xz -C /app
@@ -23,12 +28,21 @@ if [ "$ROLE" = "web" ]; then
         php artisan migrate --force >/dev/null 2>&1 || true
     fi
 
+    # Optionally seed test/admin users once when requested
+    if [ "${RUN_SEEDERS:-0}" = "1" ]; then
+        if [ ! -f /app/storage/.seeded_test_users ]; then
+            php artisan db:seed --class=Database\\Seeders\\TestUsersSeeder >/dev/null 2>&1 || true
+            touch /app/storage/.seeded_test_users || true
+        fi
+    fi
+
     # Prime caches when possible
     php artisan package:discover >/dev/null 2>&1 || true
     php artisan config:clear >/dev/null 2>&1 || true
     php artisan cache:clear >/dev/null 2>&1 || true
     php artisan config:cache >/dev/null 2>&1 || true
     php artisan route:clear >/dev/null 2>&1 || true
+    php artisan view:clear >/dev/null 2>&1 || true
     php artisan view:cache >/dev/null 2>&1 || true
 
     # Ensure the public storage symlink exists even if a real folder slipped into the repo
