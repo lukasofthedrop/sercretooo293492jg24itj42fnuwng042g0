@@ -13,6 +13,16 @@ if [ "$ROLE" = "web" ]; then
     mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache || true
     touch storage/logs/laravel.log || true
 
+    # Ensure affiliate CSS asset exists (serve 200 on /css/custom-filament-theme-affiliate.css)
+    mkdir -p /app/public/css || true
+    if [ ! -f /app/public/css/custom-filament-theme-affiliate.css ]; then
+        if [ -f /app/public/css/custom-filament-theme.css ]; then
+            cp /app/public/css/custom-filament-theme.css /app/public/css/custom-filament-theme-affiliate.css || true
+        else
+            echo "/* fallback affiliate css */" > /app/public/css/custom-filament-theme-affiliate.css || true
+        fi
+    fi
+
     # Extract public storage assets if archive exists and hasn't been unpacked yet
     if [ -f /app/storage_public.tar.xz ] && [ ! -f /app/storage/.public_extracted ]; then
         tar -xJf /app/storage_public.tar.xz -C /app
