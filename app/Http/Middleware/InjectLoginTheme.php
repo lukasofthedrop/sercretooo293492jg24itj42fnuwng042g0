@@ -32,24 +32,22 @@ class InjectLoginTheme
 
         // Admin login: force admin CSS and ensure affiliate CSS not injected
         if ($request->is('admin/login')) {
-            if (strpos($html, $path) === false) {
+            // Ensure admin link exists
+            if (! preg_match('~href=\"?/css/custom-filament-theme\\.css\"?~i', $html)) {
                 $html = $this->injectBeforeHeadEnd($html, $path);
             }
-            // Remove affiliate link if present erroneously
-            $html = str_replace('<link rel="stylesheet" href="'.$affPath.'">', '', $html);
+            // Remove any affiliate link tag variants if present
+            $html = preg_replace('~<link[^>]+href=\"?/css/custom-filament-theme-affiliate\\.css\"?[^>]*>~i', '', $html);
         }
 
         // Affiliate login: force affiliate CSS and remove admin one
         if ($request->is('afiliado/login')) {
-            // Replace admin with affiliate if needed
-            if (strpos($html, $affPath) === false && strpos($html, $path) !== false) {
-                $html = str_replace($path, $affPath, $html);
-            }
-            if (strpos($html, $affPath) === false) {
+            // Remove any admin link tag variants
+            $html = preg_replace('~<link[^>]+href=\"?/css/custom-filament-theme\\.css\"?[^>]*>~i', '', $html);
+            // Ensure affiliate link exists
+            if (! preg_match('~href=\"?/css/custom-filament-theme-affiliate\\.css\"?~i', $html)) {
                 $html = $this->injectBeforeHeadEnd($html, $affPath);
             }
-            // Ensure admin link not present
-            $html = str_replace('<link rel="stylesheet" href="'.$path.'">', '', $html);
         }
 
         $response->setContent($html);
@@ -66,4 +64,3 @@ class InjectLoginTheme
         return substr($html, 0, $pos).$tag.substr($html, $pos);
     }
 }
-
