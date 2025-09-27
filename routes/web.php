@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\LicenseKeyController;
-use App\Http\Controllers\Api\Profile\AffiliateController;
+// Removed alias to avoid duplicate import conflicts in includes
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -155,11 +155,11 @@ Route::get('/escolher-painel', [App\Http\Controllers\LogoutController::class, 'e
 // Caso contrário, deixa o Filament (panel 'afiliado') atender /afiliado.
 
 if (env('USE_CUSTOM_AFFILIATE_PANEL', false)) {
-    Route::get('/afiliado', [AffiliateController::class, 'painelAfiliado'])->name('afiliado');
+    Route::get('/afiliado', [\App\Http\Controllers\Api\Profile\AffiliateController::class, 'painelAfiliado'])->name('afiliado');
 
     Route::middleware(['auth'])->group(function () {
         // Direciona também o dashboard para a versão customizada
-        Route::get('/affiliate/dashboard', [AffiliateController::class, 'painelAfiliado'])->name('affiliate.dashboard');
+        Route::get('/affiliate/dashboard', [\App\Http\Controllers\Api\Profile\AffiliateController::class, 'painelAfiliado'])->name('affiliate.dashboard');
     });
 }
 
