@@ -75,6 +75,9 @@ RUN chmod 644 /app/composer.json /app/composer.lock
 # Ensure latest public CSS assets are copied (bust potential cache)
 COPY public/css /app/public/css
 
+# Ensure affiliate css exists even if missed by copy
+RUN cp -f /app/public/css/custom-filament-theme.css /app/public/css/custom-filament-theme-affiliate.css || true
+
 # Copy runtime configuration assets
 COPY deploy/nginx.conf.template /app/docker/nginx.conf.template
 COPY deploy/supervisord.conf /app/docker/supervisord.conf

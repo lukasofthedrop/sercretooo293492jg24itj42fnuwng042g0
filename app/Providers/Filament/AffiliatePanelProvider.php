@@ -57,6 +57,10 @@ class AffiliatePanelProvider extends PanelProvider
                 MyUsers::class,
                 MyPayments::class,
             ])
+            // Injeta o CSS exclusivo do Afiliado no <head>
+            ->renderHook('panels::head.end', function () {
+                return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme-affiliate.css').'">';
+            })
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups(true)
