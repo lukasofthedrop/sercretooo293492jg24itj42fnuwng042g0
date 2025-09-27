@@ -1,0 +1,17 @@
+0 verbose cli /Users/rkripto/.nvm/versions/node/v22.19.0/bin/node /Users/rkripto/.nvm/versions/node/v22.19.0/lib/node_modules/npm/bin/npm-cli.js
+1 info using npm@10.9.2
+2 info using node@v22.19.0
+3 silly config load:file:/Users/rkripto/.nvm/versions/node/v22.19.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/rkripto/Downloads/lucrativabet-gpt5codex/.npmrc
+5 silly config load:file:/Users/rkripto/.npmrc
+6 silly config load:file:/Users/rkripto/.nvm/versions/node/v22.19.0/etc/npmrc
+7 verbose title npm exec @digitalocean/mcp
+8 verbose argv "exec" "--" "@digitalocean/mcp"
+9 verbose logfile logs-max:10 dir:/Users/rkripto/Downloads/lucrativabet-gpt5codex/npm-cache/_logs/2025-09-26T18_51_04_937Z-
+10 verbose logfile /Users/rkripto/Downloads/lucrativabet-gpt5codex/npm-cache/_logs/2025-09-26T18_51_04_937Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files
+13 silly packumentCache heap:2197815296 maxSize:549453824 maxEntrySize:274726912
+14 http fetch GET 200 https://registry.npmjs.org/@digitalocean%2fmcp 1662ms (cache revalidated)
+15 silly packumentCache heap:2197815296 maxSize:549453824 maxEntrySize:274726912
+16 silly packumentCache heap:2197815296 maxSize:549453824 maxEntrySize:274726912

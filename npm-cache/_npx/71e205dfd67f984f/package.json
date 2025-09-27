@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@digitalocean/mcp": "^1.0.10"
+  }
+}

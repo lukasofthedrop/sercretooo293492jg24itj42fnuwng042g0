@@ -1,0 +1,44 @@
+name: lucrativabet-casino
+region: nyc1
+services:
+- name: web
+  dockerfile_path: Dockerfile
+  source_dir: /
+  run_command: /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+  instance_count: 1
+  instance_size_slug: professional-xs
+  http_port: 80
+  health_check:
+    http_path: /
+  envs:
+  - key: APP_NAME
+    value: "Lucrativa Bet"
+  - key: APP_ENV
+    value: production
+  - key: APP_KEY
+    value: "base64:jP1f2K0S7Xe5JkyxyP8EptDNe8w77mGYOWcEoZyH9FU="
+    type: SECRET
+  - key: APP_DEBUG
+    value: "false"
+  - key: DB_CONNECTION
+    value: mysql
+  - key: DB_HOST
+    value: "lucrativa-mysql-do-user-26563437-0.g.db.ondigitalocean.com"
+  - key: DB_PORT
+    value: "25060"
+  - key: DB_DATABASE
+    value: defaultdb
+  - key: DB_USERNAME
+    value: doadmin
+  - key: DB_PASSWORD
+    value: "AVNS_oKuuPV4DQ3PuRqz-AGj"
+    type: SECRET
+  - key: CACHE_DRIVER
+    value: file
+  - key: SESSION_DRIVER
+    value: file
+  - key: QUEUE_CONNECTION
+    value: sync
+  - key: JWT_SECRET
+    value: "jwt-secret-key-random-string"
+    type: SECRET

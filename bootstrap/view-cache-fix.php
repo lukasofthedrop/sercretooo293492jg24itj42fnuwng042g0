@@ -1,12 +1,10 @@
 <?php
 
-// Force the VIEW_COMPILED_PATH to /tmp/views to fix Railway deployment issues
-if (!isset($_ENV['VIEW_COMPILED_PATH'])) {
-    $_ENV['VIEW_COMPILED_PATH'] = '/tmp/views';
-    putenv('VIEW_COMPILED_PATH=/tmp/views');
-}
+// Force the VIEW_COMPILED_PATH to /app/storage/framework/views for Railway
+$_ENV['VIEW_COMPILED_PATH'] = '/app/storage/framework/views';
+putenv('VIEW_COMPILED_PATH=/app/storage/framework/views');
 
 // Ensure the directory exists
-if (!is_dir('/tmp/views')) {
-    mkdir('/tmp/views', 0755, true);
+if (!is_dir('/app/storage/framework/views')) {
+    @mkdir('/app/storage/framework/views', 0755, true);
 }

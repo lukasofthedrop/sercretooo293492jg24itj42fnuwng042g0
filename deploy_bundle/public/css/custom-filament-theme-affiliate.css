@@ -1,0 +1,80 @@
+/*
+ |------------------------------------------------------------------
+ | LucrativaBet – Affiliate login theme (distinct from Admin)
+ |------------------------------------------------------------------
+ | Escopo apenas para telas simples do Filament (login/forgot/register)
+ */
+
+:root {
+  --aff-bg-900: #06100f;
+  --aff-bg-800: #0a1b1a;
+  --aff-panel: rgba(10, 27, 26, 0.92);
+  --aff-border: rgba(59, 193, 23, 0.35);
+  --aff-shadow: 0 22px 55px rgba(59, 193, 23, 0.22);
+  --aff-text: #e5f6ea;
+  --aff-muted: #b7dbc3;
+  --aff-accent: #3bc117;
+  --aff-accent-strong: #2aa10f;
+}
+
+/* Fundo com identidade do afiliado */
+.fi-simple-layout,
+html, body {
+  background: radial-gradient(circle at 15% -10%, rgba(59,193,23,.24), transparent 40%),
+              radial-gradient(circle at 90% 120%, rgba(59,193,23,.18), transparent 50%),
+              linear-gradient(135deg, var(--aff-bg-800), var(--aff-bg-900)) !important;
+  color: var(--aff-text);
+}
+
+/* Cartão principal do login */
+.fi-simple-main {
+  background: var(--aff-panel);
+  border: 1px solid var(--aff-border);
+  border-radius: 18px;
+  box-shadow: var(--aff-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.fi-simple-header-heading,
+.fi-simple-header-description { color: var(--aff-text); }
+
+.fi-simple-main .fi-input,
+.fi-simple-main .fi-select,
+.fi-simple-main .fi-textarea {
+  background: rgba(4, 12, 11, .7);
+  border: 1px solid rgba(59, 193, 23, .25);
+  color: var(--aff-text);
+  border-radius: 12px;
+}
+
+.fi-simple-main .fi-input:focus,
+.fi-simple-main .fi-select:focus,
+.fi-simple-main .fi-textarea:focus {
+  border-color: var(--aff-accent);
+  box-shadow: 0 0 0 3px rgba(59,193,23,.22);
+}
+
+/* Botão principal com degradê verde da marca */
+.fi-simple-main button[type="submit"],
+.fi-btn--color-primary,
+.fi-btn-primary {
+  background: linear-gradient(135deg, var(--aff-accent), var(--aff-accent-strong));
+  color: #0b1404;
+  border: 1px solid var(--aff-accent-strong);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(59, 193, 23, .28);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.fi-simple-main button[type="submit"]:hover,
+.fi-btn--color-primary:hover,
+.fi-btn-primary:hover { transform: translateY(-1px); }
+
+/* Links secundários (esqueci a senha / registro) */
+.fi-link, .fi-text-sm a { color: var(--aff-muted) !important; }
+.fi-link:hover, .fi-text-sm a:hover { color: var(--aff-accent) !important; }
+
+/* Badge/alerts */
+.fi-notifications { filter: hue-rotate(-20deg) saturate(1.1); }
+

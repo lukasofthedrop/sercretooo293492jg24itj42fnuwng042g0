@@ -27,11 +27,27 @@ class FilamentServiceProvider extends ServiceProvider
             return app()->environment(['local', 'testing']) ? asset($path) : secure_asset($path);
         };
 
+        // Registra CSS base comum
         FilamentAsset::register([
             Css::make('custom-local-stylesheet', $assetUrl('css/filament.css')),
             Css::make('fontawesomepro-stylesheet', $assetUrl('css/fontawesomepro.min.css')),
-            Css::make('custom-filament-theme', $assetUrl('css/custom-filament-theme.css')),
         ]);
+
+        // Carrega CSS específico por painel (admin vs afiliado) durante o evento Serving
+        Filament::serving(function () use ($assetUrl) {
+            $panel = Filament::getCurrentPanel();
+            $panelId = $panel?->getId();
+
+            if ($panelId === 'affiliate') {
+                FilamentAsset::register([
+                    Css::make('custom-filament-theme-affiliate', $assetUrl('css/custom-filament-theme-affiliate.css')),
+                ]);
+            } else {
+                FilamentAsset::register([
+                    Css::make('custom-filament-theme', $assetUrl('css/custom-filament-theme.css')),
+                ]);
+            }
+        });
 
         FilamentAsset::register([
             Js::make('fontawesomepro-script', $assetUrl('js/fontawesomepro.min.js'))->loadedOnRequest(),

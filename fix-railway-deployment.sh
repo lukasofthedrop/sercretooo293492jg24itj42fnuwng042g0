@@ -5,15 +5,15 @@ echo "=== Fixing Railway Deployment Issues ==="
 # This script should be run in the Railway environment or during deployment
 
 # 1. Ensure the VIEW_COMPILED_PATH is set correctly
-export VIEW_COMPILED_PATH="/tmp/views"
+export VIEW_COMPILED_PATH="/app/storage/framework/views"
 
 # 2. Create the necessary directories
-mkdir -p /tmp/views
+mkdir -p /app/storage/framework/views
 mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 
 # 3. Set proper permissions
-chown -R www-data:www-data /tmp/views storage bootstrap/cache
-chmod -R 755 /tmp/views storage bootstrap/cache
+chown -R www-data:www-data /app/storage/framework/views storage bootstrap/cache
+chmod -R 755 /app/storage/framework/views storage bootstrap/cache
 
 # 4. Clear all caches
 php artisan cache:clear

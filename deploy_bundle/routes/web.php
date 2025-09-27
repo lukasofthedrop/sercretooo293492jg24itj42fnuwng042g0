@@ -141,7 +141,9 @@ Route::get('/escolher-painel', [App\Http\Controllers\LogoutController::class, 'e
 
 // DASHBOARD DO AFILIADO - ANTES DO CATCH-ALL
 Route::middleware(['auth'])->group(function () {
-    Route::get('/affiliate/dashboard', [AffiliateController::class, 'dashboard'])->name('affiliate.dashboard');
+    // Usa o painel customizado do afiliado (não Filament)
+    Route::get('/affiliate/dashboard', [AffiliateController::class, 'painelAfiliado'])->name('affiliate.dashboard');
+    Route::get('/afiliado', [AffiliateController::class, 'painelAfiliado'])->name('afiliado');
 });
 
 // Teste simples
