@@ -22,6 +22,8 @@ if [ "$ROLE" = "web" ]; then
             echo "/* fallback affiliate css */" > /app/public/css/custom-filament-theme-affiliate.css || true
         fi
     fi
+    echo "=== Public CSS Directory ===" >&2
+    ls -la /app/public/css >&2 || true
 
     # Extract public storage assets if archive exists and hasn't been unpacked yet
     if [ -f /app/storage_public.tar.xz ] && [ ! -f /app/storage/.public_extracted ]; then
