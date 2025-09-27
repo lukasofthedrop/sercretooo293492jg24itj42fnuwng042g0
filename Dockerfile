@@ -41,6 +41,7 @@ RUN apk add --no-cache \
         curl \
         git \
         gettext \
+        ca-certificates \
         mysql-client \
         nginx \
         supervisor \
@@ -71,6 +72,12 @@ RUN apk add --no-cache \
 # Copy application code (including pre-built public assets)
 COPY --from=vendor /app /app
 RUN chmod 644 /app/composer.json /app/composer.lock
+
+# Hotfix: ensure no duplicate AffiliateController alias remains in routes
+# This avoids fatal "name is already in use" if a duplicate import slips in.
+RUN sed -i \
+    '/^use[[:space:]]\+App\\\\Http\\\\Controllers\\\\Api\\\\Profile\\\\AffiliateController;$/d' \
+    /app/routes/web.php || true
 
 # Ensure latest public CSS assets are copied (bust potential cache)
 COPY public/css /app/public/css
