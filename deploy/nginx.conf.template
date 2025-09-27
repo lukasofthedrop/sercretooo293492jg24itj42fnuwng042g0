@@ -13,14 +13,9 @@ server {
     }
 
     # Fallback for affiliate theme CSS if missing in image
+    # Fallback estável para o CSS do afiliado (responde 200 mesmo se o arquivo faltar)
     location = /css/custom-filament-theme-affiliate.css {
-        # Serve o CSS de afiliado; se não existir, devolve o CSS de admin sob o mesmo path
-        # Usamos alias para mapear diretamente ao arquivo de admin quando necessário.
-        if (-f $document_root/css/custom-filament-theme-affiliate.css) {
-            try_files $uri =200;
-        }
-        alias /app/public/css/custom-filament-theme.css;
-        types { text/css css; }
+        try_files /css/custom-filament-theme-affiliate.css /css/custom-filament-theme.css =404;
         expires 5m;
         add_header Cache-Control "public";
         access_log off;

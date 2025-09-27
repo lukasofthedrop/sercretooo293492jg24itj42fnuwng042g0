@@ -32,20 +32,22 @@ class InjectLoginTheme
 
         // Admin login: force admin CSS and ensure affiliate CSS not injected
         if ($request->is('admin/login')) {
-            // Ensure admin link exists
-            if (! preg_match('~href=\"?/css/custom-filament-theme\\.css\"?~i', $html)) {
+            // Remove any affiliate link (absolute or relative, com ou sem query)
+            $html = preg_replace('~<link[^>]+href=\"[^\"]*/css/custom-filament-theme-affiliate\\.css(?:\?[^\"]*)?\"[^>]*>~i', '', $html);
+            // Garante presença do admin CSS (se estiver ausente)
+            if (! preg_match('~href=\"[^\"]*/css/custom-filament-theme\\.css(?:\?[^\"]*)?\"~i', $html)) {
                 $html = $this->injectBeforeHeadEnd($html, $path);
             }
-            // Remove any affiliate link tag variants if present
-            $html = preg_replace('~<link[^>]+href=\"?/css/custom-filament-theme-affiliate\\.css\"?[^>]*>~i', '', $html);
         }
 
-        // Affiliate login: force affiliate CSS and remove admin one
+        // Affiliate login: force affiliate CSS e remove admin
         if ($request->is('afiliado/login')) {
-            // Remove any admin link tag variants
-            $html = preg_replace('~<link[^>]+href=\"?/css/custom-filament-theme\\.css\"?[^>]*>~i', '', $html);
-            // Ensure affiliate link exists
-            if (! preg_match('~href=\"?/css/custom-filament-theme-affiliate\\.css\"?~i', $html)) {
+            // Troca o admin por affiliate quando presente
+            $html = preg_replace('~href=\"[^\"]*/css/custom-filament-theme\\.css((?:\?[^\"]*)?)\"~i', 'href="'.$affPath.'$1"', $html);
+            // Remove duplicados de affiliate (se houver vários)
+            $html = preg_replace('~(<link[^>]+href=\"[^\"]*/css/custom-filament-theme-affiliate\\.css(?:\?[^\"]*)?\"[^>]*>)(?=.*\1)~is', '', $html, -1);
+            // Garante presença do affiliate CSS
+            if (! preg_match('~href=\"[^\"]*/css/custom-filament-theme-affiliate\\.css(?:\?[^\"]*)?\"~i', $html)) {
                 $html = $this->injectBeforeHeadEnd($html, $affPath);
             }
         }
