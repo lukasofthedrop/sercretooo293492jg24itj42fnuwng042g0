@@ -33,26 +33,7 @@ class FilamentServiceProvider extends ServiceProvider
             Css::make('fontawesomepro-stylesheet', $assetUrl('css/fontawesomepro.min.css')),
         ]);
 
-        // Carrega CSS específico por painel (admin vs afiliado) durante o evento Serving
-        Filament::serving(function () use ($assetUrl) {
-            $panel = Filament::getCurrentPanel();
-            $panelId = $panel?->getId();
-
-            // Fallback para detecção por URL quando o panel ainda não está resolvido (ex.: tela de login)
-            $isAffiliateContext = $panelId === 'affiliate'
-                || request()->is('afiliado*');
-
-            if ($isAffiliateContext) {
-                FilamentAsset::register([
-                    Css::make('custom-filament-theme-affiliate', $assetUrl('css/custom-filament-theme-affiliate.css')),
-                ]);
-                return;
-            }
-
-            FilamentAsset::register([
-                Css::make('custom-filament-theme', $assetUrl('css/custom-filament-theme.css')),
-            ]);
-        });
+        // CSS específico de cada painel agora é injetado diretamente nos PanelProviders via renderHook.
 
         FilamentAsset::register([
             Js::make('fontawesomepro-script', $assetUrl('js/fontawesomepro.min.js'))->loadedOnRequest(),

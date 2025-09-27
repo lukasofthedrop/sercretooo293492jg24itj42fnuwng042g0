@@ -8,6 +8,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -32,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile()
             // Garante inclusão do CSS exclusivo do Admin no <head>
-            ->renderHook('panels::head.end', function () {
+            ->renderHook(PanelsRenderHook::HEAD_END, function () {
                 return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme.css').'">';
             })
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

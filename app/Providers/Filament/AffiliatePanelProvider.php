@@ -24,6 +24,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\AffiliateAccess;
+use Filament\View\PanelsRenderHook;
 
 class AffiliatePanelProvider extends PanelProvider
 {
@@ -58,7 +59,7 @@ class AffiliatePanelProvider extends PanelProvider
                 MyPayments::class,
             ])
             // Injeta o CSS exclusivo do Afiliado no <head>
-            ->renderHook('panels::head.end', function () {
+            ->renderHook(PanelsRenderHook::HEAD_END, function () {
                 return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme-affiliate.css').'">';
             })
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
