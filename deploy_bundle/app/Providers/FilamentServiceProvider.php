@@ -38,15 +38,18 @@ class FilamentServiceProvider extends ServiceProvider
             $panel = \Filament\Facades\Filament::getCurrentPanel();
             $panelId = $panel?->getId();
 
-            if ($panelId === 'affiliate') {
+            $isAffiliateContext = $panelId === 'affiliate' || request()->is('afiliado*');
+
+            if ($isAffiliateContext) {
                 FilamentAsset::register([
                     Css::make('custom-filament-theme-affiliate', $assetUrl('css/custom-filament-theme-affiliate.css')),
                 ]);
-            } else {
-                FilamentAsset::register([
-                    Css::make('custom-filament-theme', $assetUrl('css/custom-filament-theme.css')),
-                ]);
+                return;
             }
+
+            FilamentAsset::register([
+                Css::make('custom-filament-theme', $assetUrl('css/custom-filament-theme.css')),
+            ]);
         });
 
         FilamentAsset::register([
