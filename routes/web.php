@@ -6,6 +6,7 @@ use App\Models\Game;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\DistributionController;
@@ -131,7 +132,17 @@ Route::prefix('aureolink')->group(function () {
 include_once(__DIR__ . '/2fa.php');
 
 // LOGIN ROUTE FOR AUTHENTICATION
-Route::get('/login', function() {
+// Redirects to the proper panel login based on context (affiliate vs admin)
+Route::get('/login', function (Request $request) {
+    $panel = $request->query('panel');
+    $referer = (string) $request->headers->get('referer', '');
+    $path = ltrim($request->path(), '/');
+
+    // Explicit query param takes priority
+    if ($panel === 'affiliate' || str_contains($referer, '/afiliado') || str_starts_with($path, 'afiliado')) {
+        return redirect('/afiliado/login');
+    }
+
     return redirect('/admin/login');
 })->name('login');
 
@@ -140,15 +151,21 @@ Route::get('/logout-completo', [App\Http\Controllers\LogoutController::class, 'l
 Route::get('/escolher-painel', [App\Http\Controllers\LogoutController::class, 'escolherPainel'])->name('escolher.painel');
 
 // DASHBOARD DO AFILIADO - ANTES DO CATCH-ALL
-// Afiliado deve usar o painel custom (não Filament)
-use App\Http\Controllers\Api\Profile\AffiliateController;
+// Se USE_CUSTOM_AFFILIATE_PANEL=true no .env, usa o painel custom.
+// Caso contrário, deixa o Filament (panel 'afiliado') atender /afiliado.
 
-Route::get('/afiliado', [AffiliateController::class, 'painelAfiliado'])->name('afiliado');
+if (env('USE_CUSTOM_AFFILIATE_PANEL', false)) {
+    Route::get('/afiliado', [AffiliateController::class, 'painelAfiliado'])->name('afiliado');
 
-Route::middleware(['auth'])->group(function () {
-    // Direciona também o dashboard para a versão customizada
-    Route::get('/affiliate/dashboard', [AffiliateController::class, 'painelAfiliado'])->name('affiliate.dashboard');
-});
+    Route::middleware(['auth'])->group(function () {
+        // Direciona também o dashboard para a versão customizada
+        Route::get('/affiliate/dashboard', [AffiliateController::class, 'painelAfiliado'])->name('affiliate.dashboard');
+    });
+}
+
+// Ensure /afiliado resolves to affiliate login when not using custom panel
+// This avoids hitting the catch-all route and ensures the correct visual
+Route::redirect('/afiliado', '/afiliado/login')->name('afiliado.login.redirect');
 
 // Teste simples
 Route::get('/teste-afiliado', function() {
