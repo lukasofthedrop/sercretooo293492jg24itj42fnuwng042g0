@@ -165,6 +165,24 @@ if (env('USE_CUSTOM_AFFILIATE_PANEL', false)) {
     });
 }
 
+// Exibir login do painel diretamente em /admin sem mudar a URL
+Route::get('/admin', function () {
+    $sub = \Illuminate\Http\Request::create('/admin/login', 'GET');
+    $response = app()->handle($sub);
+    return response($response->getContent(), 200)
+        ->withHeaders($response->headers->all());
+})->name('admin.entry');
+
+// Exibir login do painel de afiliado diretamente em /afiliado quando não estiver usando painel custom
+if (! env('USE_CUSTOM_AFFILIATE_PANEL', false)) {
+    Route::get('/afiliado', function () {
+        $sub = \Illuminate\Http\Request::create('/afiliado/login', 'GET');
+        $response = app()->handle($sub);
+        return response($response->getContent(), 200)
+            ->withHeaders($response->headers->all());
+    })->name('afiliado.entry');
+}
+
 // /afiliado é tratado no Nginx para exibir o login sem alterar a URL
 
 // Teste simples
