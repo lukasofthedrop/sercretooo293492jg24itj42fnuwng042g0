@@ -65,6 +65,6 @@ class Top5GamesInfographic extends BaseWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->check() && auth()->user()->hasRole('admin');
     }
 }
