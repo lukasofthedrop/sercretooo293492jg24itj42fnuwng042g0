@@ -225,11 +225,14 @@ class GameController extends Controller
      */
     public function allGames(Request $request)
     {
+        // Always return a flat array of games for the frontend
+        // The built frontend expects an array, not a paginator object
         try {
-            $games = $this->buildGamePaginator($request);
+            $paginator = $this->buildGamePaginator($request);
+            $items = method_exists($paginator, 'items') ? $paginator->items() : [];
 
-            if ($games->total() > 0) {
-                return response()->json(['games' => $games]);
+            if (!empty($items)) {
+                return response()->json($items);
             }
 
             Log::info('Game catalog empty, falling back to static dataset.');
@@ -239,7 +242,18 @@ class GameController extends Controller
             ]);
         }
 
-        return response()->json($this->buildFallbackGames($request));
+        $fallback = $this->buildFallbackGames($request);
+        $games = $fallback['games'] ?? [];
+
+        if ($games instanceof LengthAwarePaginator) {
+            return response()->json($games->items());
+        }
+
+        if (is_array($games)) {
+            return response()->json($games);
+        }
+
+        return response()->json([]);
     }
 
     private function buildGamePaginator(Request $request): LengthAwarePaginator

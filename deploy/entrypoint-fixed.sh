@@ -8,8 +8,9 @@ if [ "$ROLE" = "web" ]; then
     # Render nginx configuration with the runtime port
     envsubst '$PORT' < /app/docker/nginx.conf.template > /etc/nginx/http.d/default.conf
     
-    # Set VIEW_COMPILED_PATH environment variable to Laravel storage path
-    export VIEW_COMPILED_PATH="/app/storage/framework/views"
+    # Respect preset VIEW_COMPILED_PATH or default to fast, ephemeral disk
+    # Using /tmp/views avoids stale cache paths after deployments
+    export VIEW_COMPILED_PATH="${VIEW_COMPILED_PATH:-/tmp/views}"
 
     # Extract public storage assets if archive exists and hasn't been unpacked yet
     if [ -f /app/storage_public.tar.xz ] && [ ! -f /app/storage/.public_extracted ]; then

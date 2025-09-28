@@ -71,6 +71,8 @@ GOOGLE_ANALYTICS_ID = ""
 VITE_BASE_URL = "https://lucrativabet-web-production.up.railway.app"
 VITE_APP_NAME = "LucrativaBet"
 VITE_STRIPE_KEY = ""
-VIEW_COMPILED_PATH = "/app/storage/framework/views"
+# Compiled Blade cache should live on ephemeral disk in Railway
+# to avoid file permission/stat issues at /app/storage/framework/views
+VIEW_COMPILED_PATH = "/tmp/views"
 CREATE_TEST_USERS_ON_BOOT = "0"
 USE_CUSTOM_AFFILIATE_PANEL = "false"
