@@ -38,7 +38,7 @@ class PaymentSetting extends Page implements HasForms
 
     public static function canView(Model $record): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->check() && auth()->user()->hasRole('admin');
     }
 
     public function mount(): void

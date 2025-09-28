@@ -19,6 +19,6 @@ class DetailSetting extends Page
      */
     public static function canView(Model $record): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->check() && auth()->user()->hasRole('admin');
     }
 }
