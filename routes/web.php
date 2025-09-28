@@ -246,15 +246,7 @@ include_once(__DIR__ . '/groups/layouts/app.php');
 //     Route::delete('/{id}', [LicenseKeyController::class, 'destroy'])->name('license.destroy');
 // });
 
-// AureoLink Gateway Routes
-Route::prefix('aureolink')->group(function () {
-    Route::post('/webhook', [App\Http\Controllers\AureoLinkController::class, 'webhook'])->name('aureolink.webhook');
-    Route::post('/deposit', [App\Http\Controllers\AureoLinkController::class, 'createDeposit'])->name('aureolink.deposit');
-    Route::post('/withdrawal', [App\Http\Controllers\AureoLinkController::class, 'createWithdrawal'])->name('aureolink.withdrawal');
-    Route::get('/transaction/{id}/status', [App\Http\Controllers\AureoLinkController::class, 'checkTransactionStatus'])->name('aureolink.transaction.status');
-});
-
-// AureoLink Gateway Routes
+// AureoLink Gateway Routes (definido uma vez)
 Route::prefix('aureolink')->group(function () {
     Route::post('/webhook', [App\Http\Controllers\AureoLinkController::class, 'webhook'])->name('aureolink.webhook');
     Route::post('/deposit', [App\Http\Controllers\AureoLinkController::class, 'createDeposit'])->name('aureolink.deposit');
