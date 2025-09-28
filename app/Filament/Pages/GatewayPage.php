@@ -32,12 +32,12 @@ class GatewayPage extends Page
      */
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole('admin'); // Controla o acesso total à página
+        return auth()->check() && auth()->user()->hasRole('admin');
     }
     
     public static function canView(): bool
     {
-        return auth()->user()->hasRole('admin'); // Controla a visualização de elementos específicos
+        return auth()->check() && auth()->user()->hasRole('admin');
     }
 
     /**

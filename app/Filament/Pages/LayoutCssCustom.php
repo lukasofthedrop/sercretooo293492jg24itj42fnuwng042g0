@@ -38,12 +38,14 @@ class LayoutCssCustom extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole('admin'); // Controla o acesso total à página
+        // Evita erro quando não autenticado (ex.: tela de login)
+        return auth()->check() && auth()->user()->hasRole('admin');
     }
     
     public static function canView(): bool
     {
-        return auth()->user()->hasRole('admin'); // Controla a visualização de elementos específicos
+        // Evita erro quando não autenticado (ex.: tela de login)
+        return auth()->check() && auth()->user()->hasRole('admin');
     }
 
     public function mount(): void 
@@ -278,4 +280,3 @@ class LayoutCssCustom extends Page implements HasForms
         return $this->uploadFile($file);
     }
 }
-
