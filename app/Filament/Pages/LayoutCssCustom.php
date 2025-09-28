@@ -278,3 +278,4 @@ class LayoutCssCustom extends Page implements HasForms
         return $this->uploadFile($file);
     }
 }
+

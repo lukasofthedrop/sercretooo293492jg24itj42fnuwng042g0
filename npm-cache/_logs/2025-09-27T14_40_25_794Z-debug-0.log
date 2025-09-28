@@ -1,0 +1,22 @@
+0 verbose cli /Users/rkripto/.nvm/versions/node/v22.19.0/bin/node /Users/rkripto/.nvm/versions/node/v22.19.0/lib/node_modules/npm/bin/npm-cli.js
+1 info using npm@10.9.2
+2 info using node@v22.19.0
+3 silly config load:file:/Users/rkripto/.nvm/versions/node/v22.19.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/rkripto/Downloads/lucrativabet-gpt5codex/.npmrc
+5 silly config load:file:/Users/rkripto/.npmrc
+6 silly config load:file:/Users/rkripto/.nvm/versions/node/v22.19.0/etc/npmrc
+7 verbose title npm exec desktop-commander config --help
+8 verbose argv "exec" "--yes" "--package" "@wonderwhy-er/desktop-commander" "--" "desktop-commander" "config" "--help"
+9 verbose logfile logs-max:10 dir:/Users/rkripto/Downloads/lucrativabet-gpt5codex/npm-cache/_logs/2025-09-27T14_40_25_794Z-
+10 verbose logfile /Users/rkripto/Downloads/lucrativabet-gpt5codex/npm-cache/_logs/2025-09-27T14_40_25_794Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly packumentCache heap:2197815296 maxSize:549453824 maxEntrySize:274726912
+13 silly logfile done cleaning log files
+14 http fetch GET 200 https://registry.npmjs.org/@wonderwhy-er%2fdesktop-commander 231ms (cache revalidated)
+15 silly packumentCache heap:2197815296 maxSize:549453824 maxEntrySize:274726912
+16 verbose cwd /Users/rkripto/Downloads/lucrativabet-gpt5codex
+17 verbose os Darwin 24.1.0
+18 verbose node v22.19.0
+19 verbose npm  v10.9.2
+20 verbose exit 0
+21 info ok

@@ -25,3 +25,12 @@ public/assets/webfonts
 storage_public.tar.xz*
 storage/app/public
 storage_public.tar.xz.chunk*
+deploy_bundle
+doctl.exe
+doctl.zip
+.git
+.vscode
+npm-cache
+*.sqlite
+*.sqlite-journal
+*.log

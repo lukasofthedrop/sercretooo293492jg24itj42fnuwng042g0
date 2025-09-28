@@ -55,10 +55,21 @@ Apesar de todas as alterações, o erro ainda persiste. Isso sugere que:
 3. Verificar se a variável `VIEW_COMPILED_PATH` está definida como `/tmp/views`
 4. Se não estiver, adicionar esta variável
 
+### Opção 3.1: Criar usuários de teste (login)
+Para liberar login rápido com as mesmas credenciais usadas localmente, foi adicionado um gatilho opcional:
+
+- `CREATE_TEST_USERS_ON_BOOT=1` (apenas uma vez). O entrypoint executará `php artisan user:create-affiliate` e criará um marcador em `storage/.test_users_seeded` para não repetir. Depois disso, volte a variável para `0`.
+
+- Credenciais de exemplo criadas: `afiliado@lucrativa.bet / afiliado123` e `lucrativa@bet.com / foco123@`.
+
 ### Opção 4: Verificar o Build do Docker
 1. Verificar se o Dockerfile está correto
 2. Verificar se o entrypoint está sendo executado corretamente
 3. Verificar se os diretórios estão sendo criados com as permissões corretas
+4. A imagem agora inclui `ca-certificates` para conexões MySQL TLS (DigitalOcean, se optar por DB externo)
+
+### Opção 4.1: CSS de tema do Filament
+- Os painéis Admin e Afiliado agora injetam o CSS com cache-busting automático (`?v=timestamp`). Se o visual não atualizar, force um novo deploy e limpe cache de CDN/navegador.
 
 ### Opção 5: Contatar o Suporte do Railway
 Se nenhuma das opções acima funcionar, contatar o suporte do Railway para obter ajuda.

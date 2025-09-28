@@ -48,18 +48,26 @@ if [ "$ROLE" = "web" ]; then
         fi
     fi
 
-    # Optional resets for credentials (one-time on boot)
+    # Optional resets for credentials (idempotent, re-run when password changes or forced)
+    # Set ADMIN_RESET_FORCE=1 to always run on boot.
     if [ -n "${ADMIN_RESET_EMAIL:-}" ] && [ -n "${ADMIN_RESET_PASSWORD:-}" ]; then
-        KEY="/app/storage/.reset_admin_${ADMIN_RESET_EMAIL//[^A-Za-z0-9_]/_}"
-        if [ ! -f "$KEY" ]; then
+        ADMIN_KEY_SAFE="${ADMIN_RESET_EMAIL//[^A-Za-z0-9_]/_}"
+        ADMIN_PASS_HASH=$(printf "%s" "$ADMIN_RESET_PASSWORD" | sha1sum | awk '{print $1}')
+        KEY="/app/storage/.reset_admin_${ADMIN_KEY_SAFE}_${ADMIN_PASS_HASH}"
+        if [ "${ADMIN_RESET_FORCE:-0}" = "1" ] || [ ! -f "$KEY" ]; then
             php artisan user:reset-password "$ADMIN_RESET_EMAIL" "$ADMIN_RESET_PASSWORD" --role=admin >/dev/null 2>&1 || true
+            # Clean older markers for same email to avoid clutter
+            rm -f "/app/storage/.reset_admin_${ADMIN_KEY_SAFE}_"* >/dev/null 2>&1 || true
             touch "$KEY" || true
         fi
     fi
     if [ -n "${AFFILIATE_RESET_EMAIL:-}" ] && [ -n "${AFFILIATE_RESET_PASSWORD:-}" ]; then
-        KEY="/app/storage/.reset_aff_${AFFILIATE_RESET_EMAIL//[^A-Za-z0-9_]/_}"
-        if [ ! -f "$KEY" ]; then
+        AFF_KEY_SAFE="${AFFILIATE_RESET_EMAIL//[^A-Za-z0-9_]/_}"
+        AFF_PASS_HASH=$(printf "%s" "$AFFILIATE_RESET_PASSWORD" | sha1sum | awk '{print $1}')
+        KEY="/app/storage/.reset_aff_${AFF_KEY_SAFE}_${AFF_PASS_HASH}"
+        if [ "${AFFILIATE_RESET_FORCE:-0}" = "1" ] || [ ! -f "$KEY" ]; then
             php artisan user:reset-password "$AFFILIATE_RESET_EMAIL" "$AFFILIATE_RESET_PASSWORD" --role=affiliate >/dev/null 2>&1 || true
+            rm -f "/app/storage/.reset_aff_${AFF_KEY_SAFE}_"* >/dev/null 2>&1 || true
             touch "$KEY" || true
         fi
     fi

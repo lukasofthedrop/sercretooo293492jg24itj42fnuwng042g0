@@ -51,6 +51,35 @@ if [ "$ROLE" = "web" ]; then
     php artisan route:cache >/dev/null 2>&1 || true
     php artisan view:cache >/dev/null 2>&1 || true
 
+    # Optionally create safe test users once for production debug/logins
+    if [ "${CREATE_TEST_USERS_ON_BOOT:-0}" = "1" ] && [ ! -f /app/storage/.test_users_seeded ]; then
+        echo "=== Creating test users (one-time) ===" >&2
+        php artisan user:create-affiliate >/dev/null 2>&1 || true
+        touch /app/storage/.test_users_seeded || true
+    fi
+
+    # Optional resets for credentials (idempotent; re-run if password changes or forced)
+    if [ -n "${ADMIN_RESET_EMAIL:-}" ] && [ -n "${ADMIN_RESET_PASSWORD:-}" ]; then
+        ADMIN_KEY_SAFE="${ADMIN_RESET_EMAIL//[^A-Za-z0-9_]/_}"
+        ADMIN_PASS_HASH=$(printf "%s" "$ADMIN_RESET_PASSWORD" | sha1sum | awk '{print $1}')
+        KEY="/app/storage/.reset_admin_${ADMIN_KEY_SAFE}_${ADMIN_PASS_HASH}"
+        if [ "${ADMIN_RESET_FORCE:-0}" = "1" ] || [ ! -f "$KEY" ]; then
+            php artisan user:reset-password "$ADMIN_RESET_EMAIL" "$ADMIN_RESET_PASSWORD" --role=admin >/dev/null 2>&1 || true
+            rm -f "/app/storage/.reset_admin_${ADMIN_KEY_SAFE}_"* >/dev/null 2>&1 || true
+            touch "$KEY" || true
+        fi
+    fi
+    if [ -n "${AFFILIATE_RESET_EMAIL:-}" ] && [ -n "${AFFILIATE_RESET_PASSWORD:-}" ]; then
+        AFF_KEY_SAFE="${AFFILIATE_RESET_EMAIL//[^A-Za-z0-9_]/_}"
+        AFF_PASS_HASH=$(printf "%s" "$AFFILIATE_RESET_PASSWORD" | sha1sum | awk '{print $1}')
+        KEY="/app/storage/.reset_aff_${AFF_KEY_SAFE}_${AFF_PASS_HASH}"
+        if [ "${AFFILIATE_RESET_FORCE:-0}" = "1" ] || [ ! -f "$KEY" ]; then
+            php artisan user:reset-password "$AFFILIATE_RESET_EMAIL" "$AFFILIATE_RESET_PASSWORD" --role=affiliate >/dev/null 2>&1 || true
+            rm -f "/app/storage/.reset_aff_${AFF_KEY_SAFE}_"* >/dev/null 2>&1 || true
+            touch "$KEY" || true
+        fi
+    fi
+
     # Ensure the public storage symlink exists even if a real folder slipped into the repo
     if [ ! -L public/storage ]; then
         rm -rf public/storage >/dev/null 2>&1 || true

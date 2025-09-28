@@ -67,7 +67,7 @@ class TwoFactorMiddleware
             return $next($request);
         }
 
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('Admin')) {
             \Log::info('TwoFactorMiddleware: user has admin role', [
                 'has_2fa_secret' => !empty($user->two_factor_secret),
                 'has_2fa_confirmed' => !empty($user->two_factor_confirmed_at),

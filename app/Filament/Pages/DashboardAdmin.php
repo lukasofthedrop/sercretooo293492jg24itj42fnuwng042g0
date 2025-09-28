@@ -6,6 +6,7 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\StatsOverview;
 
 
+use App\Livewire\WalletOverview;
 use Illuminate\Support\HtmlString;
 
 use Filament\Forms\Components\DatePicker;
@@ -70,15 +71,14 @@ class DashboardAdmin extends \Filament\Pages\Dashboard
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getWidgets(): array
     {
         return [
+            WalletOverview::class,
             StatsOverview::class,
-            Top5GamesChart::class,
-            UsersRankingColumnWidget::class,
-            TopUsersOverview::class,
         ];
     }
 }
+

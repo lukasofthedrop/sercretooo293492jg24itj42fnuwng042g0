@@ -60,10 +60,23 @@ class AffiliatePanelProvider extends PanelProvider
                 MyPayments::class,
             ])
             ->renderHook(PanelsRenderHook::HEAD_END, function () {
-                return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme-affiliate.css').'">';
+                $file = public_path('css/custom-filament-theme-affiliate.css');
+                // Fallback to shared theme if affiliate css is missing
+                if (! file_exists($file)) {
+                    $file = public_path('css/custom-filament-theme.css');
+                }
+                $href = asset(str_replace(public_path() . '/', '', $file));
+                $v = file_exists($file) ? filemtime($file) : time();
+                return '<link rel="stylesheet" href="' . $href . '?v=' . $v . '">';
             })
             ->renderHook('panels::auth.head.end', function () {
-                return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme-affiliate.css').'">';
+                $file = public_path('css/custom-filament-theme-affiliate.css');
+                if (! file_exists($file)) {
+                    $file = public_path('css/custom-filament-theme.css');
+                }
+                $href = asset(str_replace(public_path() . '/', '', $file));
+                $v = file_exists($file) ? filemtime($file) : time();
+                return '<link rel="stylesheet" href="' . $href . '?v=' . $v . '">';
             })
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()

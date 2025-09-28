@@ -8,6 +8,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Enums\ThemeMode;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -24,20 +25,26 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->darkMode(condition: true, isForced: true)
+            ->defaultThemeMode(ThemeMode::Dark)
             ->colors([
                 'primary' => Color::Green,
                 'gray' => Color::Gray,
             ])
-            ->brandLogo(asset('assets/images/logo.svg'))
+            ->brandLogo(fn () => view('filament.components.logo'))
             ->login()
             ->registration()
             ->passwordReset()
             ->profile()
             ->renderHook(PanelsRenderHook::HEAD_END, function () {
-                return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme.css').'">';
+                $file = public_path('css/custom-filament-theme.css');
+                $v = file_exists($file) ? filemtime($file) : time();
+                return '<link rel="stylesheet" href="' . asset('css/custom-filament-theme.css') . '?v=' . $v . '">';
             })
             ->renderHook('panels::auth.head.end', function () {
-                return '<link rel="stylesheet" href="'.asset('css/custom-filament-theme.css').'">';
+                $file = public_path('css/custom-filament-theme.css');
+                $v = file_exists($file) ? filemtime($file) : time();
+                return '<link rel="stylesheet" href="' . asset('css/custom-filament-theme.css') . '?v=' . $v . '">';
             })
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
