@@ -31,7 +31,7 @@ class InjectLoginTheme
         }
 
         // Admin login: force admin CSS and ensure affiliate CSS not injected
-        if ($request->is('admin/login')) {
+        if ($request->is('admin/login') || $request->is('admin')) {
             // Remove any affiliate link (absolute or relative, com ou sem query)
             $html = preg_replace('~<link[^>]+href=\"[^\"]*/css/custom-filament-theme-affiliate\\.css(?:\?[^\"]*)?\"[^>]*>~i', '', $html);
             // Garante presença do admin CSS (se estiver ausente)
@@ -41,7 +41,7 @@ class InjectLoginTheme
         }
 
         // Affiliate login: force affiliate CSS e remove admin
-        if ($request->is('afiliado/login')) {
+        if ($request->is('afiliado/login') || $request->is('afiliado')) {
             // Troca o admin por affiliate quando presente
             $html = preg_replace('~href=\"[^\"]*/css/custom-filament-theme\\.css((?:\?[^\"]*)?)\"~i', 'href="'.$affPath.'$1"', $html);
             // Remove duplicados de affiliate (se houver vários)

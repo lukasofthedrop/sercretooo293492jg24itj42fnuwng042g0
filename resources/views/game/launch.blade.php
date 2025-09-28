@@ -40,18 +40,28 @@ async function tryLaunch() {
 
     if (res.ok && data && data.gameUrl) {
       statusEl.textContent = 'Abrindo o jogo…';
-      window.location.href = data.gameUrl;
+      window.open(data.gameUrl, '_blank');
+      actionsEl.innerHTML = `<div class="mt"><a class="btn btn-alt" href="/">Voltar</a></div>`;
       return;
     }
 
     if (data && data.error) {
       statusEl.innerHTML = `<span class="err">${data.error}</span>`;
-      actionsEl.innerHTML = `
-        <div class="mt">
-          <a class="btn btn-primary" href="/admin">Entrar / Registrar</a>
-          <a class="btn btn-alt" href="/">Voltar</a>
-        </div>
-      `;
+      if (data.action === 'deposit') {
+        actionsEl.innerHTML = `
+          <div class="mt">
+            <a class="btn btn-primary" href="/admin">Fazer Depósito</a>
+            <a class="btn btn-alt" href="/">Voltar</a>
+          </div>
+        `;
+      } else {
+        actionsEl.innerHTML = `
+          <div class="mt">
+            <a class="btn btn-primary" href="/admin">Entrar / Registrar</a>
+            <a class="btn btn-alt" href="/">Voltar</a>
+          </div>
+        `;
+      }
       return;
     }
 
@@ -67,4 +77,3 @@ tryLaunch();
 </script>
 </body>
 </html>
-

@@ -173,6 +173,15 @@ Route::get('/admin', function () {
         ->withHeaders($response->headers->all());
 })->name('admin.entry');
 
+// Proxy POST para manter URL limpa no login do admin
+Route::post('/admin', function (\Illuminate\Http\Request $request) {
+    $sub = \Illuminate\Http\Request::create('/admin/login', 'POST', $request->all());
+    $sub->headers->add($request->headers->all());
+    $response = app()->handle($sub);
+    return response($response->getContent(), $response->getStatusCode())
+        ->withHeaders($response->headers->all());
+});
+
 // Exibir login do painel de afiliado diretamente em /afiliado (URL limpa) quando não autenticado.
 // Se autenticado, envia para a dashboard do painel afiliado.
 Route::get('/afiliado', function () {
@@ -185,6 +194,15 @@ Route::get('/afiliado', function () {
 
     return redirect('/afiliado/minha-dashboard');
 })->name('afiliado.entry');
+
+// Proxy POST para manter URL limpa no login do afiliado
+Route::post('/afiliado', function (\Illuminate\Http\Request $request) {
+    $sub = \Illuminate\Http\Request::create('/afiliado/login', 'POST', $request->all());
+    $sub->headers->add($request->headers->all());
+    $response = app()->handle($sub);
+    return response($response->getContent(), $response->getStatusCode())
+        ->withHeaders($response->headers->all());
+});
 
 // /afiliado é tratado no Nginx para exibir o login sem alterar a URL
 
