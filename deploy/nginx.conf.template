@@ -12,6 +12,16 @@ server {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
+    # Friendly login URLs: serve login pages on base paths without redirecting
+    # Keep browser URL as /admin and /afiliado while internally routing to Filament auth endpoints
+    location = /admin {
+        rewrite ^ /admin/login last;
+    }
+
+    location = /afiliado {
+        rewrite ^ /afiliado/login last;
+    }
+
     # Fallback for affiliate theme CSS if missing in image
     # Fallback estável para o CSS do afiliado (responde 200 mesmo se o arquivo faltar)
     location = /css/custom-filament-theme-affiliate.css {

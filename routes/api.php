@@ -19,6 +19,10 @@ Route::get('/', function () {
     return response()->json(['message' => 'API is running']);
 });
 
+// Cassino - lista de jogos (fallback rápido caso include de rotas falhe)
+use App\Http\Controllers\Api\Games\GameController as ApiGameController;
+Route::get('/casinos/games', [ApiGameController::class, 'allGames']);
+
 /*
 |--------------------------------------------------------------------------
 | ROTA DAS MISSÕES
@@ -192,4 +196,3 @@ Route::prefix('settings')
     });
 
 // LANDING SPIN
-

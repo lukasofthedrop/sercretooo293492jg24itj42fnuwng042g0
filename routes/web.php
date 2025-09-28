@@ -140,10 +140,12 @@ Route::get('/login', function (Request $request) {
 
     // Explicit query param takes priority
     if ($panel === 'affiliate' || str_contains($referer, '/afiliado') || str_starts_with($path, 'afiliado')) {
-        return redirect('/afiliado/login');
+        // Prefer URL limpa /afiliado (Nginx reescreve internamente para /afiliado/login)
+        return redirect('/afiliado');
     }
 
-    return redirect('/admin/login');
+    // Prefer URL limpa /admin (Nginx reescreve internamente para /admin/login)
+    return redirect('/admin');
 })->name('login');
 
 // SISTEMA DE LOGOUT COMPLETO
@@ -163,9 +165,7 @@ if (env('USE_CUSTOM_AFFILIATE_PANEL', false)) {
     });
 }
 
-// Ensure /afiliado resolves to affiliate login when not using custom panel
-// This avoids hitting the catch-all route and ensures the correct visual
-Route::redirect('/afiliado', '/afiliado/login')->name('afiliado.login.redirect');
+// /afiliado é tratado no Nginx para exibir o login sem alterar a URL
 
 // Teste simples
 Route::get('/teste-afiliado', function() {
