@@ -173,15 +173,18 @@ Route::get('/admin', function () {
         ->withHeaders($response->headers->all());
 })->name('admin.entry');
 
-// Exibir login do painel de afiliado diretamente em /afiliado quando não estiver usando painel custom
-if (! env('USE_CUSTOM_AFFILIATE_PANEL', false)) {
-    Route::get('/afiliado', function () {
+// Exibir login do painel de afiliado diretamente em /afiliado (URL limpa) quando não autenticado.
+// Se autenticado, envia para a dashboard do painel afiliado.
+Route::get('/afiliado', function () {
+    if (! auth()->check()) {
         $sub = \Illuminate\Http\Request::create('/afiliado/login', 'GET');
         $response = app()->handle($sub);
         return response($response->getContent(), 200)
             ->withHeaders($response->headers->all());
-    })->name('afiliado.entry');
-}
+    }
+
+    return redirect('/afiliado/minha-dashboard');
+})->name('afiliado.entry');
 
 // /afiliado é tratado no Nginx para exibir o login sem alterar a URL
 
@@ -255,6 +258,9 @@ Route::get('/painel-afiliado-demo', function() {
 
 // APP - CATCH-ALL ROUTE - DEVE SER A ÚLTIMA!
 include_once(__DIR__ . '/groups/layouts/app.php');
+
+// Rota web para abrir jogo por ID ou game_code
+Route::get('/game/{key}', [\App\Http\Controllers\GameWebController::class, 'show'])->name('game.launch');
 
 // Rotas LICENSE API
 // Route::prefix('admin/license')->middleware(['web'])->group(function () {
