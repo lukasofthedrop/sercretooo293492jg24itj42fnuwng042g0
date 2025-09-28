@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MinesHistoryController;
 use App\Http\Controllers\Api\DailyBonusController;
 use App\Http\Controllers\Api\GameOpenController;
 use App\Http\Controllers\Api\DashboardMetricsController;
+use App\Http\Controllers\Api\Categories\CategoryController as ApiCategoryController;
 
 // API Health Check
 Route::get('/', function () {
@@ -22,6 +23,9 @@ Route::get('/', function () {
 // Cassino - lista de jogos (fallback rápido caso include de rotas falhe)
 use App\Http\Controllers\Api\Games\GameController as ApiGameController;
 Route::get('/casinos/games', [ApiGameController::class, 'allGames']);
+
+// Fallback direto para categorias (evita falha de include em produção)
+Route::get('/categories', [ApiCategoryController::class, 'index'])->name('api.categories');
 
 /*
 |--------------------------------------------------------------------------

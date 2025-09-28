@@ -22,6 +22,11 @@ class AffiliateAccess
             return $next($request);
         }
         
+        // Se é explicitamente afiliado por função, permite independentemente de inviter_code
+        if ($user->hasRole('Affiliate') || $user->hasRole('afiliado')) {
+            return $next($request);
+        }
+
         // Se é admin, redireciona para painel admin
         if ($user->hasRole('admin')) {
             return redirect('/admin');

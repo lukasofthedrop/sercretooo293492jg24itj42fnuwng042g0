@@ -13,8 +13,41 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::get();
-        return response()->json(['categories' => $categories]);
+        try {
+            $categories = Category::get();
+            if ($categories && $categories->count() > 0) {
+                return response()->json(['categories' => $categories]);
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('DB categories unavailable, using fallback.', ['error' => $e->getMessage()]);
+        }
+
+        // Fallback: extrair categorias do dataset estático
+        $path = resource_path('data/casino-games.json');
+        $result = [];
+        if (file_exists($path)) {
+            $payload = json_decode(file_get_contents($path), true);
+            $games = $payload['games']['data'] ?? $payload['games'] ?? [];
+            $seen = [];
+            foreach ($games as $game) {
+                foreach (($game['categories'] ?? []) as $cat) {
+                    $key = strtolower(trim(($cat['slug'] ?? $cat['name'] ?? '')));
+                    if ($key !== '' && !isset($seen[$key])) {
+                        $seen[$key] = true;
+                        $result[] = [
+                            'id' => $cat['id'] ?? null,
+                            'name' => $cat['name'] ?? $key,
+                            'slug' => $cat['slug'] ?? $key,
+                            'description' => $cat['description'] ?? null,
+                            'image' => $cat['image'] ?? null,
+                            'url' => $cat['url'] ?? null,
+                        ];
+                    }
+                }
+            }
+        }
+
+        return response()->json(['categories' => array_values($result)]);
     }
 
     /**
