@@ -22,6 +22,7 @@ yarn-error.log
 .env.OLD
 .env.bak
 .env.*
+!.env.example
 
 # IDE Files
 /.fleet
