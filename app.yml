@@ -1,0 +1,27 @@
+name: lucrativabet-app
+services:
+- name: web
+  github:
+    repo: seu-repositorio/lucrativabet  # Substitua por seu repositório real
+    branch: main
+  run_command: php artisan serve --host=0.0.0.0 --port=$PORT
+  environment_slug: php
+  build_command: |
+    composer install --no-dev --optimize-autoloader &&
+    php artisan cache:clear &&
+    php artisan config:clear
+  run_command: php artisan serve --host=0.0.0.0 --port=$PORT
+  http_port: 8080
+  environment_variables:
+  - key: APP_ENV
+    value: production
+  - key: APP_DEBUG
+    value: "false"
+  - key: DB_CONNECTION
+    value: mysql
+  - key: CACHE_DRIVER
+    value: redis
+  - key: SESSION_DRIVER
+    value: redis
+  - key: QUEUE_CONNECTION
+    value: redis

@@ -1,0 +1,35 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+README.md
+.env
+.env.*
+.DS_Store
+docker-compose.yml
+Dockerfile
+.dockerignore
+*.log
+tests
+phpunit.xml
+.editorconfig
+
+# Arquivos de IDE
+.vscode
+.idea
+
+# Arquivos temporários
+tmp
+temp
+*.tmp
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Diretórios de cache do Laravel
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+bootstrap/cache
