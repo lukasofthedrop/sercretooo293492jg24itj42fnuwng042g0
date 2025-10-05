@@ -1,0 +1,64 @@
+name: lucrativabet-app
+services:
+- name: web
+  github:
+    repo: lukasofthedrop/sercretooo293492jg24itj42fnuwng042g0
+    branch: main
+  run_command: php artisan serve --host=0.0.0.0 --port=$PORT
+  environment_slug: php
+  build_command: |
+    composer install --no-dev --optimize-autoloader &&
+    php artisan cache:clear &&
+    php artisan config:clear
+  environment_variables:
+  - key: APP_ENV
+    value: production
+  - key: APP_DEBUG
+    value: "false"
+  - key: DB_CONNECTION
+    value: mysql
+  - key: DB_HOST
+    value: ${DB_HOST}
+  - key: DB_PORT
+    value: ${DB_PORT}
+  - key: DB_DATABASE
+    value: ${DB_NAME}
+  - key: DB_USERNAME
+    value: ${DB_USER}
+  - key: DB_PASSWORD
+    value: ${DB_PASS}
+  - key: REDIS_URL
+    value: ${REDIS_URL}
+  - key: CACHE_DRIVER
+    value: redis
+  - key: SESSION_DRIVER
+    value: redis
+  - key: QUEUE_CONNECTION
+    value: redis
+  - key: APP_KEY
+    value: ${APP_KEY}
+  - key: PUSHER_APP_KEY
+    value: ${PUSHER_APP_KEY}
+  - key: PUSHER_APP_SECRET
+    value: ${PUSHER_APP_SECRET}
+  - key: PUSHER_APP_CLUSTER
+    value: ${PUSHER_APP_CLUSTER}
+  - key: MAIL_USERNAME
+    value: ${MAIL_USERNAME}
+  - key: MAIL_PASSWORD
+    value: ${MAIL_PASSWORD}
+
+databases:
+- name: lucrativabet-db
+  engine: MYSQL
+  version: "8.0"
+  production: false
+  cluster_name: lucrativabet-mysql
+  db_name: lucrativabet
+  db_user: doadmin
+
+redis_databases:
+- name: lucrativabet-redis
+  engine: REDIS
+  production: false
+  cluster_name: lucrativabet-redis
